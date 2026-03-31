@@ -441,6 +441,16 @@ if (loading) {
             <p className="mt-2 text-sm text-white/45">
               Live task data loaded from MongoDB
             </p>
+            {createdFromAi && highlightedTaskId && (
+  <div className="mt-6 rounded-2xl border border-[#8aa4ff]/30 bg-[#8aa4ff]/10 p-4">
+    <p className="text-sm font-semibold text-[#b7c6ff]">
+      AI action executed successfully
+    </p>
+    <p className="mt-1 text-sm text-white/60">
+      A new corrective task was created and highlighted below.
+    </p>
+  </div>
+)}
           </div>
 
           <Link
