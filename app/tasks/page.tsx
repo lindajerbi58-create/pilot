@@ -3,6 +3,7 @@
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+
 import { AlertTriangle, ArrowLeft, Briefcase, CalendarDays, FolderKanban } from "lucide-react";
 import TopNavbar from "@/src/components/TopNavbar";
 type TaskItem = {
@@ -123,7 +124,10 @@ function getTaskRecommendationReasons(task: TaskItem) {
   return reasons.slice(0, 2);
 }
 export default function TasksPage() {
-  const searchParams = useSearchParams();
+const searchParams = useSearchParams();
+
+const highlightedTaskId = searchParams.get("highlight");
+const createdFromAi = searchParams.get("created") === "ai-action";
   const router = useRouter();
  const filter = searchParams.get("filter");
 const project = searchParams.get("project");
