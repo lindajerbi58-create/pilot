@@ -230,15 +230,29 @@ export default function ResourceHubPage() {
               </div>
             </div>
 
-            <div className="mt-6 flex flex-wrap gap-3">
-              <button className="rounded-2xl bg-[#ff7d7d] px-5 py-3 text-sm font-semibold text-[#180b0b] transition hover:brightness-110">
-                Redistribute Tasks
-              </button>
+           <div className="mt-6 flex flex-wrap gap-3">
+  <button className="rounded-2xl bg-[#ff7d7d] px-5 py-3 text-sm font-semibold text-[#180b0b] transition hover:brightness-110">
+    Redistribute Tasks
+  </button>
 
-              <button className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white">
-                View Task Board
-              </button>
-            </div>
+  <button className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white">
+    View Task Board
+  </button>
+
+  <Link
+    href="/decision-center"
+    className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white"
+  >
+    Back to Decision Center
+  </Link>
+
+  <Link
+    href="/ai-insights"
+    className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white"
+  >
+    Back to AI Insights
+  </Link>
+</div>
           </div>
         </section>
 
@@ -308,14 +322,13 @@ export default function ResourceHubPage() {
           </div>
         </section>
 
-        <nav className="mt-8 flex justify-center md:hidden">
-          <div className="flex items-center gap-2 rounded-full border border-white/8 bg-[#070910]/95 px-3 py-2">
-            <NavPill label="Projects" href="/dashboard" />
-            <NavPill label="Tasks" href="/tasks" />
-            <NavPill label="Activity" href="/activity" />
-            <NavPill label="Settings" href="/settings" active />
-          </div>
-        </nav>
+   <nav className="hidden items-center gap-2 md:flex">
+  <NavPill label="Projects" href="/dashboard" />
+  <NavPill label="AI Insights" href="/ai-insights" />
+  <NavPill label="Decision Center" href="/decision-center" />
+  <NavPill label="Resources" href="/resource-hub" active />
+  <NavPill label="Settings" href="/settings" />
+</nav>
       </div>
     </main>
   );

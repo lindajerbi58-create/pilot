@@ -97,11 +97,14 @@ export default function DecisionCenterPage() {
     <SidebarItem label="Decision Center" active />
   </Link>
 
+  <Link href="/resource-hub">
+    <SidebarItem label="Resources" />
+  </Link>
+
   <Link href="/settings">
     <SidebarItem label="Settings" />
   </Link>
 </nav>
-
           <div className="flex items-center gap-3">
             <div className="hidden items-center gap-2 rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-2 text-sm text-white/45 sm:flex">
               <Search size={16} />
@@ -206,8 +209,7 @@ export default function DecisionCenterPage() {
                 </div>
               </div>
             </div>
-
-            <div className="mt-6 flex flex-wrap gap-3">
+<div className="mt-6 flex flex-wrap gap-3">
   <button className="rounded-2xl bg-[#8ea8ff] px-6 py-3 text-sm font-semibold text-[#0b1020] transition hover:brightness-110">
     Approve Reallocation
   </button>
@@ -215,6 +217,13 @@ export default function DecisionCenterPage() {
   <button className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white">
     Reject
   </button>
+
+  <Link
+    href="/resource-hub"
+    className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white"
+  >
+    Open Resource Hub
+  </Link>
 
   <Link
     href="/ai-insights"

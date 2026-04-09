@@ -6,6 +6,7 @@ import {
   FolderKanban,
   Search,
   Settings,
+  Zap,
   Users,
 } from "lucide-react";
 import Link from "next/link";
@@ -198,13 +199,27 @@ export default function AIInsightsPage() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <NavItem icon={FolderKanban} label="Projects" />
-              <NavItem icon={Brain} label="Insights" active />
-              <NavItem icon={Users} label="Team" />
-              <NavItem icon={Settings} label="Settings" />
-            </div>
-          </div>
+  <div className="space-y-2">
+  <Link href="/dashboard">
+    <NavItem icon={FolderKanban} label="Projects" />
+  </Link>
+
+  <Link href="/ai-insights">
+    <NavItem icon={Brain} label="Insights" active />
+  </Link>
+
+  <Link href="/decision-center">
+    <NavItem icon={Zap} label="Decision" />
+  </Link>
+
+  <Link href="/resource-hub">
+    <NavItem icon={Users} label="Resources" />
+  </Link>
+
+  <Link href="/settings">
+    <NavItem icon={Settings} label="Settings" />
+  </Link>
+</div>
 
           <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
             <p className="text-xs uppercase tracking-[0.2em] text-white/35">AI status</p>
