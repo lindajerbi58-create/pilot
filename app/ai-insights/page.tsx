@@ -220,7 +220,7 @@ export default function AIInsightsPage() {
     <NavItem icon={Settings} label="Settings" />
   </Link>
 </div>
-
+</div>
           <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
             <p className="text-xs uppercase tracking-[0.2em] text-white/35">AI status</p>
             <p className="mt-2 text-sm font-semibold text-white">Live analysis enabled</p>
