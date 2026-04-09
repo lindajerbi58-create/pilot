@@ -225,6 +225,12 @@ export default function DashboardPage() {
               <button className="rounded-2xl bg-[#8ea8ff] px-5 py-3 text-sm font-semibold text-[#0b1020] transition hover:brightness-110">
                 + New Project
               </button>
+              <Link
+  href="/import"
+  className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-semibold text-white/70 hover:bg-white/[0.05]"
+>
+  Import Data
+</Link>
             </div>
           </div>
 
