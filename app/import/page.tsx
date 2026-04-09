@@ -206,131 +206,173 @@ const [importStatus, setImportStatus] = useState("Schema check pending");
           </div>
         </section>
 
-        <section className="grid gap-6 xl:grid-cols-[1.55fr_0.8fr]">
-          <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
-            <div className="mb-5 flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/35">
-                  Task Data Import
-                </p>
-                <h2 className="mt-2 text-lg font-semibold text-white">
-                  Upload CSV Workspace Data
-                </h2>
-                <p className="mt-2 max-w-xl text-sm leading-6 text-white/45">
-                  Import structured task data to power overdue detection,
-                  execution monitoring, workload analysis, and AI-based
-                  operational recommendations.
-                </p>
-              </div>
+      <section className="grid gap-6 xl:grid-cols-[1.55fr_0.8fr]">
+  <div>
+    <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/35">
+            Task Data Import
+          </p>
+          <h2 className="mt-2 text-lg font-semibold text-white">
+            Upload CSV Workspace Data
+          </h2>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-white/45">
+            Import structured task data to power overdue detection,
+            execution monitoring, workload analysis, and AI-based
+            operational recommendations.
+          </p>
+        </div>
 
-              <div className="rounded-full border border-white/8 bg-white/[0.03] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40">
-                v1.0 task import
-              </div>
-            </div>
+        <div className="rounded-full border border-white/8 bg-white/[0.03] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40">
+          v1.0 task import
+        </div>
+      </div>
 
-            <div className="rounded-[26px] border border-white/8 bg-[#070910] p-5">
-            <input
-  ref={fileInputRef}
-  type="file"
-  accept=".csv"
-  onChange={handleFileChange}
-  className="hidden"
-/>
-              <div className="flex min-h-[320px] flex-col items-center justify-center rounded-[22px] border border-dashed border-white/10 bg-[#05060b] px-6 text-center">
-                <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-3xl bg-[#8ea8ff]/10 text-[#9eb7ff]">
-                  <UploadCloud size={28} />
-                </div>
+      <div className="rounded-[26px] border border-white/8 bg-[#070910] p-5">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".csv"
+          onChange={handleFileChange}
+          className="hidden"
+        />
 
-                <h3 className="text-lg font-semibold text-white">
-                  Drag and drop your CSV file
-                </h3>
-                <p className="mt-2 max-w-md text-sm leading-6 text-white/45">
-                  Supports structured task datasets in CSV format. Keep your
-                  schema aligned with the Pilot template for clean validation.
-                </p>
-
-                <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
-                  <div className="rounded-full border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9eb7ff]">
-                    CSV
-                  </div>
-
-                  <button
-  type="button"
-  onClick={handleBrowseClick}
-  className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white"
->
-  <FolderUp size={16} />
-  Browse Files
-</button>
-                </div>
-              </div>
-
-              <div className="mt-5 grid gap-3 rounded-[22px] border border-white/8 bg-white/[0.03] p-4 md:grid-cols-3">
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.16em] text-white/30">
-                    File
-                  </p>
-                 <p className="mt-2 text-sm text-white/75">
-  {selectedFile ? selectedFile.name : "No file selected"}
-</p>
-                </div>
-
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.16em] text-white/30">
-                    Validation
-                  </p>
-                <p className="mt-2 text-sm text-white/50">{validationMessage}</p>
-                </div>
-
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.16em] text-white/30">
-                    Import Status
-                  </p>
-                <p className="mt-2 text-sm text-white/50">{importStatus}</p>
-                </div>
-              </div>
-
-              <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-xs leading-6 text-white/40">
-                  Pilot currently supports CSV-based task imports for initial
-                  workspace activation.
-                </p>
-
-                <button
-  type="button"
- disabled={parsedRows.length === 0}
- className={`rounded-2xl px-5 py-3 text-sm font-semibold transition ${
-  parsedRows.length > 0
-    ? "bg-[#8ea8ff] text-[#0b1020] hover:brightness-110"
-    : "cursor-not-allowed bg-white/10 text-white/35"
-}`}
->
-  Import Tasks
-</button>
-              </div>
-            </div>
+        <div className="flex min-h-[320px] flex-col items-center justify-center rounded-[22px] border border-dashed border-white/10 bg-[#05060b] px-6 text-center">
+          <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-3xl bg-[#8ea8ff]/10 text-[#9eb7ff]">
+            <UploadCloud size={28} />
           </div>
 
-          <div className="grid gap-6">
-            <MiniInfoCard
-              icon={Brain}
-              title="AI Engine Activation"
-              description="Pilot uses your operational task data to activate workload monitoring, execution intelligence, and predictive delivery signals."
-            />
+          <h3 className="text-lg font-semibold text-white">
+            Drag and drop your CSV file
+          </h3>
+          <p className="mt-2 max-w-md text-sm leading-6 text-white/45">
+            Supports structured task datasets in CSV format. Keep your
+            schema aligned with the Pilot template for clean validation.
+          </p>
 
-            <MiniInfoCard
-              icon={FileSpreadsheet}
-              title="Upload CSV"
-              description="Bring your project execution data into Pilot with a structured CSV file built on the expected template."
-            />
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+            <div className="rounded-full border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9eb7ff]">
+              CSV
+            </div>
 
-            <MiniInfoCard
-              icon={CheckCircle2}
-              title="Validate Structure"
-              description="Pilot checks required fields, formatting readiness, and data consistency before import begins."
-            />
+            <button
+              type="button"
+              onClick={handleBrowseClick}
+              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white"
+            >
+              <FolderUp size={16} />
+              Browse Files
+            </button>
           </div>
-        </section>
+        </div>
+
+        <div className="mt-5 grid gap-3 rounded-[22px] border border-white/8 bg-white/[0.03] p-4 md:grid-cols-3">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.16em] text-white/30">
+              File
+            </p>
+            <p className="mt-2 text-sm text-white/75">
+              {selectedFile ? selectedFile.name : "No file selected"}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.16em] text-white/30">
+              Validation
+            </p>
+            <p className="mt-2 text-sm text-white/50">{validationMessage}</p>
+          </div>
+
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.16em] text-white/30">
+              Import Status
+            </p>
+            <p className="mt-2 text-sm text-white/50">{importStatus}</p>
+          </div>
+        </div>
+
+        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs leading-6 text-white/40">
+            Pilot currently supports CSV-based task imports for initial
+            workspace activation.
+          </p>
+
+          <button
+            type="button"
+            disabled={parsedRows.length === 0}
+            className={`rounded-2xl px-5 py-3 text-sm font-semibold transition ${
+              parsedRows.length > 0
+                ? "bg-[#8ea8ff] text-[#0b1020] hover:brightness-110"
+                : "cursor-not-allowed bg-white/10 text-white/35"
+            }`}
+          >
+            Import Tasks
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {parsedRows.length > 0 && (
+      <div className="mt-6 rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
+        <div className="mb-5 flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-semibold text-white">Data Preview</h2>
+            <p className="mt-1 text-sm text-white/40">
+              {parsedRows.length} rows detected from your dataset
+            </p>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead>
+              <tr className="text-white/40">
+                {Object.keys(parsedRows[0]).map((col) => (
+                  <th key={col} className="pb-3 pr-4 font-medium">
+                    {col}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+
+            <tbody>
+              {parsedRows.slice(0, 3).map((row, index) => (
+                <tr key={index} className="border-t border-white/5">
+                  {Object.values(row).map((value: any, i) => (
+                    <td key={i} className="py-3 pr-4 text-white/70">
+                      {String(value)}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )}
+  </div>
+
+  <div className="grid gap-6">
+    <MiniInfoCard
+      icon={Brain}
+      title="AI Engine Activation"
+      description="Pilot uses your operational task data to activate workload monitoring, execution intelligence, and predictive delivery signals."
+    />
+
+    <MiniInfoCard
+      icon={FileSpreadsheet}
+      title="Upload CSV"
+      description="Bring your project execution data into Pilot with a structured CSV file built on the expected template."
+    />
+
+    <MiniInfoCard
+      icon={CheckCircle2}
+      title="Validate Structure"
+      description="Pilot checks required fields, formatting readiness, and data consistency before import begins."
+    />
+  </div>
+</section>
 
         <section className="mt-6 grid gap-6 xl:grid-cols-[1fr_1fr]">
           <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
