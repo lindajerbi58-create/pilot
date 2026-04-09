@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+
 import Link from "next/link";
 import {
   Bell,
@@ -14,7 +15,7 @@ import {
   UploadCloud,
   Users,
 } from "lucide-react";
-
+import Papa from "papaparse";
 function TopNavLink({
   label,
   href,
@@ -88,16 +89,66 @@ function TemplateChip({ label }: { label: string }) {
 
 export default function ImportPage() {
       const [selectedFile, setSelectedFile] = useState<File | null>(null);
+      const [parsedRows, setParsedRows] = useState<any[]>([]);
+const [validationMessage, setValidationMessage] = useState("Waiting for file");
+const [importStatus, setImportStatus] = useState("Schema check pending");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleBrowseClick = () => {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null;
-    setSelectedFile(file);
-  };
+ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0] || null;
+  setSelectedFile(file);
+
+  if (!file) {
+    setParsedRows([]);
+    setValidationMessage("Waiting for file");
+    setImportStatus("Schema check pending");
+    return;
+  }
+
+  Papa.parse(file, {
+    header: true,
+    skipEmptyLines: true,
+    complete: (results) => {
+      const rows = results.data as any[];
+
+      const requiredColumns = [
+        "task_name",
+        "project_name",
+        "assignee_email",
+        "status",
+        "priority",
+        "start_date",
+        "due_date",
+        "progress",
+      ];
+
+      const columns = results.meta.fields || [];
+      const missingColumns = requiredColumns.filter(
+        (col) => !columns.includes(col)
+      );
+
+      if (missingColumns.length > 0) {
+        setParsedRows([]);
+        setValidationMessage("Invalid template");
+        setImportStatus(`Missing columns: ${missingColumns.join(", ")}`);
+        return;
+      }
+
+      setParsedRows(rows);
+      setValidationMessage("Valid template");
+      setImportStatus(`${rows.length} rows ready to import`);
+    },
+    error: () => {
+      setParsedRows([]);
+      setValidationMessage("Parsing failed");
+      setImportStatus("Unable to read CSV file");
+    },
+  });
+};
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1480px] px-4 py-5 sm:px-6 lg:px-8">
@@ -228,16 +279,14 @@ export default function ImportPage() {
                   <p className="text-[11px] uppercase tracking-[0.16em] text-white/30">
                     Validation
                   </p>
-                 <p className="mt-2 text-sm text-white/50">
-  {selectedFile ? "Ready for validation" : "Waiting for file"}
-</p>
+                <p className="mt-2 text-sm text-white/50">{validationMessage}</p>
                 </div>
 
                 <div>
                   <p className="text-[11px] uppercase tracking-[0.16em] text-white/30">
                     Import Status
                   </p>
-                  <p className="mt-2 text-sm text-white/50">Schema check pending</p>
+                <p className="mt-2 text-sm text-white/50">{importStatus}</p>
                 </div>
               </div>
 
@@ -249,12 +298,12 @@ export default function ImportPage() {
 
                 <button
   type="button"
-  disabled={!selectedFile}
-  className={`rounded-2xl px-5 py-3 text-sm font-semibold transition ${
-    selectedFile
-      ? "bg-[#8ea8ff] text-[#0b1020] hover:brightness-110"
-      : "cursor-not-allowed bg-white/10 text-white/35"
-  }`}
+ disabled={parsedRows.length === 0}
+ className={`rounded-2xl px-5 py-3 text-sm font-semibold transition ${
+  parsedRows.length > 0
+    ? "bg-[#8ea8ff] text-[#0b1020] hover:brightness-110"
+    : "cursor-not-allowed bg-white/10 text-white/35"
+}`}
 >
   Import Tasks
 </button>
