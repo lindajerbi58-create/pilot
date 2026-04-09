@@ -92,6 +92,8 @@ export default function ImportPage() {
       const [parsedRows, setParsedRows] = useState<any[]>([]);
 const [validationMessage, setValidationMessage] = useState("Waiting for file");
 const [importStatus, setImportStatus] = useState("Schema check pending");
+const [isImporting, setIsImporting] = useState(false);
+const [successMessage, setSuccessMessage] = useState("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleBrowseClick = () => {
@@ -101,7 +103,7 @@ const [importStatus, setImportStatus] = useState("Schema check pending");
  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   const file = event.target.files?.[0] || null;
   setSelectedFile(file);
-
+setSuccessMessage("");
   if (!file) {
     setParsedRows([]);
     setValidationMessage("Waiting for file");
@@ -148,6 +150,17 @@ const [importStatus, setImportStatus] = useState("Schema check pending");
       setImportStatus("Unable to read CSV file");
     },
   });
+};
+const handleImportTasks = async () => {
+  if (parsedRows.length === 0) return;
+
+  setIsImporting(true);
+  setSuccessMessage("");
+
+  await new Promise((resolve) => setTimeout(resolve, 1200));
+
+  setIsImporting(false);
+  setSuccessMessage(`${parsedRows.length} tasks imported successfully`);
 };
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
@@ -297,18 +310,23 @@ const [importStatus, setImportStatus] = useState("Schema check pending");
             Pilot currently supports CSV-based task imports for initial
             workspace activation.
           </p>
-
-          <button
-            type="button"
-            disabled={parsedRows.length === 0}
-            className={`rounded-2xl px-5 py-3 text-sm font-semibold transition ${
-              parsedRows.length > 0
-                ? "bg-[#8ea8ff] text-[#0b1020] hover:brightness-110"
-                : "cursor-not-allowed bg-white/10 text-white/35"
-            }`}
-          >
-            Import Tasks
-          </button>
+          {successMessage && (
+  <p className="mt-2 text-xs font-medium text-[#8ea8ff]">
+    {successMessage}
+  </p>
+)}
+<button
+  type="button"
+  onClick={handleImportTasks}
+  disabled={parsedRows.length === 0 || isImporting}
+  className={`rounded-2xl px-5 py-3 text-sm font-semibold transition ${
+    parsedRows.length > 0 && !isImporting
+      ? "bg-[#8ea8ff] text-[#0b1020] hover:brightness-110"
+      : "cursor-not-allowed bg-white/10 text-white/35"
+  }`}
+>
+  {isImporting ? "Importing..." : "Import Tasks"}
+</button>
         </div>
       </div>
     </div>
