@@ -8,7 +8,7 @@ import {
   Settings,
   Users,
 } from "lucide-react";
-
+import Link from "next/link";
 function RiskRing({ score }: { score: number }) {
   const radius = 72;
   const stroke = 10;
@@ -270,14 +270,18 @@ export default function AIInsightsPage() {
                     work items still require active supervision.
                   </p>
 
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    <button className="rounded-2xl bg-[#8aa4ff] px-5 py-3 text-sm font-semibold text-[#111629] transition hover:brightness-110">
-                      View Detailed Report
-                    </button>
-                    <button className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white">
-                      Dismiss
-                    </button>
-                  </div>
+                 <div className="mt-6 flex flex-wrap gap-3">
+  <button className="rounded-2xl bg-[#8aa4ff] px-5 py-3 text-sm font-semibold text-[#111629] transition hover:brightness-110">
+    View Detailed Report
+  </button>
+
+  <Link
+    href="/decision-center"
+    className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white"
+  >
+    Go to Decision Center
+  </Link>
+</div>
                 </div>
               </div>
             </div>
