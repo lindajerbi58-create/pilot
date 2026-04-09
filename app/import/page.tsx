@@ -1,3 +1,6 @@
+"use client";
+
+import { useRef, useState } from "react";
 import Link from "next/link";
 import {
   Bell,
@@ -84,6 +87,17 @@ function TemplateChip({ label }: { label: string }) {
 }
 
 export default function ImportPage() {
+      const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleBrowseClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    setSelectedFile(file);
+  };
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1480px] px-4 py-5 sm:px-6 lg:px-8">
@@ -164,6 +178,13 @@ export default function ImportPage() {
             </div>
 
             <div className="rounded-[26px] border border-white/8 bg-[#070910] p-5">
+            <input
+  ref={fileInputRef}
+  type="file"
+  accept=".csv"
+  onChange={handleFileChange}
+  className="hidden"
+/>
               <div className="flex min-h-[320px] flex-col items-center justify-center rounded-[22px] border border-dashed border-white/10 bg-[#05060b] px-6 text-center">
                 <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-3xl bg-[#8ea8ff]/10 text-[#9eb7ff]">
                   <UploadCloud size={28} />
@@ -182,10 +203,14 @@ export default function ImportPage() {
                     CSV
                   </div>
 
-                  <button className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white">
-                    <FolderUp size={16} />
-                    Browse Files
-                  </button>
+                  <button
+  type="button"
+  onClick={handleBrowseClick}
+  className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white"
+>
+  <FolderUp size={16} />
+  Browse Files
+</button>
                 </div>
               </div>
 
@@ -194,14 +219,18 @@ export default function ImportPage() {
                   <p className="text-[11px] uppercase tracking-[0.16em] text-white/30">
                     File
                   </p>
-                  <p className="mt-2 text-sm text-white/75">No file selected</p>
+                 <p className="mt-2 text-sm text-white/75">
+  {selectedFile ? selectedFile.name : "No file selected"}
+</p>
                 </div>
 
                 <div>
                   <p className="text-[11px] uppercase tracking-[0.16em] text-white/30">
                     Validation
                   </p>
-                  <p className="mt-2 text-sm text-white/50">Ready for validation</p>
+                 <p className="mt-2 text-sm text-white/50">
+  {selectedFile ? "Ready for validation" : "Waiting for file"}
+</p>
                 </div>
 
                 <div>
@@ -218,9 +247,17 @@ export default function ImportPage() {
                   workspace activation.
                 </p>
 
-                <button className="cursor-not-allowed rounded-2xl bg-white/10 px-5 py-3 text-sm font-semibold text-white/35">
-                  Import Tasks
-                </button>
+                <button
+  type="button"
+  disabled={!selectedFile}
+  className={`rounded-2xl px-5 py-3 text-sm font-semibold transition ${
+    selectedFile
+      ? "bg-[#8ea8ff] text-[#0b1020] hover:brightness-110"
+      : "cursor-not-allowed bg-white/10 text-white/35"
+  }`}
+>
+  Import Tasks
+</button>
               </div>
             </div>
           </div>
