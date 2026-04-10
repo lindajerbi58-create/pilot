@@ -207,21 +207,89 @@ const resourceWorkload = Object.entries(groupedAssignees)
       order[a.loadLevel as keyof typeof order]
     );
   });
+ // -------- REAL EXECUTION TREND (derived from tasks) --------
+const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+function startOfDay(date: Date) {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+function diffInDays(a: Date, b: Date) {
+  const ms = startOfDay(b).getTime() - startOfDay(a).getTime();
+  return Math.floor(ms / (1000 * 60 * 60 * 24));
+}
+
+const today = startOfDay(new Date());
+
+const last7Days = Array.from({ length: 7 }, (_, i) => {
+  const d = new Date(today);
+  d.setDate(today.getDate() - (6 - i));
+  return d;
+});
+
+const executionTrend = last7Days.map((day) => {
+  const activeTasks = tasks.filter((task: any) => {
+    if (!task.start_date || !task.due_date) return false;
+
+    const start = startOfDay(new Date(task.start_date));
+    const due = startOfDay(new Date(task.due_date));
+
+    return start <= day && day <= due;
+  });
+
+  if (activeTasks.length === 0) {
+    return {
+      day: dayNames[day.getDay()],
+      progress: 0,
+      weekly: 0,
+    };
+  }
+
+  let plannedSum = 0;
+  let actualEstimatedSum = 0;
+
+  activeTasks.forEach((task: any) => {
+    const start = startOfDay(new Date(task.start_date));
+    const due = startOfDay(new Date(task.due_date));
+
+    const totalSpan = Math.max(1, diffInDays(start, due) + 1);
+    const elapsedAtDay = Math.max(0, Math.min(totalSpan, diffInDays(start, day) + 1));
+
+    // Planned % by this day
+    const plannedPct = Math.round((elapsedAtDay / totalSpan) * 100);
+
+    // Estimated actual % by this day, reconstructed from current progress
+    const currentProgress = Number(task.progress || 0);
+    const actualEstimatedPct = Math.round((elapsedAtDay / totalSpan) * currentProgress);
+
+    plannedSum += plannedPct;
+    actualEstimatedSum += actualEstimatedPct;
+  });
+
+  return {
+    day: dayNames[day.getDay()],
+    progress: Math.min(100, Math.round(actualEstimatedSum / activeTasks.length)),
+    weekly: Math.min(100, Math.round(plannedSum / activeTasks.length)),
+  };
+});
     return NextResponse.json({
-      success: true,
-      kpis: {
-        totalTasks,
-        completedTasks,
-        inProgressTasks,
-        overdueTasks,
-        activeProjects,
-        avgProgress,
-      },
-      riskyProjects,
-      recentActivity,
-      aiSuggestions,
-       resourceWorkload,
-    });
+  success: true,
+  kpis: {
+    totalTasks,
+    completedTasks,
+    inProgressTasks,
+    overdueTasks,
+    activeProjects,
+    avgProgress,
+  },
+  riskyProjects,
+  recentActivity,
+  aiSuggestions,
+  resourceWorkload,
+  executionTrend, 
+});
   } catch (error) {
     console.error(error);
     return NextResponse.json(

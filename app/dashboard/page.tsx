@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+
 import {
   AlertTriangle,
   ArrowRight,
@@ -239,7 +240,14 @@ export default function DashboardPage() {
     );
   }
 
-const { kpis, riskyProjects, recentActivity, aiSuggestions, resourceWorkload } = dashboardData;
+const {
+  kpis,
+  riskyProjects,
+  recentActivity,
+  aiSuggestions,
+  resourceWorkload,
+  executionTrend,
+} = dashboardData;
 
 const criticalRiskCount = riskyProjects.filter(
   (project: any) => project.level === "Critical"
@@ -430,23 +438,21 @@ const systemRiskText =
             </div>
 
             <div className="flex h-[250px] items-end justify-between gap-4 rounded-[24px] bg-[#080a12] px-4 py-5">
-              {[
-                { day: "Mon", h1: "h-[30%]", h2: "h-[22%]" },
-                { day: "Tue", h1: "h-[42%]", h2: "h-[34%]" },
-                { day: "Wed", h1: "h-[78%]", h2: "h-[64%]" },
-                { day: "Thu", h1: "h-[24%]", h2: "h-[48%]" },
-                { day: "Fri", h1: "h-[60%]", h2: "h-[74%]" },
-                { day: "Sat", h1: "h-[48%]", h2: "h-[38%]" },
-                { day: "Sun", h1: "h-[72%]", h2: "h-[80%]" },
-              ].map((item) => (
-                <div key={item.day} className="flex flex-1 flex-col items-center gap-3">
-                  <div className="flex h-[180px] items-end gap-1">
-                    <div className={`w-6 rounded-t-xl bg-[#8ea8ff] ${item.h1}`} />
-                    <div className={`w-6 rounded-t-xl bg-white/18 ${item.h2}`} />
-                  </div>
-                  <span className="text-[11px] text-white/35">{item.day}</span>
-                </div>
-              ))}
+       {(executionTrend || []).map((item: any) => (
+  <div key={item.day} className="flex flex-1 flex-col items-center gap-3">
+    <div className="flex h-[180px] items-end gap-1">
+      <div
+        className="w-6 rounded-t-xl bg-[#8ea8ff]"
+        style={{ height: `${item.progress}%` }}
+      />
+      <div
+        className="w-6 rounded-t-xl bg-white/18"
+        style={{ height: `${item.weekly}%` }}
+      />
+    </div>
+    <span className="text-[11px] text-white/35">{item.day}</span>
+  </div>
+))}
             </div>
           </div>
 
@@ -557,13 +563,14 @@ const systemRiskText =
     </div>
   </div>
 
-  <div className="space-y-4">
+ <div className="space-y-4">
   {resourceWorkload
     .sort((a: any, b: any) => {
       const scoreA =
         (a.loadLevel === "Critical" ? 3 : a.loadLevel === "High" ? 2 : 1) * 100 +
         a.overdueCount * 10 +
         a.taskCount;
+
       const scoreB =
         (b.loadLevel === "Critical" ? 3 : b.loadLevel === "High" ? 2 : 1) * 100 +
         b.overdueCount * 10 +
@@ -575,7 +582,7 @@ const systemRiskText =
     .map((member: any, index: number) => (
       <WorkloadCard
         key={index}
-        assignee={member.email.split("@")[0]}
+        assignee={member.assignee.split("@")[0]}
         taskCount={member.taskCount}
         overdueCount={member.overdueCount}
         avgProgress={member.avgProgress}
