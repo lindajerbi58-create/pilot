@@ -135,7 +135,42 @@ function RiskProjectCard({
     </div>
   );
 }
+function WorkloadCard({
+  assignee,
+  taskCount,
+  overdueCount,
+  avgProgress,
+  loadLevel,
+}: {
+  assignee: string;
+  taskCount: number;
+  overdueCount: number;
+  avgProgress: number;
+  loadLevel: string;
+}) {
+  return (
+    <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+      <div className="mb-2 flex items-center justify-between">
+        <p className="text-sm font-semibold text-white">{assignee}</p>
+        <span
+          className={`rounded-full px-2 py-1 text-[10px] font-semibold uppercase ${
+            loadLevel === "Critical"
+              ? "border border-[#ff6b6b]/20 bg-[#ff6b6b]/10 text-[#ff7d7d]"
+              : loadLevel === "High"
+              ? "border border-[#ff8f5a]/20 bg-[#ff8f5a]/10 text-[#ff9d6a]"
+              : "border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 text-[#9eb7ff]"
+          }`}
+        >
+          {loadLevel}
+        </span>
+      </div>
 
+      <p className="text-xs leading-6 text-white/45">
+        {taskCount} tasks • {overdueCount} overdue • {avgProgress}% avg progress
+      </p>
+    </div>
+  );
+}
 function SuggestionMiniCard({
   title,
   description,
@@ -204,7 +239,7 @@ export default function DashboardPage() {
     );
   }
 
-  const { kpis, riskyProjects, recentActivity, aiSuggestions } = dashboardData;
+ const { kpis, riskyProjects, recentActivity, aiSuggestions, resourceWorkload } = dashboardData;
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1480px] px-4 py-5 sm:px-6 lg:px-8">
@@ -468,41 +503,28 @@ export default function DashboardPage() {
   ))}
 </div>
             </div>
+<div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
+  <div className="mb-5 flex items-center justify-between">
+    <div>
+      <h2 className="text-lg font-semibold text-white">Team Workload</h2>
+      <p className="mt-1 text-sm text-white/40">Live assignee capacity overview</p>
+    </div>
+  </div>
 
-            <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
-              <div className="mb-5 flex items-center justify-between">
-                <div>
-                  <h2 className="text-lg font-semibold text-white">Today’s Priorities</h2>
-                  <p className="mt-1 text-sm text-white/40">Immediate operational actions</p>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
-                  <div className="mb-2 flex items-center justify-between">
-                    <p className="text-sm font-semibold text-white">Finalize Q3 Infrastructure Audit</p>
-                    <span className="rounded-full border border-[#ff6b6b]/20 bg-[#ff6b6b]/10 px-2 py-1 text-[10px] font-semibold uppercase text-[#ff7d7d]">
-                      Urgent
-                    </span>
-                  </div>
-                  <p className="text-xs leading-6 text-white/45">
-                    Review final compliance gaps and submit action notes before EOD.
-                  </p>
-                </div>
-
-                <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
-                  <div className="mb-2 flex items-center justify-between">
-                    <p className="text-sm font-semibold text-white">Resolve API Gateway Latency</p>
-                    <span className="rounded-full border border-[#ff8f5a]/20 bg-[#ff8f5a]/10 px-2 py-1 text-[10px] font-semibold uppercase text-[#ff9d6a]">
-                      Priority
-                    </span>
-                  </div>
-                  <p className="text-xs leading-6 text-white/45">
-                    Blocked systems are affecting release validation and client staging.
-                  </p>
-                </div>
-              </div>
-            </div>
+  <div className="space-y-4">
+    {resourceWorkload.slice(0, 4).map((member: any, index: number) => (
+      <WorkloadCard
+        key={index}
+        assignee={member.assignee}
+        taskCount={member.taskCount}
+        overdueCount={member.overdueCount}
+        avgProgress={member.avgProgress}
+        loadLevel={member.loadLevel}
+      />
+    ))}
+  </div>
+</div>
+       
           </div>
         </section>
 
