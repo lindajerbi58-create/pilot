@@ -414,8 +414,7 @@ export default function DashboardPage() {
               </Link>
             </div>
 
-            <div className="space-y-5">
-          <div className="space-y-5">
+           <div className="space-y-5">
   {recentActivity.map((item: any, index: number) => (
     <ActivityItem
       key={index}
@@ -425,7 +424,6 @@ export default function DashboardPage() {
     />
   ))}
 </div>
-            </div>
 
             <div className="mt-6 rounded-[22px] border border-[#8ea8ff]/15 bg-[#8ea8ff]/10 p-4">
               <p className="text-sm font-semibold text-white">Pilot AI Pro</p>
@@ -513,19 +511,30 @@ export default function DashboardPage() {
 
   <div className="space-y-4">
   {resourceWorkload
-  .sort((a: any, b: any) => b.taskCount - a.taskCount)
-  .slice(0, 4)
-  .map((member: any, index: number) => (
-    <WorkloadCard
-      key={index}
-      assignee={member.email.split("@")[0]}
-      taskCount={member.taskCount}
-      overdueCount={member.overdueCount}
-      avgProgress={member.avgProgress}
-      loadLevel={member.loadLevel}
-    />
-))}
-  </div>
+    .sort((a: any, b: any) => {
+      const scoreA =
+        (a.loadLevel === "Critical" ? 3 : a.loadLevel === "High" ? 2 : 1) * 100 +
+        a.overdueCount * 10 +
+        a.taskCount;
+      const scoreB =
+        (b.loadLevel === "Critical" ? 3 : b.loadLevel === "High" ? 2 : 1) * 100 +
+        b.overdueCount * 10 +
+        b.taskCount;
+
+      return scoreB - scoreA;
+    })
+    .slice(0, 4)
+    .map((member: any, index: number) => (
+      <WorkloadCard
+        key={index}
+        assignee={member.email.split("@")[0]}
+        taskCount={member.taskCount}
+        overdueCount={member.overdueCount}
+        avgProgress={member.avgProgress}
+        loadLevel={member.loadLevel}
+      />
+    ))}
+</div>
 </div>
        
           </div>
