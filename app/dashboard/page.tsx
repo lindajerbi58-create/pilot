@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import {
   AlertTriangle,
@@ -170,7 +171,34 @@ function ActivityItem({
   );
 }
 
+import { useEffect, useState } from "react";
+
 export default function DashboardPage() {
+  const [kpis, setKpis] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch("/api/dashboard");
+        const data = await res.json();
+
+        if (data.success) {
+          setKpis(data.kpis);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchData();
+  }, []);
+  if (!kpis) {
+  return (
+    <div className="min-h-screen flex items-center justify-center text-white">
+      Loading dashboard...
+    </div>
+  );
+}
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1480px] px-4 py-5 sm:px-6 lg:px-8">
@@ -263,37 +291,37 @@ export default function DashboardPage() {
 
         <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
           <KPIBox
-            icon={FolderKanban}
-            label="Active Projects"
-            value="24"
-            delta="+12%"
-            deltaLabel="vs last month"
-            iconColor="#8ea8ff"
-          />
+  icon={FolderKanban}
+  label="Active Projects"
+  value={String(kpis.activeProjects)}
+  delta="+ real"
+  deltaLabel="live"
+  iconColor="#8ea8ff"
+/>
+         <KPIBox
+  icon={AlertTriangle}
+  label="Overdue Tasks"
+  value={String(kpis.overdueTasks)}
+  delta="live"
+  deltaLabel="attention"
+  iconColor="#ff6b6b"
+/>
+        <KPIBox
+  icon={Briefcase}
+  label="Total Tasks"
+  value={String(kpis.totalTasks)}
+  delta="live"
+  deltaLabel="tracked"
+  iconColor="#d78bff"
+/>
           <KPIBox
-            icon={AlertTriangle}
-            label="Overdue Tasks"
-            value="08"
-            delta="+4%"
-            deltaLabel="attention"
-            iconColor="#ff6b6b"
-          />
-          <KPIBox
-            icon={Briefcase}
-            label="Open Issues"
-            value="12"
-            delta="+3 Active"
-            deltaLabel="tracking"
-            iconColor="#d78bff"
-          />
-          <KPIBox
-            icon={Users}
-            label="Team Capacity"
-            value="94%"
-            delta="Stable"
-            deltaLabel="utilization"
-            iconColor="#8ea8ff"
-          />
+  icon={Users}
+  label="Avg Progress"
+  value={`${kpis.avgProgress}%`}
+  delta="live"
+  deltaLabel="execution"
+  iconColor="#8ea8ff"
+/>
         </section>
 
         <section className="mt-6 grid gap-6 xl:grid-cols-[1.45fr_0.75fr]">
