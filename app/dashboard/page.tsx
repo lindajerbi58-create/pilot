@@ -512,16 +512,19 @@ export default function DashboardPage() {
   </div>
 
   <div className="space-y-4">
-    {resourceWorkload.slice(0, 4).map((member: any, index: number) => (
-      <WorkloadCard
-        key={index}
-        assignee={member.assignee}
-        taskCount={member.taskCount}
-        overdueCount={member.overdueCount}
-        avgProgress={member.avgProgress}
-        loadLevel={member.loadLevel}
-      />
-    ))}
+  {resourceWorkload
+  .sort((a: any, b: any) => b.taskCount - a.taskCount)
+  .slice(0, 4)
+  .map((member: any, index: number) => (
+    <WorkloadCard
+      key={index}
+      assignee={member.email.split("@")[0]}
+      taskCount={member.taskCount}
+      overdueCount={member.overdueCount}
+      avgProgress={member.avgProgress}
+      loadLevel={member.loadLevel}
+    />
+))}
   </div>
 </div>
        
