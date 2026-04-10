@@ -161,6 +161,52 @@ if (riskyProjects.length > 0) {
     description: `${riskyProjects[0].title} is currently ${riskyProjects[0].level} risk. ${riskyProjects[0].reason}.`,
   });
 }
+const groupedAssignees = tasks.reduce((acc: Record<string, any[]>, task: any) => {
+  if (!acc[task.assignee_email]) {
+    acc[task.assignee_email] = [];
+  }
+  acc[task.assignee_email].push(task);
+  return acc;
+}, {});
+
+const resourceWorkload = Object.entries(groupedAssignees)
+  .map(([assignee, assigneeTasks]) => {
+    const taskCount = assigneeTasks.length;
+
+    const overdueCount = assigneeTasks.filter((task: any) => {
+      if (task.status === "Completed") return false;
+      return new Date(task.due_date) < now;
+    }).length;
+
+    const avgProgress =
+      taskCount > 0
+        ? Math.round(
+            assigneeTasks.reduce(
+              (sum: number, task: any) => sum + Number(task.progress || 0),
+              0
+            ) / taskCount
+          )
+        : 0;
+
+    let loadLevel = "Balanced";
+    if (taskCount >= 4 || overdueCount >= 2) loadLevel = "High";
+    if (taskCount >= 6 || overdueCount >= 3) loadLevel = "Critical";
+
+    return {
+      assignee,
+      taskCount,
+      overdueCount,
+      avgProgress,
+      loadLevel,
+    };
+  })
+  .sort((a, b) => {
+    const order = { Critical: 3, High: 2, Balanced: 1 };
+    return (
+      order[b.loadLevel as keyof typeof order] -
+      order[a.loadLevel as keyof typeof order]
+    );
+  });
     return NextResponse.json({
       success: true,
       kpis: {
@@ -174,6 +220,7 @@ if (riskyProjects.length > 0) {
       riskyProjects,
       recentActivity,
       aiSuggestions,
+       resourceWorkload,
     });
   } catch (error) {
     console.error(error);
