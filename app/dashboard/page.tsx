@@ -239,7 +239,33 @@ export default function DashboardPage() {
     );
   }
 
- const { kpis, riskyProjects, recentActivity, aiSuggestions, resourceWorkload } = dashboardData;
+const { kpis, riskyProjects, recentActivity, aiSuggestions, resourceWorkload } = dashboardData;
+
+const criticalRiskCount = riskyProjects.filter(
+  (project: any) => project.level === "Critical"
+).length;
+
+const highRiskCount = riskyProjects.filter(
+  (project: any) => project.level === "High"
+).length;
+
+const totalRiskCount = riskyProjects.filter(
+  (project: any) => project.level === "Critical" || project.level === "High"
+).length;
+
+const systemRiskLevel =
+  criticalRiskCount > 0 ? "Critical" : highRiskCount > 0 ? "High" : "Stable";
+
+const systemRiskText =
+  systemRiskLevel === "Critical"
+    ? `AI detected ${criticalRiskCount} critical risk ${
+        criticalRiskCount > 1 ? "projects" : "project"
+      } requiring immediate action`
+    : systemRiskLevel === "High"
+    ? `AI detected ${totalRiskCount} high-risk active ${
+        totalRiskCount > 1 ? "portfolios" : "portfolio"
+      }`
+    : "AI reports stable execution across active portfolios";
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1480px] px-4 py-5 sm:px-6 lg:px-8">
@@ -279,10 +305,18 @@ export default function DashboardPage() {
                 Executive Command
               </h1>
 
-              <div className="mt-3 flex items-center gap-2 text-sm text-[#ff7d7d]">
-                <AlertTriangle size={15} />
-                <span>AI detected 3 critical risks in active portfolios</span>
-              </div>
+              <div
+  className={`mt-3 flex items-center gap-2 text-sm ${
+    systemRiskLevel === "Critical"
+      ? "text-[#ff7d7d]"
+      : systemRiskLevel === "High"
+      ? "text-[#ff9d6a]"
+      : "text-[#9eb7ff]"
+  }`}
+>
+  <AlertTriangle size={15} />
+  <span>{systemRiskText}</span>
+</div>
             </div>
 
             <div className="flex flex-wrap gap-3">
@@ -301,6 +335,20 @@ export default function DashboardPage() {
   Import Data
 </Link>
             </div>
+            <div className="mt-4">
+  <div
+    className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] ${
+      systemRiskLevel === "Critical"
+        ? "border-[#ff6b6b]/20 bg-[#ff6b6b]/10 text-[#ff7d7d]"
+        : systemRiskLevel === "High"
+        ? "border-[#ff8f5a]/20 bg-[#ff8f5a]/10 text-[#ff9d6a]"
+        : "border-[#8ea8ff]/20 bg-[#8ea8ff]/10 text-[#9eb7ff]"
+    }`}
+  >
+    <AlertTriangle size={14} />
+    System Risk Level: {systemRiskLevel}
+  </div>
+</div>
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3">
