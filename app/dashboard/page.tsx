@@ -204,7 +204,7 @@ export default function DashboardPage() {
     );
   }
 
-  const { kpis, riskyProjects, recentActivity } = dashboardData;
+  const { kpis, riskyProjects, recentActivity, aiSuggestions } = dashboardData;
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1480px] px-4 py-5 sm:px-6 lg:px-8">
@@ -459,15 +459,14 @@ export default function DashboardPage() {
               </div>
 
               <div className="space-y-4">
-                <SuggestionMiniCard
-                  title="Reassign API integration to David"
-                  description="Reduce overload on Sarah and lower sprint bottleneck risk by 18%."
-                />
-                <SuggestionMiniCard
-                  title="Increase priority for QA Sprint"
-                  description="Current release timing suggests downstream delivery pressure."
-                />
-              </div>
+  {aiSuggestions.map((suggestion: any, index: number) => (
+    <SuggestionMiniCard
+      key={index}
+      title={suggestion.title}
+      description={suggestion.description}
+    />
+  ))}
+</div>
             </div>
 
             <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
