@@ -157,10 +157,28 @@ const handleImportTasks = async () => {
   setIsImporting(true);
   setSuccessMessage("");
 
-  await new Promise((resolve) => setTimeout(resolve, 1200));
+  try {
+    const response = await fetch("/api/import/tasks", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ tasks: parsedRows }),
+    });
 
-  setIsImporting(false);
-  setSuccessMessage(`${parsedRows.length} tasks imported successfully`);
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || "Import failed");
+    }
+
+    setSuccessMessage(result.message);
+  } catch (error) {
+    console.error(error);
+    setSuccessMessage("Import failed");
+  } finally {
+    setIsImporting(false);
+  }
 };
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
