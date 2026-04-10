@@ -118,7 +118,10 @@ function RiskProjectCard({
           <span className="text-white/55">{progress}</span>
         </div>
         <div className="h-2 overflow-hidden rounded-full bg-white/[0.06]">
-          <div className={`h-full rounded-full ${bar}`} />
+         <div
+  className={`h-full rounded-full ${bar}`}
+  style={{ width: progress }}
+/>
         </div>
       </div>
 
@@ -174,7 +177,7 @@ function ActivityItem({
 import { useEffect, useState } from "react";
 
 export default function DashboardPage() {
-  const [kpis, setKpis] = useState<any>(null);
+  const [dashboardData, setDashboardData] = useState<any>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -183,7 +186,7 @@ export default function DashboardPage() {
         const data = await res.json();
 
         if (data.success) {
-          setKpis(data.kpis);
+          setDashboardData(data);
         }
       } catch (err) {
         console.error(err);
@@ -192,13 +195,16 @@ export default function DashboardPage() {
 
     fetchData();
   }, []);
-  if (!kpis) {
-  return (
-    <div className="min-h-screen flex items-center justify-center text-white">
-      Loading dashboard...
-    </div>
-  );
-}
+
+  if (!dashboardData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        Loading dashboard...
+      </div>
+    );
+  }
+
+  const { kpis, riskyProjects } = dashboardData;
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1480px] px-4 py-5 sm:px-6 lg:px-8">
@@ -431,29 +437,24 @@ export default function DashboardPage() {
               </Link>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-3">
-              <RiskProjectCard
-                title="Project Titan"
-                reason="Three blocked tasks"
-                level="Critical"
-                progress="72%"
-                bar="w-[72%] bg-gradient-to-r from-[#8ea8ff] to-[#ff6b6b]"
-              />
-              <RiskProjectCard
-                title="Vanguard Residential"
-                reason="QA blocked by delay"
-                level="High"
-                progress="54%"
-                bar="w-[54%] bg-gradient-to-r from-[#ff6b6b] to-[#ff8f5a]"
-              />
-              <RiskProjectCard
-                title="Global Expansion"
-                reason="Velocity dip (-11%)"
-                level="Medium"
-                progress="91%"
-                bar="w-[91%] bg-gradient-to-r from-[#d78bff] to-[#ff8be3]"
-              />
-            </div>
+           <div className="grid gap-4 md:grid-cols-3">
+  {riskyProjects.map((project: any, index: number) => (
+    <RiskProjectCard
+      key={index}
+      title={project.title}
+      reason={project.reason}
+      level={project.level}
+      progress={project.progress}
+      bar={
+        project.level === "Critical"
+          ? "bg-gradient-to-r from-[#ff6b6b] to-[#ff8f5a]"
+          : project.level === "High"
+          ? "bg-gradient-to-r from-[#ff8f5a] to-[#d78bff]"
+          : "bg-gradient-to-r from-[#8ea8ff] to-[#d78bff]"
+      }
+    />
+  ))}
+</div>
           </div>
 
           <div className="grid gap-6">
