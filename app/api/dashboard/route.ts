@@ -110,6 +110,35 @@ export async function GET() {
         return order[b.level as keyof typeof order] - order[a.level as keyof typeof order];
       })
       .slice(0, 3);
+      const recentActivity = [
+  {
+    type: "import",
+    title: `${totalTasks} tasks currently loaded in Pilot`,
+    subtitle: "Workspace data synced from MongoDB",
+    color: "#8ea8ff",
+  },
+  {
+    type: "risk",
+    title:
+      riskyProjects.length > 0
+        ? `${riskyProjects[0].title} is currently ${riskyProjects[0].level} risk`
+        : "No risky projects detected",
+    subtitle: "Generated from project risk engine",
+    color: "#ff6b6b",
+  },
+  {
+    type: "overdue",
+    title: `${overdueTasks} overdue tasks require attention`,
+    subtitle: "Live operational risk signal",
+    color: "#d78bff",
+  },
+  {
+    type: "progress",
+    title: `Average execution progress is ${avgProgress}%`,
+    subtitle: "Computed from imported task data",
+    color: "#8ea8ff",
+  },
+];
 
     return NextResponse.json({
       success: true,
@@ -122,6 +151,7 @@ export async function GET() {
         avgProgress,
       },
       riskyProjects,
+      recentActivity,
     });
   } catch (error) {
     console.error(error);
