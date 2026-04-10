@@ -139,7 +139,28 @@ export async function GET() {
     color: "#8ea8ff",
   },
 ];
+const aiSuggestions = [];
 
+if (overdueTasks > 0) {
+  aiSuggestions.push({
+    title: "Escalate overdue execution review",
+    description: `${overdueTasks} overdue tasks are affecting delivery reliability. Review blockers and assign owners today.`,
+  });
+}
+
+if (avgProgress < 60) {
+  aiSuggestions.push({
+    title: "Increase execution focus",
+    description: `Average progress is ${avgProgress}%. Re-prioritize active workstreams and reduce low-impact task switching.`,
+  });
+}
+
+if (riskyProjects.length > 0) {
+  aiSuggestions.push({
+    title: `Review ${riskyProjects[0].title} immediately`,
+    description: `${riskyProjects[0].title} is currently ${riskyProjects[0].level} risk. ${riskyProjects[0].reason}.`,
+  });
+}
     return NextResponse.json({
       success: true,
       kpis: {
@@ -152,6 +173,7 @@ export async function GET() {
       },
       riskyProjects,
       recentActivity,
+      aiSuggestions,
     });
   } catch (error) {
     console.error(error);
