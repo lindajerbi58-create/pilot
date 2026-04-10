@@ -215,29 +215,47 @@ CSV Upload → Validation → API → MongoDB → AI Engines → Dashboard
 | ORM | Mongoose |
 | Parsing | PapaParse |
 
----
-
 ## 📁 Project Structure
-app/
-dashboard/
-import/
-ai-insights/
-decision-center/
-resource-hub/
-api/
 
-src/
-lib/
-mongodb.ts
-riskEngine.ts
-delayPredictor.ts
-decisionEngine.ts
-simulationEngine.ts
-models/
-Task.ts
-
----
-
+```bash
+pilot/
+├── app/                    # Next.js App Router
+│   ├── dashboard/
+│   ├── import/
+│   ├── ai-insights/
+│   ├── decision-center/
+│   ├── resource-hub/
+│   └── api/               # API routes
+│       ├── test-db/
+│       ├── import/
+│       │   └── tasks/
+│       └── dashboard/
+│
+├── src/
+│   ├── lib/               # Core logic (engines & utilities)
+│   │   ├── mongodb.ts
+│   │   ├── riskEngine.ts
+│   │   ├── delayPredictor.ts
+│   │   ├── decisionEngine.ts
+│   │   └── simulationEngine.ts
+│   │
+│   ├── server/            # 🔥 future backend logic (scalable architecture)
+│   │   └── dashboard/
+│   │       └── getDashboardData.ts
+│   │
+│   ├── models/            # Mongoose schemas
+│   │   └── Task.ts
+│   │
+│   ├── services/          # future business services
+│   │
+│   ├── hooks/             # React hooks (future)
+│   │
+│   └── types/             # TypeScript types (future)
+│
+├── public/
+├── .env.local
+├── package.json
+└── README.md
 ## 🧠 Real Use Case
 
 If:
