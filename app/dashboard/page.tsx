@@ -204,7 +204,7 @@ export default function DashboardPage() {
     );
   }
 
-  const { kpis, riskyProjects } = dashboardData;
+  const { kpis, riskyProjects, recentActivity } = dashboardData;
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1480px] px-4 py-5 sm:px-6 lg:px-8">
@@ -380,26 +380,16 @@ export default function DashboardPage() {
             </div>
 
             <div className="space-y-5">
-              <ActivityItem
-                color="#8ea8ff"
-                title="Sarah M. approved new Design Scope"
-                subtitle="About 10 min ago"
-              />
-              <ActivityItem
-                color="#d78bff"
-                title="AI generated 3 smart recommendations"
-                subtitle="System intelligence update"
-              />
-              <ActivityItem
-                color="#8ea8ff"
-                title="Vanguard Residential moved to High Risk"
-                subtitle="Risk score changed after issue spike"
-              />
-              <ActivityItem
-                color="#ff6b6b"
-                title="System Alert: overdue tasks exceeded threshold"
-                subtitle="Action required"
-              />
+          <div className="space-y-5">
+  {recentActivity.map((item: any, index: number) => (
+    <ActivityItem
+      key={index}
+      color={item.color}
+      title={item.title}
+      subtitle={item.subtitle}
+    />
+  ))}
+</div>
             </div>
 
             <div className="mt-6 rounded-[22px] border border-[#8ea8ff]/15 bg-[#8ea8ff]/10 p-4">
