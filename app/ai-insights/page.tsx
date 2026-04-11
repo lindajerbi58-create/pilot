@@ -257,6 +257,19 @@ const healthDescription =
     : roundedScore < 70
     ? `Execution remains manageable, but ${overdueTasks} overdue tasks and ${highRiskProjects} risky projects still need supervision.`
     : "Execution looks stable. Current delivery rhythm and project risk indicators are under control.";
+  const workloadData = (dashboardData?.resourceWorkload || []).slice(0, 4);
+
+const averageWorkloadProgress =
+  workloadData.length > 0
+    ? Math.round(
+        workloadData.reduce((sum: number, member: any) => sum + (member.avgProgress || 0), 0) /
+          workloadData.length
+      )
+    : 0;
+
+const overloadedCount = workloadData.filter(
+  (member: any) => member.loadLevel === "Critical" || member.loadLevel === "High"
+).length;
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto flex min-h-screen max-w-[1500px]">
@@ -456,23 +469,42 @@ const healthDescription =
               </div>
 
               <div className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
-                <p className="text-xs uppercase tracking-[0.18em] text-white/35">
-                  Weekly Velocity
-                </p>
-                <div className="mt-3 flex items-end gap-3">
-                  <span className="text-4xl font-semibold text-white">84%</span>
-                  <span className="mb-1 text-sm font-medium text-[#8fd19e]">+4%</span>
-                </div>
+  <p className="text-xs uppercase tracking-[0.18em] text-white/35">
+    Team Execution Average
+  </p>
+  <div className="mt-3 flex items-end gap-3">
+    <span className="text-4xl font-semibold text-white">
+      {averageWorkloadProgress}%
+    </span>
+    <span className="mb-1 text-sm font-medium text-[#8fd19e]">
+      {overloadedCount} under watch
+    </span>
+  </div>
 
-                <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-white/[0.06]">
-                  <div className="h-full w-[84%] rounded-full bg-gradient-to-r from-[#7da2ff] to-[#8ab4ff]" />
-                </div>
-              </div>
+  <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-white/[0.06]">
+    <div
+      className="h-full rounded-full bg-gradient-to-r from-[#7da2ff] to-[#8ab4ff]"
+      style={{ width: `${averageWorkloadProgress}%` }}
+    />
+  </div>
+</div>
 
-              <div className="mt-6 space-y-5">
-                <WorkloadBar name="Alex Rivers" value={92} avatarColor="#ff6b6b" />
-                <WorkloadBar name="Maya Chen" value={45} avatarColor="#8a6bff" />
-              </div>
+            <div className="mt-6 space-y-5">
+  {workloadData.map((member: any, index: number) => (
+    <WorkloadBar
+      key={index}
+      name={(member.assignee || "Unknown").split("@")[0]}
+      value={member.avgProgress || 0}
+      avatarColor={
+        member.loadLevel === "Critical"
+          ? "#ff6b6b"
+          : member.loadLevel === "High"
+          ? "#ff8f5a"
+          : "#8a6bff"
+      }
+    />
+  ))}
+</div>
             </div>
           </div>
         </section>
