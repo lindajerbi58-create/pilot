@@ -17,6 +17,7 @@ type TaskItem = {
   due_date?: string;
 };
 
+
 function normalizeStatus(status?: string) {
   return (status || "").trim().toLowerCase();
 }
@@ -71,7 +72,7 @@ function getPriorityBadge(priority?: string) {
 export default function TasksPage() {
   const searchParams = useSearchParams();
   const filter = searchParams.get("filter");
-
+const project = searchParams.get("project");
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -102,14 +103,21 @@ export default function TasksPage() {
     fetchTasks();
   }, []);
 
-  const filteredTasks = useMemo(() => {
-    if (filter === "overdue") {
-      return tasks.filter(isOverdue);
-    }
+ const filteredTasks = useMemo(() => {
+  let result = tasks;
 
-    return tasks;
-  }, [tasks, filter]);
+  if (project) {
+    result = result.filter(
+      (task) => String(task.project_name || "").trim() === project
+    );
+  }
 
+  if (filter === "overdue") {
+    result = result.filter(isOverdue);
+  }
+
+  return result;
+}, [tasks, filter, project]);
   const stats = useMemo(() => {
     const overdue = tasks.filter(isOverdue).length;
     const completed = tasks.filter((task) => isCompleted(task.status, task.progress)).length;
@@ -197,7 +205,11 @@ export default function TasksPage() {
             <p className="mt-2 text-3xl font-semibold">{stats.completed}</p>
           </div>
         </section>
-
+{project && (
+  <div className="mb-6 rounded-[22px] border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-4 py-3 text-sm font-medium text-[#9eb7ff]">
+    Showing tasks for project: {project}
+  </div>
+)}
         {filter === "overdue" && (
           <div className="mb-6 rounded-[22px] border border-[#ff6b6b]/20 bg-[#ff6b6b]/10 px-4 py-3 text-sm font-medium text-[#ff9d6a]">
             Showing overdue tasks only
