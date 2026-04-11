@@ -120,10 +120,14 @@ function SuggestionCard({
   title,
   description,
   tag,
+  primaryHref,
+  secondaryHref,
 }: {
   title: string;
   description: string;
   tag: string;
+  primaryHref?: string;
+  secondaryHref?: string;
 }) {
   return (
     <div className="rounded-2xl border border-white/6 bg-white/[0.04] p-4">
@@ -137,12 +141,19 @@ function SuggestionCard({
       <p className="text-sm leading-6 text-white/55">{description}</p>
 
       <div className="mt-4 flex gap-3">
-        <button className="rounded-xl bg-[#8aa4ff] px-4 py-2 text-sm font-semibold text-[#111629] transition hover:brightness-110">
+        <Link
+          href={primaryHref || "/tasks"}
+          className="rounded-xl bg-[#8aa4ff] px-4 py-2 text-sm font-semibold text-[#111629] transition hover:brightness-110"
+        >
           Execute Change
-        </button>
-        <button className="rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-white/70 transition hover:bg-white/[0.04] hover:text-white">
+        </Link>
+
+        <Link
+          href={secondaryHref || "/ai-insights"}
+          className="rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-white/70 transition hover:bg-white/[0.04] hover:text-white"
+        >
           Details
-        </button>
+        </Link>
       </div>
     </div>
   );
@@ -370,9 +381,12 @@ const overloadedCount = workloadData.filter(
 </p>
 
                  <div className="mt-6 flex flex-wrap gap-3">
-  <button className="rounded-2xl bg-[#8aa4ff] px-5 py-3 text-sm font-semibold text-[#111629] transition hover:brightness-110">
-    View Detailed Report
-  </button>
+ <Link
+  href="/tasks?filter=overdue"
+  className="rounded-2xl bg-[#8aa4ff] px-5 py-3 text-sm font-semibold text-[#111629] transition hover:brightness-110"
+>
+  View Detailed Report
+</Link>
 
   <Link
     href="/decision-center"
@@ -441,14 +455,38 @@ const overloadedCount = workloadData.filter(
               </div>
 
              <div className="space-y-4">
-  {(dashboardData?.aiSuggestions || []).map((suggestion: any, index: number) => (
+  {(dashboardData?.aiSuggestions || []).map((suggestion: any, index: number) => {
+  let primaryHref = "/tasks";
+  let secondaryHref = "/ai-insights";
+
+  if (suggestion.title.toLowerCase().includes("overdue")) {
+    primaryHref = "/tasks?filter=overdue";
+    secondaryHref = "/tasks?filter=overdue";
+  } else if (suggestion.title.toLowerCase().includes("review")) {
+    const matchedProject = (dashboardData?.riskyProjects || []).find((project: any) =>
+      suggestion.title.toLowerCase().includes(project.title.toLowerCase())
+    );
+
+    if (matchedProject) {
+      primaryHref = `/tasks?project=${encodeURIComponent(matchedProject.title)}&filter=overdue`;
+      secondaryHref = `/projects`;
+    }
+  } else if (suggestion.title.toLowerCase().includes("focus")) {
+    primaryHref = "/tasks";
+    secondaryHref = "/dashboard";
+  }
+
+  return (
     <SuggestionCard
       key={index}
       title={suggestion.title}
       description={suggestion.description}
       tag={index === 0 ? "High Impact" : index === 1 ? "Efficiency" : "AI"}
+      primaryHref={primaryHref}
+      secondaryHref={secondaryHref}
     />
-  ))}
+  );
+})}
 </div>
             </div>
 
