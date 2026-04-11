@@ -95,15 +95,21 @@ function RiskProjectCard({
   level,
   progress,
   bar,
+  href,
 }: {
   title: string;
   reason: string;
   level: string;
   progress: string;
   bar: string;
+  href?: string;
 }) {
-  return (
-    <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-4 shadow-lg shadow-black/20">
+  const content = (
+    <div
+      className={`rounded-[24px] border border-white/8 bg-white/[0.03] p-4 shadow-lg shadow-black/20 transition ${
+        href ? "cursor-pointer hover:bg-white/[0.05] hover:scale-[1.01]" : ""
+      }`}
+    >
       <div className="mb-4 flex items-start justify-between gap-4">
         <div>
           <h3 className="text-sm font-semibold text-white">{title}</h3>
@@ -129,22 +135,25 @@ function RiskProjectCard({
           <span className="text-white/55">{progress}</span>
         </div>
         <div className="h-2 overflow-hidden rounded-full bg-white/[0.06]">
-         <div
-  className={`h-full rounded-full ${bar}`}
-  style={{ width: progress }}
-/>
+          <div
+            className={`h-full rounded-full ${bar}`}
+            style={{ width: progress }}
+          />
         </div>
       </div>
 
-      <Link
-        href="/ai-insights"
-        className="inline-flex items-center gap-2 text-xs font-medium text-[#9eb7ff] transition hover:text-white"
-      >
+      <div className="inline-flex items-center gap-2 text-xs font-medium text-[#9eb7ff] transition hover:text-white">
         View Details
         <ArrowRight size={14} />
-      </Link>
+      </div>
     </div>
   );
+
+  if (href) {
+    return <Link href={href}>{content}</Link>;
+  }
+
+  return content;
 }
 function WorkloadCard({
   assignee,
@@ -544,22 +553,23 @@ const systemRiskText =
             </div>
 
            <div className="grid gap-4 md:grid-cols-3">
-  {riskyProjects.map((project: any, index: number) => (
-    <RiskProjectCard
-      key={index}
-      title={project.title}
-      reason={project.reason}
-      level={project.level}
-      progress={project.progress}
-      bar={
-        project.level === "Critical"
-          ? "bg-gradient-to-r from-[#ff6b6b] to-[#ff8f5a]"
-          : project.level === "High"
-          ? "bg-gradient-to-r from-[#ff8f5a] to-[#d78bff]"
-          : "bg-gradient-to-r from-[#8ea8ff] to-[#d78bff]"
-      }
-    />
-  ))}
+ {riskyProjects.map((project: any, index: number) => (
+  <RiskProjectCard
+    key={index}
+    title={project.title}
+    reason={project.reason}
+    level={project.level}
+    progress={project.progress}
+    bar={
+      project.level === "Critical"
+        ? "bg-gradient-to-r from-[#ff6b6b] to-[#ff8f5a]"
+        : project.level === "High"
+        ? "bg-gradient-to-r from-[#ff8f5a] to-[#d78bff]"
+        : "bg-gradient-to-r from-[#8ea8ff] to-[#d78bff]"
+    }
+    href={`/tasks?project=${encodeURIComponent(project.title)}&filter=overdue`}
+  />
+))}
 </div>
           </div>
 
