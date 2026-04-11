@@ -346,25 +346,31 @@ export default function AIInsightsPage() {
               </div>
 
               <div className="space-y-4">
-                <FactorCard
-                  title="Overdue Tasks"
-                  subtitle="14 tasks behind schedule"
-                  icon={AlertTriangle}
-                  color="#ff6b6b"
-                />
-                <FactorCard
-                  title="Open Issues"
-                  subtitle="3 critical blockers found"
-                  icon={Briefcase}
-                  color="#8aa4ff"
-                />
-                <FactorCard
-                  title="Team Overload"
-                  subtitle="80% average bandwidth"
-                  icon={Users}
-                  color="#c28cff"
-                />
-              </div>
+  <FactorCard
+    title="Overdue Tasks"
+    subtitle={`${dashboardData?.kpis?.overdueTasks || 0} tasks behind schedule`}
+    icon={AlertTriangle}
+    color="#ff6b6b"
+  />
+
+  <FactorCard
+    title="Active Projects"
+    subtitle={`${dashboardData?.kpis?.activeProjects || 0} active portfolios tracked`}
+    icon={Briefcase}
+    color="#8aa4ff"
+  />
+
+  <FactorCard
+    title="Team Overload"
+    subtitle={`${
+      (dashboardData?.resourceWorkload || []).filter(
+        (member: any) => member.loadLevel === "Critical" || member.loadLevel === "High"
+      ).length
+    } team members need attention`}
+    icon={Users}
+    color="#c28cff"
+  />
+</div>
             </div>
           </div>
 
