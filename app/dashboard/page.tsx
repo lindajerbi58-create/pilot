@@ -152,15 +152,21 @@ function WorkloadCard({
   overdueCount,
   avgProgress,
   loadLevel,
+  href,
 }: {
   assignee: string;
   taskCount: number;
   overdueCount: number;
   avgProgress: number;
   loadLevel: string;
+  href?: string;
 }) {
-  return (
-    <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+  const content = (
+    <div
+      className={`rounded-[22px] border border-white/8 bg-white/[0.03] p-4 transition ${
+        href ? "cursor-pointer hover:bg-white/[0.05] hover:scale-[1.01]" : ""
+      }`}
+    >
       <div className="mb-2 flex items-center justify-between">
         <p className="text-sm font-semibold text-white">{assignee}</p>
         <span
@@ -181,6 +187,12 @@ function WorkloadCard({
       </p>
     </div>
   );
+
+  if (href) {
+    return <Link href={href}>{content}</Link>;
+  }
+
+  return content;
 }
 function SuggestionMiniCard({
   title,
@@ -597,14 +609,15 @@ const systemRiskText =
     })
     .slice(0, 4)
     .map((member: any, index: number) => (
-      <WorkloadCard
-        key={index}
-        assignee={member.assignee.split("@")[0]}
-        taskCount={member.taskCount}
-        overdueCount={member.overdueCount}
-        avgProgress={member.avgProgress}
-        loadLevel={member.loadLevel}
-      />
+     <WorkloadCard
+  key={index}
+  assignee={member.assignee.split("@")[0]}
+  taskCount={member.taskCount}
+  overdueCount={member.overdueCount}
+  avgProgress={member.avgProgress}
+  loadLevel={member.loadLevel}
+  href={`/tasks?assignee=${encodeURIComponent(member.assignee)}`}
+/>
     ))}
 </div>
 </div>
