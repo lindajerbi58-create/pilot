@@ -1,3 +1,4 @@
+"use client";
 import {
   AlertTriangle,
   ArrowRight,
@@ -10,6 +11,7 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 function RiskRing({ score }: { score: number }) {
   const radius = 72;
   const stroke = 10;
@@ -182,6 +184,40 @@ function WorkloadBar({
 }
 
 export default function AIInsightsPage() {
+  const [dashboardData, setDashboardData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const res = await fetch("/api/dashboard", { cache: "no-store" });
+        const data = await res.json();
+
+        if (data.success) {
+          setDashboardData(data);
+        }
+      } catch (error) {
+        console.error("Failed to load AI insights data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-[#05060b] text-white">
+        <div className="mx-auto flex min-h-screen max-w-[1500px] items-center justify-center px-6">
+          <div className="rounded-[28px] border border-white/8 bg-white/[0.03] px-8 py-6 text-white/70">
+            Loading AI insights...
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   const score = 45;
 
   return (
