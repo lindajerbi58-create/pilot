@@ -270,7 +270,14 @@ export default function ProjectsPage() {
                       key={`${project.name}-${index}`}
                       className="border-b border-white/6 text-sm text-white/80 transition hover:bg-white/[0.02]"
                     >
-                      <td className="px-5 py-4 font-medium text-white">{project.name}</td>
+                      <td className="px-5 py-4">
+  <Link
+    href={`/tasks?project=${encodeURIComponent(project.name)}`}
+    className="font-medium text-white transition hover:text-[#9eb7ff]"
+  >
+    {project.name}
+  </Link>
+</td>
                       <td className="px-5 py-4">
                         <span
                           className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] ${getRiskBadge(
