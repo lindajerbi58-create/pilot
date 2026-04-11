@@ -386,19 +386,16 @@ export default function AIInsightsPage() {
                 </span>
               </div>
 
-              <div className="space-y-4">
-                <SuggestionCard
-                  title='Reassign "API Integration" Task'
-                  description="Sarah is currently overloaded. Reassigning this task to David could reduce bottleneck risk by 18% and improve sprint stability."
-                  tag="High Impact"
-                />
-
-                <SuggestionCard
-                  title="Increase Priority: QA Sprint"
-                  description="Current velocity indicates a potential delay in release preparation. Escalating this work item can reduce downstream blocking."
-                  tag="Efficiency"
-                />
-              </div>
+             <div className="space-y-4">
+  {(dashboardData?.aiSuggestions || []).map((suggestion: any, index: number) => (
+    <SuggestionCard
+      key={index}
+      title={suggestion.title}
+      description={suggestion.description}
+      tag={index === 0 ? "High Impact" : index === 1 ? "Efficiency" : "AI"}
+    />
+  ))}
+</div>
             </div>
 
             <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
