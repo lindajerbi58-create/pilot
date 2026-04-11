@@ -218,8 +218,45 @@ export default function AIInsightsPage() {
     );
   }
 
-  const score = 45;
+const overdueTasks = dashboardData?.kpis?.overdueTasks || 0;
+const avgProgress = dashboardData?.kpis?.avgProgress || 0;
+const highRiskProjects = (dashboardData?.riskyProjects || []).filter(
+  (project: any) => project.level === "High" || project.level === "Critical"
+).length;
 
+const score = Math.max(
+  0,
+  Math.min(
+    100,
+    100 - overdueTasks * 6 - highRiskProjects * 10 - (100 - avgProgress) * 0.4
+  )
+);
+
+const roundedScore = Math.round(score);
+
+const riskLabel =
+  roundedScore < 40 ? "High Risk" : roundedScore < 70 ? "Medium Risk" : "Low Risk";
+
+const riskBadgeClass =
+  roundedScore < 40
+    ? "border border-[#ff6b6b]/20 bg-[#ff6b6b]/10 text-[#ff7d7d]"
+    : roundedScore < 70
+    ? "border border-[#ffd56a]/20 bg-[#ffd56a]/10 text-[#ffd56a]"
+    : "border border-[#8ab4ff]/20 bg-[#8ab4ff]/10 text-[#9db8ff]";
+
+const healthTitle =
+  roundedScore < 40
+    ? "Project Health Needs Immediate Attention"
+    : roundedScore < 70
+    ? "Project Health is Under Watch"
+    : "Project Health is Stable";
+
+const healthDescription =
+  roundedScore < 40
+    ? `Operational risk is elevated. ${overdueTasks} overdue tasks and ${highRiskProjects} risky projects require action.`
+    : roundedScore < 70
+    ? `Execution remains manageable, but ${overdueTasks} overdue tasks and ${highRiskProjects} risky projects still need supervision.`
+    : "Execution looks stable. Current delivery rhythm and project risk indicators are under control.";
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto flex min-h-screen max-w-[1500px]">
@@ -298,28 +335,26 @@ export default function AIInsightsPage() {
             <div className="rounded-[30px] border border-white/8 bg-[radial-gradient(circle_at_top_left,rgba(138,180,255,0.15),transparent_35%),linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-6 shadow-2xl shadow-black/30">
               <div className="flex flex-col gap-8 lg:flex-row lg:items-center">
                 <div className="flex justify-center lg:justify-start">
-                  <RiskRing score={score} />
+                  <RiskRing score={roundedScore} />
                 </div>
 
                 <div className="flex-1">
                   <div className="mb-4 flex flex-wrap gap-2">
-                    <span className="rounded-full border border-[#ffd56a]/20 bg-[#ffd56a]/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#ffd56a]">
-                      Medium Risk
-                    </span>
+                  <span className={`rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] ${riskBadgeClass}`}>
+  {riskLabel}
+</span>
                     <span className="rounded-full border border-[#8ab4ff]/20 bg-[#8ab4ff]/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9db8ff]">
                       AI Decision
                     </span>
                   </div>
 
-                  <h2 className="text-3xl font-semibold tracking-tight text-white">
-                    Project Health is Stabilizing
-                  </h2>
+                 <h2 className="text-3xl font-semibold tracking-tight text-white">
+  {healthTitle}
+</h2>
 
-                  <p className="mt-4 max-w-2xl text-base leading-7 text-white/55">
-                    The risk score has decreased by <span className="font-semibold text-[#9fb9ff]">12 points</span> since last week.
-                    Current bottlenecks remain manageable, but team overload and blocked
-                    work items still require active supervision.
-                  </p>
+                 <p className="mt-4 max-w-2xl text-base leading-7 text-white/55">
+  {healthDescription}
+</p>
 
                  <div className="mt-6 flex flex-wrap gap-3">
   <button className="rounded-2xl bg-[#8aa4ff] px-5 py-3 text-sm font-semibold text-[#111629] transition hover:brightness-110">
