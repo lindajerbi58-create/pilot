@@ -73,6 +73,7 @@ export default function TasksPage() {
   const searchParams = useSearchParams();
   const filter = searchParams.get("filter");
 const project = searchParams.get("project");
+const assignee = searchParams.get("assignee");
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -103,7 +104,7 @@ const project = searchParams.get("project");
     fetchTasks();
   }, []);
 
- const filteredTasks = useMemo(() => {
+const filteredTasks = useMemo(() => {
   let result = tasks;
 
   if (project) {
@@ -112,12 +113,18 @@ const project = searchParams.get("project");
     );
   }
 
+  if (assignee) {
+    result = result.filter(
+      (task) => String(task.assignee_email || "").trim() === assignee
+    );
+  }
+
   if (filter === "overdue") {
     result = result.filter(isOverdue);
   }
 
   return result;
-}, [tasks, filter, project]);
+}, [tasks, filter, project, assignee]);
   const stats = useMemo(() => {
     const overdue = tasks.filter(isOverdue).length;
     const completed = tasks.filter((task) => isCompleted(task.status, task.progress)).length;
@@ -208,6 +215,11 @@ const project = searchParams.get("project");
 {project && (
   <div className="mb-6 rounded-[22px] border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-4 py-3 text-sm font-medium text-[#9eb7ff]">
     Showing tasks for project: {project}
+  </div>
+)}
+{assignee && (
+  <div className="mb-6 rounded-[22px] border border-[#d78bff]/20 bg-[#d78bff]/10 px-4 py-3 text-sm font-medium text-[#df9fff]">
+    Showing tasks for assignee: {assignee}
   </div>
 )}
         {filter === "overdue" && (
