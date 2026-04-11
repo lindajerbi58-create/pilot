@@ -36,7 +36,6 @@ function TopNavLink({
     </Link>
   );
 }
-
 function KPIBox({
   icon: Icon,
   label,
@@ -44,6 +43,7 @@ function KPIBox({
   delta,
   deltaLabel,
   iconColor,
+  href,
 }: {
   icon: React.ElementType;
   label: string;
@@ -51,9 +51,14 @@ function KPIBox({
   delta: string;
   deltaLabel: string;
   iconColor: string;
+  href?: string;
 }) {
-  return (
-    <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5 shadow-xl shadow-black/20">
+  const content = (
+    <div
+      className={`rounded-[24px] border border-white/8 bg-white/[0.03] p-5 shadow-xl shadow-black/20 transition ${
+        href ? "cursor-pointer hover:scale-[1.02] hover:bg-white/[0.05]" : ""
+      }`}
+    >
       <div className="mb-5 flex items-start justify-between">
         <div
           className="flex h-10 w-10 items-center justify-center rounded-2xl"
@@ -77,8 +82,13 @@ function KPIBox({
       </div>
     </div>
   );
-}
 
+  if (href) {
+    return <Link href={href}>{content}</Link>;
+  }
+
+  return content;
+}
 function RiskProjectCard({
   title,
   reason,
@@ -387,38 +397,45 @@ const systemRiskText =
         </section>
 
         <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-          <KPIBox
+       <KPIBox
   icon={FolderKanban}
   label="Active Projects"
   value={String(kpis.activeProjects)}
   delta="+ real"
   deltaLabel="live"
   iconColor="#8ea8ff"
+  href="/projects"
 />
-         <KPIBox
+
+<KPIBox
   icon={AlertTriangle}
   label="Overdue Tasks"
   value={String(kpis.overdueTasks)}
   delta="live"
   deltaLabel="attention"
   iconColor="#ff6b6b"
+  href="/tasks?filter=overdue"
 />
-        <KPIBox
+
+<KPIBox
   icon={Briefcase}
   label="Total Tasks"
   value={String(kpis.totalTasks)}
   delta="live"
   deltaLabel="tracked"
   iconColor="#d78bff"
+  href="/tasks"
 />
-          <KPIBox
+
+<KPIBox
   icon={Users}
   label="Avg Progress"
   value={`${kpis.avgProgress}%`}
   delta="live"
   deltaLabel="execution"
   iconColor="#8ea8ff"
-/>
+  href="/dashboard"
+ />
         </section>
 
         <section className="mt-6 grid gap-6 xl:grid-cols-[1.45fr_0.75fr]">
