@@ -306,15 +306,37 @@ export async function getDashboardData(): Promise<DashboardResponse> {
       return score[b.loadLevel] - score[a.loadLevel] || b.taskCount - a.taskCount;
     });
 
-  const executionTrend: ExecutionTrendItem[] = [
-    { day: "Sun", progress: 17, weekly: 35 },
-    { day: "Mon", progress: 18, weekly: 40 },
-    { day: "Tue", progress: 19, weekly: 45 },
-    { day: "Wed", progress: 20, weekly: 49 },
-    { day: "Thu", progress: 15, weekly: 51 },
-    { day: "Fri", progress: 17, weekly: 60 },
-    { day: "Sat", progress: 20, weekly: 63 },
-  ];
+  const dayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+const executionTrend = dayLabels.map((day) => {
+  const tasksForDay = tasks.filter((task) => {
+    const baseDate = new Date(task.start_date || task.due_date || task.createdAt || Date.now());
+    return dayLabels[baseDate.getDay()] === day;
+  });
+
+  const avgProgressForDay =
+    tasksForDay.length > 0
+      ? Math.round(
+          tasksForDay.reduce((sum, task) => sum + (Number(task.progress) || 0), 0) /
+            tasksForDay.length
+        )
+      : 0;
+
+  const completionRate =
+    tasksForDay.length > 0
+      ? Math.round(
+          (tasksForDay.filter((task) => isCompleted(task.status, task.progress)).length /
+            tasksForDay.length) *
+            100
+        )
+      : 0;
+
+  return {
+    day,
+    progress: avgProgressForDay,
+    weekly: completionRate,
+  };
+});
 
   return {
     success: true,

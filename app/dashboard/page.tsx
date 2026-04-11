@@ -206,18 +206,34 @@ function WorkloadCard({
 function SuggestionMiniCard({
   title,
   description,
+  href,
 }: {
   title: string;
   description: string;
+  href?: string;
 }) {
-  return (
-    <div className="rounded-[20px] border border-white/8 bg-white/[0.03] p-4">
+  const content = (
+    <div
+      className={`rounded-[20px] border border-white/8 bg-white/[0.03] p-4 transition ${
+        href ? "cursor-pointer hover:bg-white/[0.05] hover:scale-[1.01]" : ""
+      }`}
+    >
       <h3 className="text-sm font-semibold text-white">{title}</h3>
       <p className="mt-2 text-xs leading-6 text-white/45">{description}</p>
+
+      <div className="mt-3 inline-flex items-center gap-2 text-xs font-medium text-[#9eb7ff]">
+        Open
+        <ArrowRight size={14} />
+      </div>
     </div>
   );
-}
 
+  if (href) {
+    return <Link href={href}>{content}</Link>;
+  }
+
+  return content;
+}
 function ActivityItem({
   color,
   title,
@@ -585,13 +601,30 @@ const systemRiskText =
               </div>
 
               <div className="space-y-4">
-  {aiSuggestions.map((suggestion: any, index: number) => (
+  {aiSuggestions.map((suggestion: any, index: number) => {
+  let href = "/ai-insights";
+
+  if (suggestion.title.toLowerCase().includes("overdue")) {
+    href = "/tasks?filter=overdue";
+  } else if (suggestion.title.toLowerCase().includes("review")) {
+    const matchedProject = riskyProjects.find((project: any) =>
+      suggestion.title.toLowerCase().includes(project.title.toLowerCase())
+    );
+
+    if (matchedProject) {
+      href = `/tasks?project=${encodeURIComponent(matchedProject.title)}&filter=overdue`;
+    }
+  }
+
+  return (
     <SuggestionMiniCard
       key={index}
       title={suggestion.title}
       description={suggestion.description}
+      href={href}
     />
-  ))}
+  );
+})}
 </div>
             </div>
 <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
