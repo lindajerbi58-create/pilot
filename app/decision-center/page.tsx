@@ -107,7 +107,12 @@ export default function DecisionCenterPage() {
       </main>
     );
   }
-
+const pendingDecisions =
+  (dashboardData?.kpis?.overdueTasks || 0) +
+  (dashboardData?.riskyProjects?.length || 0) +
+  (dashboardData?.resourceWorkload || []).filter(
+    (member: any) => member.loadLevel === "Critical" || member.loadLevel === "High"
+  ).length;
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1450px] px-4 py-5 sm:px-6 lg:px-8">
@@ -170,12 +175,12 @@ export default function DecisionCenterPage() {
               </p>
             </div>
 
-            <div className="rounded-[24px] border border-white/8 bg-white/[0.03] px-6 py-4 text-right shadow-xl shadow-black/20">
-              <p className="text-3xl font-semibold text-[#9eb7ff]">14</p>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-white/35">
-                Pending Decisions
-              </p>
-            </div>
+  <div className="rounded-[24px] border border-white/8 bg-white/[0.03] px-6 py-4 text-right shadow-xl shadow-black/20">
+  <p className="text-3xl font-semibold text-[#9eb7ff]">{pendingDecisions}</p>
+  <p className="text-[10px] uppercase tracking-[0.2em] text-white/35">
+    Pending Decisions
+  </p>
+</div>
           </div>
         </section>
 
