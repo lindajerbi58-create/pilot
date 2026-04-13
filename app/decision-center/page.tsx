@@ -135,6 +135,27 @@ const projectedImpactLabel = topRiskProject
 const projectedImpactValue = topRiskProject
   ? `${topRiskProject.progress}`
   : "0%";
+  const miniDecisions = [
+  ...(dashboardData?.riskyProjects || []).slice(0, 2).map((project: any) => ({
+    title: project.title,
+    score: `${project.progressValue || 0}%`,
+    sublabel: project.level,
+    color:
+      project.level === "High"
+        ? "#ff6b6b"
+        : project.level === "Medium"
+        ? "#ff8f5a"
+        : "#8ea8ff",
+    icon: AlertTriangle,
+  })),
+  ...(dashboardData?.aiSuggestions || []).slice(0, 1).map((suggestion: any) => ({
+    title: suggestion.title,
+    score: "AI",
+    sublabel: "Recommendation",
+    color: "#8ea8ff",
+    icon: Brain,
+  })),
+];
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1450px] px-4 py-5 sm:px-6 lg:px-8">
@@ -352,34 +373,24 @@ const projectedImpactValue = topRiskProject
           </div>
         </section>
 
-        <section className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          <MiniDecisionCard
-            title="Vendor Terminate"
-            icon={AlertTriangle}
-            score="72%"
-            sublabel="Risk Mitigation"
-            color="#ff6b6b"
-          />
-          <MiniDecisionCard
-            title="Inventory Shift"
-            icon={Briefcase}
-            score="91%"
-            sublabel="Efficiency Gain"
-            color="#8ea8ff"
-          />
-          <MiniDecisionCard
-            title="Auto-Pay Update"
-            icon={Shield}
-            score="87%"
-            sublabel="Confidence"
-            color="#7f9dff"
-          />
-          <div className="flex items-center justify-center rounded-[24px] border border-dashed border-white/10 bg-white/[0.02] p-4 transition hover:bg-white/[0.04]">
-            <button className="flex h-12 w-12 items-center justify-center rounded-full bg-[#8ea8ff] text-[#0b1020] shadow-lg shadow-[#8ea8ff]/20 transition hover:scale-105">
-              <Plus size={20} />
-            </button>
-          </div>
-        </section>
+       <section className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+  {miniDecisions.map((decision: any, index: number) => (
+    <MiniDecisionCard
+      key={index}
+      title={decision.title}
+      icon={decision.icon}
+      score={decision.score}
+      sublabel={decision.sublabel}
+      color={decision.color}
+    />
+  ))}
+
+  <div className="flex items-center justify-center rounded-[24px] border border-dashed border-white/10 bg-white/[0.02] p-4 transition hover:bg-white/[0.04]">
+    <button className="flex h-12 w-12 items-center justify-center rounded-full bg-[#8ea8ff] text-[#0b1020] shadow-lg shadow-[#8ea8ff]/20 transition hover:scale-105">
+      <Plus size={20} />
+    </button>
+  </div>
+</section>
 
         <nav className="mt-8 flex justify-center md:hidden">
           <div className="flex items-center gap-2 rounded-full border border-white/8 bg-[#070910]/95 px-3 py-2">
