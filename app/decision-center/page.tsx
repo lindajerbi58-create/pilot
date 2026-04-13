@@ -156,6 +156,35 @@ const projectedImpactValue = topRiskProject
     icon: Brain,
   })),
 ];
+const secondaryRiskProject = dashboardData?.riskyProjects?.[1] || null;
+const topOverloadedMember =
+  (dashboardData?.resourceWorkload || []).find(
+    (member: any) => member.loadLevel === "Critical" || member.loadLevel === "High"
+  ) || null;
+
+const secondaryDecisionTitle = secondaryRiskProject
+  ? `Review ${secondaryRiskProject.title}`
+  : topOverloadedMember
+  ? `Inspect ${String(topOverloadedMember.assignee || "team member").split("@")[0]} workload`
+  : "Monitor Execution";
+
+const secondaryDecisionDescription = secondaryRiskProject
+  ? `${secondaryRiskProject.title} is currently ${secondaryRiskProject.level} risk. ${secondaryRiskProject.reason}. Progress is ${secondaryRiskProject.progress}.`
+  : topOverloadedMember
+  ? `${String(topOverloadedMember.assignee || "This team member").split("@")[0]} is marked ${topOverloadedMember.loadLevel}. Review assigned tasks and rebalance workload if needed.`
+  : "No secondary recommendation available right now.";
+
+const secondaryDecisionScore = secondaryRiskProject
+  ? Math.min(95, Math.max(55, 60 + (100 - (secondaryRiskProject.progressValue || 0)) / 2))
+  : topOverloadedMember
+  ? 82
+  : 70;
+
+const secondaryDecisionHref = secondaryRiskProject
+  ? `/tasks?project=${encodeURIComponent(secondaryRiskProject.title)}&filter=overdue`
+  : topOverloadedMember
+  ? `/tasks?assignee=${encodeURIComponent(topOverloadedMember.assignee)}`
+  : "/tasks";
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1450px] px-4 py-5 sm:px-6 lg:px-8">
@@ -343,33 +372,40 @@ const projectedImpactValue = topRiskProject
               </span>
             </div>
 
-            <h3 className="text-2xl font-semibold text-white">Protocol Upgrade</h3>
+<h3 className="text-2xl font-semibold text-white">{secondaryDecisionTitle}</h3>
 
             <p className="mt-4 text-sm leading-7 text-white/60">
-              Deploying L3-optimized patches will reduce cross-chain settlement time
-              by <span className="font-semibold text-[#9eb7ff]">40%</span>.
-              Confidence remains high despite minor network congestion risk.
-            </p>
+  {secondaryDecisionDescription}
+</p>
 
             <div className="mt-6">
               <div className="mb-2 flex items-center justify-between">
-                <span className="text-4xl font-semibold text-white">88%</span>
+              <span className="text-4xl font-semibold text-white">{secondaryDecisionScore}%</span>
                 <span className="text-sm text-white/45">Success likelihood</span>
               </div>
 
-              <div className="h-2 w-full rounded-full bg-white/[0.06]">
-                <div className="h-2 w-[88%] rounded-full bg-gradient-to-r from-[#ff8bd8] to-[#9eb7ff]" />
-              </div>
+             <div className="h-2 w-full rounded-full bg-white/[0.06]">
+  <div
+    className="h-2 rounded-full bg-gradient-to-r from-[#ff8bd8] to-[#9eb7ff]"
+    style={{ width: `${secondaryDecisionScore}%` }}
+  />
+</div>
             </div>
+<div className="mt-8 flex flex-wrap gap-3">
+  <Link
+    href={secondaryDecisionHref}
+    className="rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-[#0b1020] transition hover:opacity-90"
+  >
+    Open Recommendation
+  </Link>
 
-            <div className="mt-8 flex flex-wrap gap-3">
-              <button className="rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-[#0b1020] transition hover:opacity-90">
-                Authorize Protocol
-              </button>
-              <button className="rounded-2xl border border-white/10 px-5 py-3 text-sm font-medium text-white/70 transition hover:bg-white/[0.04] hover:text-white">
-                Dismiss
-              </button>
-            </div>
+  <Link
+    href="/tasks"
+    className="rounded-2xl border border-white/10 px-5 py-3 text-sm font-medium text-white/70 transition hover:bg-white/[0.04] hover:text-white"
+  >
+    Open Tasks
+  </Link>
+</div>
           </div>
         </section>
 
