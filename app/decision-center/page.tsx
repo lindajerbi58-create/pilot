@@ -40,15 +40,21 @@ function MiniDecisionCard({
   score,
   sublabel,
   color,
+  href,
 }: {
   title: string;
   icon: React.ElementType;
   score: string;
   sublabel: string;
   color: string;
+  href?: string;
 }) {
-  return (
-    <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-4 shadow-xl shadow-black/20">
+  const content = (
+    <div
+      className={`rounded-[24px] border border-white/8 bg-white/[0.03] p-4 shadow-xl shadow-black/20 transition ${
+        href ? "cursor-pointer hover:bg-white/[0.05] hover:scale-[1.01]" : ""
+      }`}
+    >
       <div className="mb-5 flex items-start justify-between">
         <div
           className="flex h-10 w-10 items-center justify-center rounded-2xl"
@@ -71,6 +77,12 @@ function MiniDecisionCard({
       <h3 className="text-sm font-semibold text-white">{title}</h3>
     </div>
   );
+
+  if (href) {
+    return <Link href={href}>{content}</Link>;
+  }
+
+  return content;
 }
 
 export default function DecisionCenterPage() {
@@ -135,7 +147,7 @@ const projectedImpactLabel = topRiskProject
 const projectedImpactValue = topRiskProject
   ? `${topRiskProject.progress}`
   : "0%";
-  const miniDecisions = [
+const miniDecisions = [
   ...(dashboardData?.riskyProjects || []).slice(0, 2).map((project: any) => ({
     title: project.title,
     score: `${project.progressValue || 0}%`,
@@ -147,14 +159,32 @@ const projectedImpactValue = topRiskProject
         ? "#ff8f5a"
         : "#8ea8ff",
     icon: AlertTriangle,
+    href: `/tasks?project=${encodeURIComponent(project.title)}&filter=overdue`,
   })),
-  ...(dashboardData?.aiSuggestions || []).slice(0, 1).map((suggestion: any) => ({
-    title: suggestion.title,
-    score: "AI",
-    sublabel: "Recommendation",
-    color: "#8ea8ff",
-    icon: Brain,
-  })),
+  ...(dashboardData?.aiSuggestions || []).slice(0, 1).map((suggestion: any) => {
+    let href = "/ai-insights";
+
+    if (suggestion.title.toLowerCase().includes("overdue")) {
+      href = "/tasks?filter=overdue";
+    } else if (suggestion.title.toLowerCase().includes("review")) {
+      const matchedProject = (dashboardData?.riskyProjects || []).find((project: any) =>
+        suggestion.title.toLowerCase().includes(project.title.toLowerCase())
+      );
+
+      if (matchedProject) {
+        href = `/tasks?project=${encodeURIComponent(matchedProject.title)}&filter=overdue`;
+      }
+    }
+
+    return {
+      title: suggestion.title,
+      score: "AI",
+      sublabel: "Recommendation",
+      color: "#8ea8ff",
+      icon: Brain,
+      href,
+    };
+  }),
 ];
 const secondaryRiskProject = dashboardData?.riskyProjects?.[1] || null;
 const topOverloadedMember =
@@ -411,14 +441,15 @@ const secondaryDecisionHref = secondaryRiskProject
 
        <section className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
   {miniDecisions.map((decision: any, index: number) => (
-    <MiniDecisionCard
-      key={index}
-      title={decision.title}
-      icon={decision.icon}
-      score={decision.score}
-      sublabel={decision.sublabel}
-      color={decision.color}
-    />
+   <MiniDecisionCard
+  key={index}
+  title={decision.title}
+  icon={decision.icon}
+  score={decision.score}
+  sublabel={decision.sublabel}
+  color={decision.color}
+  href={decision.href}
+/>
   ))}
 
   <div className="flex items-center justify-center rounded-[24px] border border-dashed border-white/10 bg-white/[0.02] p-4 transition hover:bg-white/[0.04]">
