@@ -107,12 +107,34 @@ export default function DecisionCenterPage() {
       </main>
     );
   }
+  
 const pendingDecisions =
   (dashboardData?.kpis?.overdueTasks || 0) +
   (dashboardData?.riskyProjects?.length || 0) +
   (dashboardData?.resourceWorkload || []).filter(
     (member: any) => member.loadLevel === "Critical" || member.loadLevel === "High"
   ).length;
+  const topRiskProject = dashboardData?.riskyProjects?.[0] || null;
+
+const primaryDecisionTitle = topRiskProject
+  ? `Review ${topRiskProject.title}`
+  : "Review Project Risk";
+
+const primaryDecisionReasoning = topRiskProject
+  ? `${topRiskProject.title} is currently marked ${topRiskProject.level} risk. ${topRiskProject.reason}. Current progress is ${topRiskProject.progress}.`
+  : "No major project risk detected right now. Continue monitoring delivery execution and team workload.";
+
+const primaryDecisionConfidence = topRiskProject
+  ? Math.min(98, Math.max(65, 60 + (100 - (topRiskProject.progressValue || 0)) / 2))
+  : 72;
+
+const projectedImpactLabel = topRiskProject
+  ? `${topRiskProject.level} Priority`
+  : "Stable";
+
+const projectedImpactValue = topRiskProject
+  ? `${topRiskProject.progress}`
+  : "0%";
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1450px] px-4 py-5 sm:px-6 lg:px-8">
@@ -188,19 +210,20 @@ const pendingDecisions =
           <div className="rounded-[32px] border border-white/8 bg-[radial-gradient(circle_at_top_left,rgba(142,168,255,0.16),transparent_36%),linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-6 shadow-2xl shadow-black/30">
             <div className="mb-6 flex items-start justify-between gap-4">
               <div>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-white/35">
-                  High Impact Action
-                </p>
-                <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white">
-                  Resource Reallocation
-                </h2>
+               <p className="text-[10px] uppercase tracking-[0.2em] text-white/35">
+  Live Priority Recommendation
+</p><h2 className="mt-3 text-3xl font-semibold tracking-tight text-white">
+  {primaryDecisionTitle}
+</h2>
               </div>
 
               <div className="rounded-2xl border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-4 py-3 text-right">
                 <div className="flex items-center justify-end gap-2">
-                  <Zap size={14} className="text-[#9eb7ff]" />
-                  <span className="text-lg font-semibold text-[#9eb7ff]">94%</span>
-                </div>
+  <Zap size={14} className="text-[#9eb7ff]" />
+  <span className="text-lg font-semibold text-[#9eb7ff]">
+    {primaryDecisionConfidence}%
+  </span>
+</div>
                 <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-white/35">
                   Confidence
                 </p>
@@ -212,16 +235,9 @@ const pendingDecisions =
                 <p className="mb-3 text-[10px] uppercase tracking-[0.18em] text-white/35">
                   Reasoning
                 </p>
-                <p className="text-sm leading-7 text-white/70">
-                  Market volatility in the APAC sector has increased by
-                  <span className="font-semibold text-[#9eb7ff]"> 14.2%</span>.
-                  Redirecting
-                  <span className="font-semibold text-[#9eb7ff]"> 30%</span> of
-                  underutilized GPU clusters from internal testing to the Real-Time
-                  Trading workload is likely to raise output efficiency inside
-                  current delivery windows.
-                </p>
-              </div>
+  <p className="text-sm leading-7 text-white/70">
+  {primaryDecisionReasoning}
+</p>      </div>
 
               <div className="rounded-[24px] border border-white/6 bg-white/[0.03] p-5">
                 <p className="mb-4 text-[10px] uppercase tracking-[0.18em] text-white/35">
@@ -231,34 +247,57 @@ const pendingDecisions =
                 <div className="space-y-5">
                   <div>
                     <div className="mb-2 flex items-center justify-between text-sm">
-                      <span className="text-white/65">Revenue Gain</span>
-                      <span className="font-semibold text-[#9eb7ff]">+$2.1M</span>
+                      <span className="text-white/65">Project Progress</span>
+<span className="font-semibold text-[#9eb7ff]">{projectedImpactValue}</span>
                     </div>
-                    <div className="h-2 rounded-full bg-white/[0.06]">
-                      <div className="h-2 w-[82%] rounded-full bg-gradient-to-r from-[#7e9eff] to-[#9eb7ff]" />
-                    </div>
+                  <div className="h-2 rounded-full bg-white/[0.06]">
+  <div
+    className="h-2 rounded-full bg-gradient-to-r from-[#7e9eff] to-[#9eb7ff]"
+    style={{ width: projectedImpactValue }}
+  />
+</div>
                   </div>
 
                   <div>
                     <div className="mb-2 flex items-center justify-between text-sm">
-                      <span className="text-white/65">Efficiency</span>
-                      <span className="font-semibold text-[#ff8fb1]">+18.5%</span>
+                      <span className="text-white/65">Decision Priority</span>
+<span className="font-semibold text-[#ff8fb1]">{projectedImpactLabel}</span>
                     </div>
-                    <div className="h-2 rounded-full bg-white/[0.06]">
-                      <div className="h-2 w-[68%] rounded-full bg-gradient-to-r from-[#ff73a5] to-[#ff9bbd]" />
-                    </div>
+                   <div className="h-2 rounded-full bg-white/[0.06]">
+  <div
+    className="h-2 rounded-full bg-gradient-to-r from-[#ff73a5] to-[#ff9bbd]"
+    style={{
+      width:
+        topRiskProject?.level === "High"
+          ? "85%"
+          : topRiskProject?.level === "Medium"
+          ? "60%"
+          : "35%",
+    }}
+  />
+</div>
                   </div>
                 </div>
               </div>
             </div>
 <div className="mt-6 flex flex-wrap gap-3">
-  <button className="rounded-2xl bg-[#8ea8ff] px-6 py-3 text-sm font-semibold text-[#0b1020] transition hover:brightness-110">
-    Approve Reallocation
-  </button>
+  <Link
+    href={
+      topRiskProject
+        ? `/tasks?project=${encodeURIComponent(topRiskProject.title)}&filter=overdue`
+        : "/tasks?filter=overdue"
+    }
+    className="rounded-2xl bg-[#8ea8ff] px-6 py-3 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
+  >
+    Open Risk Tasks
+  </Link>
 
-  <button className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white">
-    Reject
-  </button>
+  <Link
+    href="/projects"
+    className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white"
+  >
+    Open Projects
+  </Link>
 
   <Link
     href="/resource-hub"
