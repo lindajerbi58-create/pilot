@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import {
   AlertTriangle,
@@ -7,7 +8,7 @@ import {
   Settings,
   Users,
 } from "lucide-react";
-
+import { useEffect, useState } from "react";
 function NavPill({
   label,
   active = false,
@@ -123,6 +124,40 @@ function TeamCard({
 }
 
 export default function ResourceHubPage() {
+  const [dashboardData, setDashboardData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const res = await fetch("/api/dashboard", { cache: "no-store" });
+        const data = await res.json();
+
+        if (data.success) {
+          setDashboardData(data);
+        }
+      } catch (error) {
+        console.error("Failed to load resource hub data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-[#05060b] text-white">
+        <div className="mx-auto flex min-h-screen max-w-[1450px] items-center justify-center px-6">
+          <div className="rounded-[28px] border border-white/8 bg-white/[0.03] px-8 py-6 text-white/70">
+            Loading resource hub...
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1450px] px-4 py-5 sm:px-6 lg:px-8">
