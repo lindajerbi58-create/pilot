@@ -19,6 +19,7 @@ function NavPill({
   active?: boolean;
   href?: string;
 }) {
+  
   return (
     <Link
       href={href}
@@ -191,7 +192,35 @@ const averageTeamProgress =
         ) / teamMembers.length
       )
     : 0;
+const getMemberCardStyles = (loadLevel: string) => {
+  if (loadLevel === "Critical") {
+    return {
+      cardClass:
+        "border-[#ff6b6b]/20 bg-[radial-gradient(circle_at_top_left,rgba(255,107,107,0.16),transparent_35%),rgba(255,255,255,0.03)]",
+      badgeClass:
+        "border border-[#ff6b6b]/20 bg-[#ff6b6b]/10 text-[#ff7d7d]",
+      barClass: "bg-gradient-to-r from-[#ff6b6b] to-[#ff9b9b]",
+    };
+  }
 
+  if (loadLevel === "High") {
+    return {
+      cardClass:
+        "border-[#ff8f5a]/20 bg-[radial-gradient(circle_at_top_left,rgba(255,143,90,0.16),transparent_35%),rgba(255,255,255,0.03)]",
+      badgeClass:
+        "border border-[#ff8f5a]/20 bg-[#ff8f5a]/10 text-[#ff9d6a]",
+      barClass: "bg-gradient-to-r from-[#ff8f5a] to-[#ffc27a]",
+    };
+  }
+
+  return {
+    cardClass:
+      "border-[#8ea8ff]/20 bg-[radial-gradient(circle_at_top_left,rgba(142,168,255,0.16),transparent_35%),rgba(255,255,255,0.03)]",
+    badgeClass:
+      "border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 text-[#9eb7ff]",
+    barClass: "bg-gradient-to-r from-[#8ea8ff] to-[#d78bff]",
+  };
+};
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1450px] px-4 py-5 sm:px-6 lg:px-8">
@@ -385,12 +414,15 @@ const averageTeamProgress =
 </p>
 
 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-  {filteredTeamMembers.map((member: any, index: number) => (
+  {filteredTeamMembers.map((member: any, index: number) => {
+  const styles = getMemberCardStyles(member.loadLevel);
+
+  return (
     <Link
-      key={index}
-      href={`/tasks?assignee=${encodeURIComponent(member.assignee)}`}
-      className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5 shadow-xl shadow-black/20 transition hover:bg-white/[0.05] hover:scale-[1.01]"
-    >
+  key={index}
+  href={`/tasks?assignee=${encodeURIComponent(member.assignee)}`}
+  className={`rounded-[24px] border p-5 shadow-xl shadow-black/20 transition hover:scale-[1.01] ${styles.cardClass}`}
+>
       <div className="mb-4 flex items-start justify-between gap-4">
         <div>
           <h3 className="text-lg font-semibold text-white">
@@ -400,16 +432,10 @@ const averageTeamProgress =
         </div>
 
         <span
-          className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${
-            member.loadLevel === "Critical"
-              ? "border border-[#ff6b6b]/20 bg-[#ff6b6b]/10 text-[#ff7d7d]"
-              : member.loadLevel === "High"
-              ? "border border-[#ff8f5a]/20 bg-[#ff8f5a]/10 text-[#ff9d6a]"
-              : "border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 text-[#9eb7ff]"
-          }`}
-        >
-          {member.loadLevel}
-        </span>
+  className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${styles.badgeClass}`}
+>
+  {member.loadLevel}
+</span>
       </div>
 
       <div className="space-y-3 text-sm text-white/65">
@@ -430,14 +456,14 @@ const averageTeamProgress =
       </div>
 
       <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/[0.06]">
-        <div
-          className="h-full rounded-full bg-gradient-to-r from-[#8ea8ff] to-[#d78bff]"
-          style={{ width: `${member.avgProgress || 0}%` }}
-        />
-      </div>
-    </Link>
-  ))}
+  <div
+    className={`h-full rounded-full ${styles.barClass}`}
+    style={{ width: `${member.avgProgress || 0}%` }}
+  />
 </div>
+    </Link>
+    );
+  })}</div>
         </section>
 
         <section className="mt-8">
