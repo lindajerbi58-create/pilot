@@ -418,7 +418,17 @@ return (
     );
   })}
 </section>
-
+<div className="mb-4 flex flex-wrap gap-3 text-xs text-white/45">
+  <div className="rounded-full border border-[#ff6b6b]/20 bg-[#ff6b6b]/10 px-3 py-1 text-[#ff9a9a]">
+    Overloaded = immediate attention needed
+  </div>
+  <div className="rounded-full border border-[#ff8f5a]/20 bg-[#ff8f5a]/10 px-3 py-1 text-[#ffb27f]">
+    At Risk = elevated workload pressure
+  </div>
+  <div className="rounded-full border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-3 py-1 text-[#b7c8ff]">
+    Stable = balanced current workload
+  </div>
+</div>
 <p className="mb-4 text-sm text-white/45">
   Showing {filteredTeamMembers.length} member{filteredTeamMembers.length > 1 ? "s" : ""}
 </p>
