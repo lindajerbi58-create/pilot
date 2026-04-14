@@ -132,6 +132,7 @@ const [loadFilter, setLoadFilter] = useState("All");
 const [sortMode, setSortMode] = useState("overloaded");
 
 const [searchQuery, setSearchQuery] = useState("");
+const [lastUpdated, setLastUpdated] = useState("");
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -139,8 +140,14 @@ const [searchQuery, setSearchQuery] = useState("");
         const data = await res.json();
 
         if (data.success) {
-          setDashboardData(data);
-        }
+  setDashboardData(data);
+  setLastUpdated(
+    new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  );
+}
       } catch (error) {
         console.error("Failed to load resource hub data:", error);
       } finally {
@@ -233,7 +240,7 @@ const totalOverdueTasks = teamMembers.reduce(
   (sum: number, member: any) => sum + (member.overdueCount || 0),
   0
 );
-
+const lastUpdatedLabel = lastUpdated || "Not available";
 const averageTeamProgress =
   teamMembers.length > 0
     ? Math.round(
@@ -385,12 +392,20 @@ const recommendationIsCalm = !sourceMember || !targetMember;
   <NavPill label="Settings" href="/settings" />
 </nav>
 
-          <div className="flex items-center gap-3">
-            <button className="text-white/60 transition hover:text-white">
-              <Search size={16} />
-            </button>
-            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#8ea8ff] to-[#6d84ff]" />
-          </div>
+        <div className="flex items-center gap-4">
+  <div className="hidden text-right sm:block">
+    <p className="text-[10px] uppercase tracking-[0.18em] text-white/30">
+      Last updated
+    </p>
+    <p className="mt-1 text-sm font-medium text-white/70">{lastUpdatedLabel}</p>
+  </div>
+
+  <button className="text-white/60 transition hover:text-white">
+    <Search size={16} />
+  </button>
+
+  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#8ea8ff] to-[#6d84ff]" />
+</div>
         </header>
 
         <section className="mb-8">
