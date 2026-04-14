@@ -130,6 +130,7 @@ export default function ResourceHubPage() {
   const [loading, setLoading] = useState(true);
 const [loadFilter, setLoadFilter] = useState("All");
 const [sortMode, setSortMode] = useState("overloaded");
+const [searchQuery, setSearchQuery] = useState("");
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -196,7 +197,15 @@ const filteredTeamMembers =
   loadFilter === "All"
     ? teamMembers
     : teamMembers.filter((member: any) => member.loadLevel === loadFilter);
+const searchedTeamMembers = filteredTeamMembers.filter((member: any) => {
+  const assignee = (member.assignee || "").toLowerCase();
+  const displayName = assignee.split("@")[0];
+  const query = searchQuery.toLowerCase().trim();
 
+  if (!query) return true;
+
+  return assignee.includes(query) || displayName.includes(query);
+});
 const totalMembers = teamMembers.length;
 
 const membersUnderWatch = teamMembers.filter(
@@ -565,11 +574,23 @@ return (
     Stable = balanced current workload
   </div>
 </div>
+<div className="mb-4">
+  <div className="flex items-center gap-3 rounded-[20px] border border-white/8 bg-white/[0.03] px-4 py-3">
+    <Search size={16} className="text-white/35" />
+    <input
+      type="text"
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      placeholder="Search by member name or email..."
+      className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/25"
+    />
+  </div>
+</div>
 <p className="mb-4 text-sm text-white/45">
-  Showing {filteredTeamMembers.length} member{filteredTeamMembers.length > 1 ? "s" : ""}
+ Showing {searchedTeamMembers.length} member{searchedTeamMembers.length > 1 ? "s" : ""}
 </p>
 
-{filteredTeamMembers.length === 0 ? (
+{searchedTeamMembers.length === 0? (
   <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-8 text-center shadow-xl shadow-black/20">
     <p className="text-sm uppercase tracking-[0.16em] text-white/35">
       No team members found
@@ -577,13 +598,16 @@ return (
     <h3 className="mt-3 text-xl font-semibold text-white">
       No members match this filter
     </h3>
-    <p className="mt-2 text-sm leading-7 text-white/50">
-      Try switching to another workload status or reset the current filter to view the full team.
-    </p>
+<p className="mt-2 text-sm leading-7 text-white/50">
+  Try changing the workload filter, sort mode, or search query to find the team member you are looking for.
+</p>
 
     <button
       type="button"
-      onClick={() => setLoadFilter("All")}
+    onClick={() => {
+  setLoadFilter("All");
+  setSearchQuery("");
+}}
       className="mt-5 inline-flex items-center rounded-xl bg-[#8ea8ff] px-4 py-2 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
     >
       Show all members
@@ -591,7 +615,7 @@ return (
   </div>
 ) : (
   <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-    {filteredTeamMembers.map((member: any, index: number) => {
+   {searchedTeamMembers.map((member: any, index: number) => {
       const styles = getMemberCardStyles(member.loadLevel);
 
       return (
