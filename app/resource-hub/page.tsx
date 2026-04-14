@@ -159,6 +159,11 @@ const [loadFilter, setLoadFilter] = useState("All");
       </main>
     );
   }
+  const getLoadLabel = (loadLevel: string) => {
+  if (loadLevel === "Critical") return "Overloaded";
+  if (loadLevel === "High") return "At Risk";
+  return "Stable";
+};
 const teamMembers = [...(dashboardData?.resourceWorkload || [])].sort((a: any, b: any) => {
   const score = (member: any) =>
     (member.loadLevel === "Critical" ? 3 : member.loadLevel === "High" ? 2 : 1) * 100 +
@@ -389,21 +394,26 @@ const getMemberCardStyles = (loadLevel: string) => {
   </div>
 </section>
 <section className="mb-6 flex flex-wrap gap-3">
-  {["All", "Critical", "High", "Balanced"].map((level) => {
-    const isActive = loadFilter === level;
+ {[
+  { value: "All", label: "All" },
+  { value: "Critical", label: "Overloaded" },
+  { value: "High", label: "At Risk" },
+  { value: "Balanced", label: "Stable" },
+].map((option) => {
+  const isActive = loadFilter === option.value;
 
-    return (
-      <button
-        key={level}
-        type="button"
-        onClick={() => setLoadFilter(level)}
+return (
+  <button
+    key={option.value}
+    type="button"
+    onClick={() => setLoadFilter(option.value)}
         className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
           isActive
             ? "border-white/20 bg-white text-[#0b1020]"
             : "border-white/10 bg-white/[0.03] text-white/70 hover:bg-white/[0.06]"
         }`}
       >
-        {level}
+        {option.label}
       </button>
     );
   })}
@@ -434,7 +444,7 @@ const getMemberCardStyles = (loadLevel: string) => {
         <span
   className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${styles.badgeClass}`}
 >
-  {member.loadLevel}
+ {getLoadLabel(member.loadLevel)}
 </span>
       </div>
 
