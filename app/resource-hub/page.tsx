@@ -245,6 +245,52 @@ const getMemberCardStyles = (loadLevel: string) => {
     barClass: "bg-gradient-to-r from-[#8ea8ff] to-[#d78bff]",
   };
 };
+const totalCapacity =
+  teamMembers.length > 0
+    ? Math.round(
+        teamMembers.reduce(
+          (sum: number, member: any) => sum + (member.avgProgress || 0),
+          0
+        ) / teamMembers.length
+      )
+    : 0;
+
+const overloadedNodes = teamMembers.filter(
+  (member: any) => member.loadLevel === "Critical"
+).length;
+
+const activeSprints = teamMembers.reduce(
+  (sum: number, member: any) => sum + (member.taskCount || 0),
+  0
+);
+
+const mostCriticalMember =
+  [...teamMembers].sort((a: any, b: any) => {
+    const loadScore = (member: any) =>
+      member.loadLevel === "Critical" ? 3 : member.loadLevel === "High" ? 2 : 1;
+
+    return (
+      loadScore(b) - loadScore(a) ||
+      (b.overdueCount || 0) - (a.overdueCount || 0) ||
+      (a.avgProgress || 0) - (b.avgProgress || 0)
+    );
+  })[0] || null;
+
+const urgentMemberName = mostCriticalMember?.assignee
+  ? mostCriticalMember.assignee.split("@")[0]
+  : "No critical member";
+
+const urgentMemberRole = mostCriticalMember?.assignee || "No active assignee";
+
+const urgentMemberLoad =
+  mostCriticalMember?.loadLevel === "Critical"
+    ? "Overloaded"
+    : mostCriticalMember?.loadLevel === "High"
+    ? "At Risk"
+    : "Stable";
+
+const urgentMemberLoadValue = mostCriticalMember?.avgProgress || 0;
+const urgentMemberTasks = mostCriticalMember?.taskCount || 0;
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1450px] px-4 py-5 sm:px-6 lg:px-8">
@@ -285,97 +331,101 @@ const getMemberCardStyles = (loadLevel: string) => {
         </section>
 
         <section className="grid gap-6 xl:grid-cols-[0.72fr_1.28fr]">
-          <div className="rounded-[32px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/25">
-            <p className="text-[10px] uppercase tracking-[0.18em] text-white/35">
-              Total Capacity
-            </p>
+       <div className="rounded-[32px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/25">
+  <p className="text-[10px] uppercase tracking-[0.18em] text-white/35">
+    Total Capacity
+  </p>
 
-            <div className="mt-4 flex items-end gap-2">
-              <span className="text-5xl font-semibold text-[#9eb7ff]">74</span>
-              <span className="mb-1 text-lg text-white/45">%</span>
-            </div>
+  <div className="mt-4 flex items-end gap-2">
+    <span className="text-5xl font-semibold text-[#9eb7ff]">{totalCapacity}</span>
+    <span className="mb-1 text-lg text-white/45">%</span>
+  </div>
 
-            <div className="mt-6 h-2 w-full overflow-hidden rounded-full bg-white/[0.06]">
-              <div className="h-full w-[74%] rounded-full bg-gradient-to-r from-[#7e9eff] to-[#9eb7ff]" />
-            </div>
+  <div className="mt-6 h-2 w-full overflow-hidden rounded-full bg-white/[0.06]">
+    <div
+      className="h-full rounded-full bg-gradient-to-r from-[#7e9eff] to-[#9eb7ff]"
+      style={{ width: `${totalCapacity}%` }}
+    />
+  </div>
 
-            <div className="mt-8 space-y-4">
-              <MetricRow label="Active Sprints" value={12} />
-              <MetricRow label="Overloaded Nodes" value={2} danger />
-            </div>
-          </div>
-
-          <div className="rounded-[32px] border border-white/8 bg-[radial-gradient(circle_at_top_left,rgba(142,168,255,0.14),transparent_36%),linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-6 shadow-2xl shadow-black/30">
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-              <div className="flex items-start gap-4">
-                <div
-                  className="h-20 w-20 rounded-[24px] border border-white/10"
-                  style={{
-                    background:
-                      "radial-gradient(circle at 35% 30%, rgba(255,255,255,0.22), rgba(255,153,122,0.35), rgba(74,82,128,0.82))",
-                  }}
-                />
-
-                <div>
-                  <div className="mb-2 inline-flex rounded-full border border-[#ff6b6b]/20 bg-[#ff6b6b]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#ff7d7d]">
-                    Urgent Action Required
-                  </div>
-
-                  <h2 className="text-2xl font-semibold text-white">Elena Rostova</h2>
-                  <p className="mt-1 text-sm text-white/45">Lead Interaction Designer</p>
-                </div>
-              </div>
-
-              <div className="grid gap-5 sm:grid-cols-2 lg:min-w-[280px]">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-white/30">
-                    Active Load
-                  </p>
-                  <p className="mt-2 text-3xl font-semibold text-[#ff7d7d]">96%</p>
-                </div>
-
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-white/30">
-                    Active Tasks
-                  </p>
-                  <p className="mt-2 text-3xl font-semibold text-white">14</p>
-                </div>
-
-                <div className="sm:col-span-2">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-white/30">
-                    Status
-                  </p>
-                  <p className="mt-2 text-sm font-semibold uppercase text-[#ff6b6b]">
-                    Overloaded
-                  </p>
-                </div>
-              </div>
-            </div>
-
-           <div className="mt-6 flex flex-wrap gap-3">
-  <button className="rounded-2xl bg-[#ff7d7d] px-5 py-3 text-sm font-semibold text-[#180b0b] transition hover:brightness-110">
-    Redistribute Tasks
-  </button>
-
-  <button className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white">
-    View Task Board
-  </button>
-
-  <Link
-    href="/decision-center"
-    className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white"
-  >
-    Back to Decision Center
-  </Link>
-
-  <Link
-    href="/ai-insights"
-    className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white"
-  >
-    Back to AI Insights
-  </Link>
+  <div className="mt-8 space-y-4">
+    <MetricRow label="Active Tasks" value={activeSprints} />
+    <MetricRow label="Overloaded Nodes" value={overloadedNodes} danger />
+  </div>
 </div>
-          </div>
+<div className="rounded-[32px] border border-white/8 bg-[radial-gradient(circle_at_top_left,rgba(142,168,255,0.14),transparent_36%),linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-6 shadow-2xl shadow-black/30">
+  <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+    <div className="flex items-start gap-4">
+      <div
+        className="h-20 w-20 rounded-[24px] border border-white/10"
+        style={{
+          background:
+            "radial-gradient(circle at 35% 30%, rgba(255,255,255,0.22), rgba(255,153,122,0.35), rgba(74,82,128,0.82))",
+        }}
+      />
+
+      <div>
+        <div className="mb-2 inline-flex rounded-full border border-[#ff6b6b]/20 bg-[#ff6b6b]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#ff7d7d]">
+          Urgent Action Required
+        </div>
+
+        <h2 className="text-2xl font-semibold text-white">{urgentMemberName}</h2>
+        <p className="mt-1 text-sm text-white/45">{urgentMemberRole}</p>
+      </div>
+    </div>
+
+    <div className="grid gap-5 sm:grid-cols-2 lg:min-w-[280px]">
+      <div>
+        <p className="text-[10px] uppercase tracking-[0.18em] text-white/30">
+          Avg Progress
+        </p>
+        <p className="mt-2 text-3xl font-semibold text-[#ff7d7d]">
+          {urgentMemberLoadValue}%
+        </p>
+      </div>
+
+      <div>
+        <p className="text-[10px] uppercase tracking-[0.18em] text-white/30">
+          Active Tasks
+        </p>
+        <p className="mt-2 text-3xl font-semibold text-white">{urgentMemberTasks}</p>
+      </div>
+
+      <div className="sm:col-span-2">
+        <p className="text-[10px] uppercase tracking-[0.18em] text-white/30">
+          Status
+        </p>
+        <p className="mt-2 text-sm font-semibold uppercase text-[#ff6b6b]">
+          {urgentMemberLoad}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div className="mt-6 flex flex-wrap gap-3">
+    <button className="rounded-2xl bg-[#ff7d7d] px-5 py-3 text-sm font-semibold text-[#180b0b] transition hover:brightness-110">
+      Redistribute Tasks
+    </button>
+
+    <button className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white">
+      View Task Board
+    </button>
+
+    <Link
+      href="/decision-center"
+      className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white"
+    >
+      Back to Decision Center
+    </Link>
+
+    <Link
+      href="/ai-insights"
+      className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white"
+    >
+      Back to AI Insights
+    </Link>
+  </div>
+</div>
         </section>
 
         <section className="mt-8">
