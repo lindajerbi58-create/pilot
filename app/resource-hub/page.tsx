@@ -133,30 +133,43 @@ const [sortMode, setSortMode] = useState("overloaded");
 
 const [searchQuery, setSearchQuery] = useState("");
 const [lastUpdated, setLastUpdated] = useState("");
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const res = await fetch("/api/dashboard", { cache: "no-store" });
-        const data = await res.json();
+const [refreshing, setRefreshing] = useState(false);
+const fetchDashboardData = async () => {
+  try {
+    const res = await fetch("/api/dashboard", { cache: "no-store" });
+    const data = await res.json();
 
-        if (data.success) {
-  setDashboardData(data);
-  setLastUpdated(
-    new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  );
-}
-      } catch (error) {
-        console.error("Failed to load resource hub data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (data.success) {
+      setDashboardData(data);
+      setLastUpdated(
+        new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      );
+    }
+  } catch (error) {
+    console.error("Failed to load resource hub data:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
+const handleRefresh = async () => {
+  setRefreshing(true);
+  await fetchDashboardData();
+  setRefreshing(false);
+};
+
+useEffect(() => {
+  fetchDashboardData();
+
+  const interval = setInterval(() => {
     fetchDashboardData();
-  }, []);
+  }, 60000);
+
+  return () => clearInterval(interval);
+}, []);
 
   if (loading) {
     return (
@@ -392,13 +405,22 @@ const recommendationIsCalm = !sourceMember || !targetMember;
   <NavPill label="Settings" href="/settings" />
 </nav>
 
-        <div className="flex items-center gap-4">
+<div className="flex items-center gap-4">
   <div className="hidden text-right sm:block">
     <p className="text-[10px] uppercase tracking-[0.18em] text-white/30">
       Last updated
     </p>
     <p className="mt-1 text-sm font-medium text-white/70">{lastUpdatedLabel}</p>
   </div>
+
+  <button
+    type="button"
+    onClick={handleRefresh}
+    disabled={refreshing}
+    className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-sm font-medium text-white/70 transition hover:bg-white/[0.06] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+  >
+    {refreshing ? "Refreshing..." : "Refresh"}
+  </button>
 
   <button className="text-white/60 transition hover:text-white">
     <Search size={16} />
