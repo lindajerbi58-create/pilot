@@ -272,7 +272,7 @@ const getMemberCardStyles = (loadLevel: string) => {
     barClass: "bg-gradient-to-r from-[#8ea8ff] to-[#d78bff]",
   };
 };
-const totalCapacity =
+const averageExecutionProgress =
   teamMembers.length > 0
     ? Math.round(
         teamMembers.reduce(
@@ -290,6 +290,12 @@ const activeSprints = teamMembers.reduce(
   (sum: number, member: any) => sum + (member.taskCount || 0),
   0
 );
+const executionPanelHint =
+  averageExecutionProgress >= 75
+    ? "healthy execution pace"
+    : averageExecutionProgress >= 50
+    ? "moderate delivery momentum"
+    : "delivery pace needs attention";
 const totalMembersHint = "live team size";
 const membersUnderWatchHint =
   membersUnderWatch > 0 ? "members needing attention" : "no active pressure detected";
@@ -405,21 +411,22 @@ const recommendationIsCalm = !sourceMember || !targetMember;
 
         <section className="grid gap-6 xl:grid-cols-[0.72fr_1.28fr]">
        <div className="rounded-[32px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/25">
-  <p className="text-[10px] uppercase tracking-[0.18em] text-white/35">
-    Total Capacity
-  </p>
+ <p className="text-[10px] uppercase tracking-[0.18em] text-white/35">
+  Team Execution
+</p>
 
   <div className="mt-4 flex items-end gap-2">
-    <span className="text-5xl font-semibold text-[#9eb7ff]">{totalCapacity}</span>
+    <span className="text-5xl font-semibold text-[#9eb7ff]">{averageExecutionProgress}</span>
     <span className="mb-1 text-lg text-white/45">%</span>
   </div>
 
   <div className="mt-6 h-2 w-full overflow-hidden rounded-full bg-white/[0.06]">
     <div
       className="h-full rounded-full bg-gradient-to-r from-[#7e9eff] to-[#9eb7ff]"
-      style={{ width: `${totalCapacity}%` }}
+      style={{ width: `${averageExecutionProgress}%` }}
     />
   </div>
+  <p className="mt-3 text-xs text-white/40">{executionPanelHint}</p>
 
   <div className="mt-8 space-y-4">
     <MetricRow label="Active Tasks" value={activeSprints} />
