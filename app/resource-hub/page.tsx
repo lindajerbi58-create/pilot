@@ -9,6 +9,7 @@ import {
   Users,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useMemo } from "react";
 function NavPill({
   label,
   active = false,
@@ -126,7 +127,7 @@ function TeamCard({
 export default function ResourceHubPage() {
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-
+const [loadFilter, setLoadFilter] = useState("All");
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -165,6 +166,10 @@ const teamMembers = [...(dashboardData?.resourceWorkload || [])].sort((a: any, b
 
   return score(b) - score(a);
 });
+const filteredTeamMembers =
+  loadFilter === "All"
+    ? teamMembers
+    : teamMembers.filter((member: any) => member.loadLevel === loadFilter);
 
 const totalMembers = teamMembers.length;
 
@@ -354,8 +359,33 @@ const averageTeamProgress =
     <p className="mt-2 text-3xl font-semibold text-white">{averageTeamProgress}%</p>
   </div>
 </section>
-         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-  {teamMembers.map((member: any, index: number) => (
+<section className="mb-6 flex flex-wrap gap-3">
+  {["All", "Critical", "High", "Balanced"].map((level) => {
+    const isActive = loadFilter === level;
+
+    return (
+      <button
+        key={level}
+        type="button"
+        onClick={() => setLoadFilter(level)}
+        className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+          isActive
+            ? "border-white/20 bg-white text-[#0b1020]"
+            : "border-white/10 bg-white/[0.03] text-white/70 hover:bg-white/[0.06]"
+        }`}
+      >
+        {level}
+      </button>
+    );
+  })}
+</section>
+
+<p className="mb-4 text-sm text-white/45">
+  Showing {filteredTeamMembers.length} member{filteredTeamMembers.length > 1 ? "s" : ""}
+</p>
+
+<div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+  {filteredTeamMembers.map((member: any, index: number) => (
     <Link
       key={index}
       href={`/tasks?assignee=${encodeURIComponent(member.assignee)}`}
@@ -427,15 +457,7 @@ const averageTeamProgress =
               </div>
             </div>
           </div>
-        </section>
-
-   <nav className="hidden items-center gap-2 md:flex">
-  <NavPill label="Projects" href="/dashboard" />
-  <NavPill label="AI Insights" href="/ai-insights" />
-  <NavPill label="Decision Center" href="/decision-center" />
-  <NavPill label="Resources" href="/resource-hub" active />
-  <NavPill label="Settings" href="/settings" />
-</nav>
+           </section>
       </div>
     </main>
   );
