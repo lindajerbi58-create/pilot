@@ -165,6 +165,28 @@ const teamMembers = [...(dashboardData?.resourceWorkload || [])].sort((a: any, b
 
   return score(b) - score(a);
 });
+
+const totalMembers = teamMembers.length;
+
+const membersUnderWatch = teamMembers.filter(
+  (member: any) => member.loadLevel === "Critical" || member.loadLevel === "High"
+).length;
+
+const totalOverdueTasks = teamMembers.reduce(
+  (sum: number, member: any) => sum + (member.overdueCount || 0),
+  0
+);
+
+const averageTeamProgress =
+  teamMembers.length > 0
+    ? Math.round(
+        teamMembers.reduce(
+          (sum: number, member: any) => sum + (member.avgProgress || 0),
+          0
+        ) / teamMembers.length
+      )
+    : 0;
+
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1450px] px-4 py-5 sm:px-6 lg:px-8">
@@ -311,7 +333,27 @@ const teamMembers = [...(dashboardData?.resourceWorkload || [])].sort((a: any, b
               </button>
             </div>
           </div>
+<section className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+  <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
+    <p className="text-xs uppercase tracking-[0.16em] text-white/35">Team Members</p>
+    <p className="mt-2 text-3xl font-semibold text-white">{totalMembers}</p>
+  </div>
 
+  <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
+    <p className="text-xs uppercase tracking-[0.16em] text-white/35">Under Watch</p>
+    <p className="mt-2 text-3xl font-semibold text-white">{membersUnderWatch}</p>
+  </div>
+
+  <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
+    <p className="text-xs uppercase tracking-[0.16em] text-white/35">Overdue Tasks</p>
+    <p className="mt-2 text-3xl font-semibold text-white">{totalOverdueTasks}</p>
+  </div>
+
+  <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
+    <p className="text-xs uppercase tracking-[0.16em] text-white/35">Avg Team Progress</p>
+    <p className="mt-2 text-3xl font-semibold text-white">{averageTeamProgress}%</p>
+  </div>
+</section>
          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
   {teamMembers.map((member: any, index: number) => (
     <Link
