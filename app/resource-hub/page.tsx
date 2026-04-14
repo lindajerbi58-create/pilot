@@ -323,7 +323,7 @@ const urgentMemberLoad =
 
 const urgentMemberLoadValue = mostCriticalMember?.avgProgress || 0;
 const urgentMemberTasks = mostCriticalMember?.taskCount || 0;
-
+const urgentMemberEmail = mostCriticalMember?.assignee || "";
 const overloadedMembers = teamMembers.filter(
   (member: any) => member.loadLevel === "Critical" || member.loadLevel === "High"
 );
@@ -441,8 +441,20 @@ const recommendationIsCalm = !sourceMember || !targetMember;
           Urgent Action Required
         </div>
 
-        <h2 className="text-2xl font-semibold text-white">{urgentMemberName}</h2>
-        <p className="mt-1 text-sm text-white/45">{urgentMemberRole}</p>
+        {urgentMemberEmail ? (
+  <Link
+    href={`/tasks?assignee=${encodeURIComponent(urgentMemberEmail)}`}
+    className="inline-block"
+  >
+    <h2 className="text-2xl font-semibold text-white transition hover:text-[#9eb7ff]">
+      {urgentMemberName}
+    </h2>
+  </Link>
+) : (
+  <h2 className="text-2xl font-semibold text-white">{urgentMemberName}</h2>
+)}
+
+<p className="mt-1 text-sm text-white/45">{urgentMemberRole}</p>
       </div>
     </div>
 
@@ -479,9 +491,21 @@ const recommendationIsCalm = !sourceMember || !targetMember;
       Redistribute Tasks
     </button>
 
-    <button className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white">
-      View Task Board
-    </button>
+   {urgentMemberEmail ? (
+  <Link
+    href={`/tasks?assignee=${encodeURIComponent(urgentMemberEmail)}`}
+    className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white"
+  >
+    View Task Board
+  </Link>
+) : (
+  <button
+    disabled
+    className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/35"
+  >
+    View Task Board
+  </button>
+)}
 
     <Link
       href="/decision-center"
