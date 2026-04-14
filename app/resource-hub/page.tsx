@@ -157,7 +157,14 @@ export default function ResourceHubPage() {
       </main>
     );
   }
+const teamMembers = [...(dashboardData?.resourceWorkload || [])].sort((a: any, b: any) => {
+  const score = (member: any) =>
+    (member.loadLevel === "Critical" ? 3 : member.loadLevel === "High" ? 2 : 1) * 100 +
+    (member.overdueCount || 0) * 10 +
+    (member.taskCount || 0);
 
+  return score(b) - score(a);
+});
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1450px] px-4 py-5 sm:px-6 lg:px-8">
@@ -305,37 +312,60 @@ export default function ResourceHubPage() {
             </div>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            <TeamCard
-              name="Marcus Chen"
-              role="Senior Backend Engineer"
-              workload={82}
-              tasks={7}
-              status="Busy"
-              statusColor="#ffb86a"
-              barColor="linear-gradient(90deg, #8ea8ff 0%, #d88cff 100%)"
-            />
+         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+  {teamMembers.map((member: any, index: number) => (
+    <Link
+      key={index}
+      href={`/tasks?assignee=${encodeURIComponent(member.assignee)}`}
+      className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5 shadow-xl shadow-black/20 transition hover:bg-white/[0.05] hover:scale-[1.01]"
+    >
+      <div className="mb-4 flex items-start justify-between gap-4">
+        <div>
+          <h3 className="text-lg font-semibold text-white">
+            {(member.assignee || "Unknown").split("@")[0]}
+          </h3>
+          <p className="mt-1 text-sm text-white/40">{member.assignee}</p>
+        </div>
 
-            <TeamCard
-              name="Sarah Jenkins"
-              role="DevOps Architect"
-              workload={91}
-              tasks={11}
-              status="Overloaded"
-              statusColor="#ff6b6b"
-              barColor="linear-gradient(90deg, #ff7d7d 0%, #ff5f7a 100%)"
-            />
+        <span
+          className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${
+            member.loadLevel === "Critical"
+              ? "border border-[#ff6b6b]/20 bg-[#ff6b6b]/10 text-[#ff7d7d]"
+              : member.loadLevel === "High"
+              ? "border border-[#ff8f5a]/20 bg-[#ff8f5a]/10 text-[#ff9d6a]"
+              : "border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 text-[#9eb7ff]"
+          }`}
+        >
+          {member.loadLevel}
+        </span>
+      </div>
 
-            <TeamCard
-              name="David Park"
-              role="Frontend Developer"
-              workload={45}
-              tasks={2}
-              status="Available"
-              statusColor="#8fd19e"
-              barColor="linear-gradient(90deg, #8ea8ff 0%, #9eb7ff 100%)"
-            />
-          </div>
+      <div className="space-y-3 text-sm text-white/65">
+        <div className="flex items-center justify-between">
+          <span>Assigned Tasks</span>
+          <span className="font-medium text-white">{member.taskCount}</span>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <span>Overdue</span>
+          <span className="font-medium text-white">{member.overdueCount}</span>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <span>Avg Progress</span>
+          <span className="font-medium text-white">{member.avgProgress}%</span>
+        </div>
+      </div>
+
+      <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/[0.06]">
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-[#8ea8ff] to-[#d78bff]"
+          style={{ width: `${member.avgProgress || 0}%` }}
+        />
+      </div>
+    </Link>
+  ))}
+</div>
         </section>
 
         <section className="mt-8">
