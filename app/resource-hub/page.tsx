@@ -371,12 +371,13 @@ const recommendationIsCalm = !sourceMember || !targetMember;
             <div className="text-sm font-semibold text-white">Pilot</div>
           </div>
 
-          <nav className="hidden items-center gap-2 md:flex">
-            <NavPill label="Projects" href="/dashboard" />
-            <NavPill label="Tasks" href="/tasks" />
-            <NavPill label="Activity" href="/activity" />
-            <NavPill label="Settings" href="/settings" active />
-          </nav>
+         <nav className="hidden items-center gap-2 md:flex">
+  <NavPill label="Dashboard" href="/dashboard" />
+  <NavPill label="AI Insights" href="/ai-insights" />
+  <NavPill label="Decision Center" href="/decision-center" />
+  <NavPill label="Resource Hub" href="/resource-hub" active />
+  <NavPill label="Settings" href="/settings" />
+</nav>
 
           <div className="flex items-center gap-3">
             <button className="text-white/60 transition hover:text-white">
