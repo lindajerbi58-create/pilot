@@ -166,7 +166,18 @@ const [searchQuery, setSearchQuery] = useState("");
   if (loadLevel === "High") return "At Risk";
   return "Stable";
 };
+const getActiveFilterLabel = () => {
+  if (loadFilter === "Critical") return "Overloaded";
+  if (loadFilter === "High") return "At Risk";
+  if (loadFilter === "Balanced") return "Stable";
+  return "All";
+};
 
+const getActiveSortLabel = () => {
+  if (sortMode === "overdue") return "Most Overdue";
+  if (sortMode === "progress") return "Best Progress";
+  return "Most Overloaded";
+};
 const teamMembers = [...(dashboardData?.resourceWorkload || [])].sort((a: any, b: any) => {
   const loadScore = (member: any) =>
     member.loadLevel === "Critical" ? 3 : member.loadLevel === "High" ? 2 : 1;
@@ -585,6 +596,21 @@ return (
       className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/25"
     />
   </div>
+</div>
+<div className="mb-4 flex flex-wrap gap-2 text-xs">
+  <div className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-white/70">
+    Status: {getActiveFilterLabel()}
+  </div>
+
+  <div className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-white/70">
+    Sort: {getActiveSortLabel()}
+  </div>
+
+  {searchQuery.trim() && (
+    <div className="rounded-full border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-3 py-1 text-[#b7c8ff]">
+      Search: {searchQuery}
+    </div>
+  )}
 </div>
 <p className="mb-4 text-sm text-white/45">
  Showing {searchedTeamMembers.length} member{searchedTeamMembers.length > 1 ? "s" : ""}
