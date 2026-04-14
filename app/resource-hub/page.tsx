@@ -569,57 +569,80 @@ return (
   Showing {filteredTeamMembers.length} member{filteredTeamMembers.length > 1 ? "s" : ""}
 </p>
 
-<div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-  {filteredTeamMembers.map((member: any, index: number) => {
-  const styles = getMemberCardStyles(member.loadLevel);
+{filteredTeamMembers.length === 0 ? (
+  <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-8 text-center shadow-xl shadow-black/20">
+    <p className="text-sm uppercase tracking-[0.16em] text-white/35">
+      No team members found
+    </p>
+    <h3 className="mt-3 text-xl font-semibold text-white">
+      No members match this filter
+    </h3>
+    <p className="mt-2 text-sm leading-7 text-white/50">
+      Try switching to another workload status or reset the current filter to view the full team.
+    </p>
 
-  return (
-    <Link
-  key={index}
-  href={`/tasks?assignee=${encodeURIComponent(member.assignee)}`}
-  className={`rounded-[24px] border p-5 shadow-xl shadow-black/20 transition hover:scale-[1.01] ${styles.cardClass}`}
->
-      <div className="mb-4 flex items-start justify-between gap-4">
-        <div>
-          <h3 className="text-lg font-semibold text-white">
-            {(member.assignee || "Unknown").split("@")[0]}
-          </h3>
-          <p className="mt-1 text-sm text-white/40">{member.assignee}</p>
-        </div>
+    <button
+      type="button"
+      onClick={() => setLoadFilter("All")}
+      className="mt-5 inline-flex items-center rounded-xl bg-[#8ea8ff] px-4 py-2 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
+    >
+      Show all members
+    </button>
+  </div>
+) : (
+  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    {filteredTeamMembers.map((member: any, index: number) => {
+      const styles = getMemberCardStyles(member.loadLevel);
 
-        <span
-  className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${styles.badgeClass}`}
->
- {getLoadLabel(member.loadLevel)}
-</span>
-      </div>
+      return (
+        <Link
+          key={index}
+          href={`/tasks?assignee=${encodeURIComponent(member.assignee)}`}
+          className={`rounded-[24px] border p-5 shadow-xl shadow-black/20 transition hover:scale-[1.01] ${styles.cardClass}`}
+        >
+          <div className="mb-4 flex items-start justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-semibold text-white">
+                {(member.assignee || "Unknown").split("@")[0]}
+              </h3>
+              <p className="mt-1 text-sm text-white/40">{member.assignee}</p>
+            </div>
 
-      <div className="space-y-3 text-sm text-white/65">
-        <div className="flex items-center justify-between">
-          <span>Assigned Tasks</span>
-          <span className="font-medium text-white">{member.taskCount}</span>
-        </div>
+            <span
+              className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${styles.badgeClass}`}
+            >
+              {getLoadLabel(member.loadLevel)}
+            </span>
+          </div>
 
-        <div className="flex items-center justify-between">
-          <span>Overdue</span>
-          <span className="font-medium text-white">{member.overdueCount}</span>
-        </div>
+          <div className="space-y-3 text-sm text-white/65">
+            <div className="flex items-center justify-between">
+              <span>Assigned Tasks</span>
+              <span className="font-medium text-white">{member.taskCount}</span>
+            </div>
 
-        <div className="flex items-center justify-between">
-          <span>Avg Progress</span>
-          <span className="font-medium text-white">{member.avgProgress}%</span>
-        </div>
-      </div>
+            <div className="flex items-center justify-between">
+              <span>Overdue</span>
+              <span className="font-medium text-white">{member.overdueCount}</span>
+            </div>
 
-      <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/[0.06]">
-  <div
-    className={`h-full rounded-full ${styles.barClass}`}
-    style={{ width: `${member.avgProgress || 0}%` }}
-  />
-</div>
-    </Link>
-    );
-  })}</div>
+            <div className="flex items-center justify-between">
+              <span>Avg Progress</span>
+              <span className="font-medium text-white">{member.avgProgress}%</span>
+            </div>
+          </div>
+
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/[0.06]">
+            <div
+              className={`h-full rounded-full ${styles.barClass}`}
+              style={{ width: `${member.avgProgress || 0}%` }}
+            />
+          </div>
+        </Link>
+      );
+    })}
+  </div>
+)}
         </section>
 
         <section className="mt-8">
