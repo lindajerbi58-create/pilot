@@ -165,6 +165,7 @@ const [sortMode, setSortMode] = useState("overloaded");
   if (loadLevel === "High") return "At Risk";
   return "Stable";
 };
+
 const teamMembers = [...(dashboardData?.resourceWorkload || [])].sort((a: any, b: any) => {
   const loadScore = (member: any) =>
     member.loadLevel === "Critical" ? 3 : member.loadLevel === "High" ? 2 : 1;
@@ -291,6 +292,39 @@ const urgentMemberLoad =
 
 const urgentMemberLoadValue = mostCriticalMember?.avgProgress || 0;
 const urgentMemberTasks = mostCriticalMember?.taskCount || 0;
+
+const overloadedMembers = teamMembers.filter(
+  (member: any) => member.loadLevel === "Critical" || member.loadLevel === "High"
+);
+
+const balancedMembers = teamMembers.filter(
+  (member: any) => member.loadLevel === "Balanced"
+);
+
+const sourceMember = overloadedMembers[0] || null;
+const targetMember = balancedMembers[0] || null;
+
+const suggestedTaskShift =
+  sourceMember && targetMember
+    ? Math.max(1, Math.min(2, Math.ceil((sourceMember.overdueCount || 0) / 2)))
+    : 0;
+
+const recommendationTitle =
+  sourceMember && targetMember
+    ? "Resource Recommendation"
+    : "Workload Recommendation";
+
+const recommendationText =
+  sourceMember && targetMember
+    ? `Pilot suggests moving ${suggestedTaskShift} task${
+        suggestedTaskShift > 1 ? "s" : ""
+      } from ${(sourceMember.assignee || "unknown").split("@")[0]} to ${
+        (targetMember.assignee || "unknown").split("@")[0]
+      } to reduce delivery pressure, lower overdue risk, and rebalance current execution capacity.`
+    : "Pilot does not detect an immediate redistribution action right now. Current workload appears relatively stable across the team.";
+
+const recommendationIsCalm = !sourceMember || !targetMember;
+
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1450px] px-4 py-5 sm:px-6 lg:px-8">
@@ -582,23 +616,33 @@ return (
         </section>
 
         <section className="mt-8">
-          <div className="rounded-[28px] border border-[#ffb86a]/15 bg-[#ffb86a]/[0.06] p-5 shadow-xl shadow-black/20">
-            <div className="flex items-start gap-3">
-              <div className="mt-0.5 flex h-10 w-10 items-center justify-center rounded-2xl bg-[#ffb86a]/15 text-[#ffb86a]">
-                <AlertTriangle size={18} />
-              </div>
+  <div
+    className={`rounded-[28px] p-5 shadow-xl shadow-black/20 ${
+      recommendationIsCalm
+        ? "border border-[#8ea8ff]/15 bg-[#8ea8ff]/[0.06]"
+        : "border border-[#ffb86a]/15 bg-[#ffb86a]/[0.06]"
+    }`}
+  >
+    <div className="flex items-start gap-3">
+      <div
+        className={`mt-0.5 flex h-10 w-10 items-center justify-center rounded-2xl ${
+          recommendationIsCalm
+            ? "bg-[#8ea8ff]/15 text-[#8ea8ff]"
+            : "bg-[#ffb86a]/15 text-[#ffb86a]"
+        }`}
+      >
+        <AlertTriangle size={18} />
+      </div>
 
-              <div>
-                <h3 className="text-base font-semibold text-white">Resource Recommendation</h3>
-                <p className="mt-2 max-w-3xl text-sm leading-7 text-white/60">
-                  Pilot suggests moving 2 tasks from Elena Rostova to David Park and 1
-                  infrastructure review item from Sarah Jenkins to Marcus Chen in order
-                  to reduce overload peaks and rebalance execution capacity.
-                </p>
-              </div>
-            </div>
-          </div>
-           </section>
+      <div>
+        <h3 className="text-base font-semibold text-white">{recommendationTitle}</h3>
+        <p className="mt-2 max-w-3xl text-sm leading-7 text-white/60">
+          {recommendationText}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
       </div>
     </main>
   );
