@@ -646,14 +646,25 @@ return (
         <p className="mt-2 max-w-3xl text-sm leading-7 text-white/60">
           {recommendationText}
         </p>
-        {sourceMemberEmail && (
-  <Link
-    href={`/tasks?assignee=${encodeURIComponent(sourceMemberEmail)}`}
-    className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#8ea8ff] px-4 py-2 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
-  >
-    View {sourceMemberName}'s Tasks →
-  </Link>
-)}
+      <div className="mt-4 flex flex-wrap gap-3">
+  {sourceMemberEmail && (
+    <Link
+      href={`/tasks?assignee=${encodeURIComponent(sourceMemberEmail)}`}
+      className="inline-flex items-center gap-2 rounded-xl bg-[#8ea8ff] px-4 py-2 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
+    >
+      View {sourceMemberName}&apos;s Tasks →
+    </Link>
+  )}
+
+  {targetMemberEmail && (
+    <Link
+      href={`/tasks?assignee=${encodeURIComponent(targetMemberEmail)}`}
+      className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm font-medium text-white/80 transition hover:bg-white/[0.05] hover:text-white"
+    >
+      View {targetMemberName}&apos;s Tasks →
+    </Link>
+  )}
+</div>
       </div>
     </div>
   </div>
