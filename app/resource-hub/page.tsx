@@ -166,6 +166,11 @@ const [searchQuery, setSearchQuery] = useState("");
   if (loadLevel === "High") return "At Risk";
   return "Stable";
 };
+const resetResourceHubView = () => {
+  setLoadFilter("All");
+  setSortMode("overloaded");
+  setSearchQuery("");
+};
 const getActiveFilterLabel = () => {
   if (loadFilter === "Critical") return "Overloaded";
   if (loadFilter === "High") return "At Risk";
@@ -597,7 +602,7 @@ return (
     />
   </div>
 </div>
-<div className="mb-4 flex flex-wrap gap-2 text-xs">
+<div className="mb-4 flex flex-wrap items-center gap-2 text-xs">
   <div className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-white/70">
     Status: {getActiveFilterLabel()}
   </div>
@@ -611,6 +616,14 @@ return (
       Search: {searchQuery}
     </div>
   )}
+
+  <button
+    type="button"
+    onClick={resetResourceHubView}
+    className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-white/70 transition hover:bg-white/[0.06] hover:text-white"
+  >
+    Reset all
+  </button>
 </div>
 <p className="mb-4 text-sm text-white/45">
  Showing {searchedTeamMembers.length} member{searchedTeamMembers.length > 1 ? "s" : ""}
@@ -630,10 +643,7 @@ return (
 
     <button
       type="button"
-    onClick={() => {
-  setLoadFilter("All");
-  setSearchQuery("");
-}}
+   onClick={resetResourceHubView}
       className="mt-5 inline-flex items-center rounded-xl bg-[#8ea8ff] px-4 py-2 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
     >
       Show all members
