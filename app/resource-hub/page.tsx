@@ -130,6 +130,7 @@ export default function ResourceHubPage() {
   const [loading, setLoading] = useState(true);
 const [loadFilter, setLoadFilter] = useState("All");
 const [sortMode, setSortMode] = useState("overloaded");
+
 const [searchQuery, setSearchQuery] = useState("");
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -289,7 +290,12 @@ const activeSprints = teamMembers.reduce(
   (sum: number, member: any) => sum + (member.taskCount || 0),
   0
 );
-
+const totalMembersHint = "live team size";
+const membersUnderWatchHint =
+  membersUnderWatch > 0 ? "members needing attention" : "no active pressure detected";
+const totalOverdueTasksHint =
+  totalOverdueTasks > 0 ? "total delayed items" : "no overdue tasks";
+const averageTeamProgressHint = "current team average";
 const mostCriticalMember =
   [...teamMembers].sort((a: any, b: any) => {
     const loadScore = (member: any) =>
@@ -511,21 +517,25 @@ const recommendationIsCalm = !sourceMember || !targetMember;
   <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
     <p className="text-xs uppercase tracking-[0.16em] text-white/35">Team Members</p>
     <p className="mt-2 text-3xl font-semibold text-white">{totalMembers}</p>
+    <p className="mt-2 text-xs text-white/40">{totalMembersHint}</p>
   </div>
 
   <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
     <p className="text-xs uppercase tracking-[0.16em] text-white/35">Under Watch</p>
     <p className="mt-2 text-3xl font-semibold text-white">{membersUnderWatch}</p>
+    <p className="mt-2 text-xs text-white/40">{membersUnderWatchHint}</p>
   </div>
 
   <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
     <p className="text-xs uppercase tracking-[0.16em] text-white/35">Overdue Tasks</p>
     <p className="mt-2 text-3xl font-semibold text-white">{totalOverdueTasks}</p>
+    <p className="mt-2 text-xs text-white/40">{totalOverdueTasksHint}</p>
   </div>
 
   <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
     <p className="text-xs uppercase tracking-[0.16em] text-white/35">Avg Team Progress</p>
     <p className="mt-2 text-3xl font-semibold text-white">{averageTeamProgress}%</p>
+    <p className="mt-2 text-xs text-white/40">{averageTeamProgressHint}</p>
   </div>
 </section>
 <section className="mb-6 flex flex-wrap gap-3">
