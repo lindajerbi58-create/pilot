@@ -646,6 +646,21 @@ return (
         <p className="mt-2 max-w-3xl text-sm leading-7 text-white/60">
           {recommendationText}
         </p>
+        {sourceMember && targetMember && (
+  <div className="mt-4 flex flex-wrap gap-2">
+    <div className="rounded-full border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-3 py-1 text-xs font-medium text-[#b7c8ff]">
+      {suggestedTaskShift} Task{suggestedTaskShift > 1 ? "s" : ""} to Shift
+    </div>
+
+    <div className="rounded-full border border-[#ff8f5a]/20 bg-[#ff8f5a]/10 px-3 py-1 text-xs font-medium text-[#ffb27f]">
+      From {sourceMemberName}
+    </div>
+
+    <div className="rounded-full border border-[#7dd3fc]/20 bg-[#7dd3fc]/10 px-3 py-1 text-xs font-medium text-[#bae6fd]">
+      To {targetMemberName}
+    </div>
+  </div>
+)}
       <div className="mt-4 flex flex-wrap gap-3">
   {sourceMemberEmail && (
     <Link
