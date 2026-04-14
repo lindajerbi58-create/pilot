@@ -129,6 +129,7 @@ export default function ResourceHubPage() {
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 const [loadFilter, setLoadFilter] = useState("All");
+const [sortMode, setSortMode] = useState("overloaded");
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -165,12 +166,30 @@ const [loadFilter, setLoadFilter] = useState("All");
   return "Stable";
 };
 const teamMembers = [...(dashboardData?.resourceWorkload || [])].sort((a: any, b: any) => {
-  const score = (member: any) =>
-    (member.loadLevel === "Critical" ? 3 : member.loadLevel === "High" ? 2 : 1) * 100 +
-    (member.overdueCount || 0) * 10 +
-    (member.taskCount || 0);
+  const loadScore = (member: any) =>
+    member.loadLevel === "Critical" ? 3 : member.loadLevel === "High" ? 2 : 1;
 
-  return score(b) - score(a);
+  if (sortMode === "overdue") {
+    return (
+      (b.overdueCount || 0) - (a.overdueCount || 0) ||
+      loadScore(b) - loadScore(a) ||
+      (b.taskCount || 0) - (a.taskCount || 0)
+    );
+  }
+
+  if (sortMode === "progress") {
+    return (
+      (b.avgProgress || 0) - (a.avgProgress || 0) ||
+      loadScore(b) - loadScore(a) ||
+      (b.taskCount || 0) - (a.taskCount || 0)
+    );
+  }
+
+  return (
+    loadScore(b) - loadScore(a) ||
+    (b.overdueCount || 0) - (a.overdueCount || 0) ||
+    (b.taskCount || 0) - (a.taskCount || 0)
+  );
 });
 const filteredTeamMembers =
   loadFilter === "All"
@@ -410,6 +429,32 @@ return (
         className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
           isActive
             ? "border-white/20 bg-white text-[#0b1020]"
+            : "border-white/10 bg-white/[0.03] text-white/70 hover:bg-white/[0.06]"
+        }`}
+      >
+        {option.label}
+      </button>
+    );
+  })}
+</section>
+<section className="mb-4 flex flex-wrap items-center gap-3">
+  <p className="text-xs uppercase tracking-[0.16em] text-white/35">Sort by</p>
+
+  {[
+    { value: "overloaded", label: "Most Overloaded" },
+    { value: "overdue", label: "Most Overdue" },
+    { value: "progress", label: "Best Progress" },
+  ].map((option) => {
+    const isActive = sortMode === option.value;
+
+    return (
+      <button
+        key={option.value}
+        type="button"
+        onClick={() => setSortMode(option.value)}
+        className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+          isActive
+            ? "border-[#8ea8ff]/30 bg-[#8ea8ff] text-[#0b1020]"
             : "border-white/10 bg-white/[0.03] text-white/70 hover:bg-white/[0.06]"
         }`}
       >
