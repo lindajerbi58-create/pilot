@@ -36,6 +36,7 @@ type ResourceWorkloadItem = {
   overdueCount: number;
   avgProgress: number;
   loadLevel: "Critical" | "High" | "Balanced" | "Light";
+  riskScore: number;
 };
 
 type ExecutionTrendItem = {
@@ -114,6 +115,17 @@ function getLoadLevel(
   }
 
   return "Light";
+}
+function getRiskScore(
+  taskCount: number,
+  overdueCount: number,
+  avgProgress: number
+): number {
+  const taskWeight = Math.min(taskCount * 12, 36);
+  const overdueWeight = Math.min(overdueCount * 20, 40);
+  const progressPenalty = Math.max(0, 100 - avgProgress) * 0.24;
+
+  return Math.min(100, Math.round(taskWeight + overdueWeight + progressPenalty));
 }
 export async function getDashboardData(): Promise<DashboardResponse> {
   await connectToDatabase();
@@ -304,23 +316,26 @@ export async function getDashboardData(): Promise<DashboardResponse> {
         resource.taskCount > 0
           ? Math.round(resource.totalProgress / resource.taskCount)
           : 0;
+    const riskScore = getRiskScore(
+      resource.taskCount,
+      resource.overdueCount,
+      avgProgress
+    );
 
-      return {
-        assignee: resource.assignee,
-        taskCount: resource.taskCount,
-        overdueCount: resource.overdueCount,
-        avgProgress,
-       loadLevel: getLoadLevel(
-  resource.taskCount,
-  resource.overdueCount,
-  avgProgress
-),
-      };
+    return {
+      assignee: resource.assignee,
+      taskCount: resource.taskCount,
+      overdueCount: resource.overdueCount,
+      avgProgress,
+      loadLevel: getLoadLevel(
+        resource.taskCount,
+        resource.overdueCount,
+        avgProgress
+      ),
+      riskScore,
+    };
     })
-    .sort((a, b) => {
-      const score = { Critical: 4, High: 3, Balanced: 2, Light: 1 };
-      return score[b.loadLevel] - score[a.loadLevel] || b.taskCount - a.taskCount;
-    });
+    .sort((a, b) => b.riskScore - a.riskScore || b.taskCount - a.taskCount);
 
   const dayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
