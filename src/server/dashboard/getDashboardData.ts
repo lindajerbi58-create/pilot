@@ -96,13 +96,25 @@ function getRiskReason(overdueCount: number, avgProgress: number): string {
   return "Needs monitoring";
 }
 
-function getLoadLevel(taskCount: number, overdueCount: number): "Critical" | "High" | "Balanced" | "Light" {
-  if (overdueCount >= 3) return "Critical";
-  if (taskCount >= 4 || overdueCount >= 1) return "High";
-  if (taskCount >= 2) return "Balanced";
+function getLoadLevel(
+  taskCount: number,
+  overdueCount: number,
+  avgProgress: number
+): "Critical" | "High" | "Balanced" | "Light" {
+  if (overdueCount >= 3 || (taskCount >= 5 && avgProgress < 35)) {
+    return "Critical";
+  }
+
+  if (overdueCount >= 1 || taskCount >= 4 || avgProgress < 60) {
+    return "High";
+  }
+
+  if (taskCount >= 2) {
+    return "Balanced";
+  }
+
   return "Light";
 }
-
 export async function getDashboardData(): Promise<DashboardResponse> {
   await connectToDatabase();
 
@@ -298,7 +310,11 @@ export async function getDashboardData(): Promise<DashboardResponse> {
         taskCount: resource.taskCount,
         overdueCount: resource.overdueCount,
         avgProgress,
-        loadLevel: getLoadLevel(resource.taskCount, resource.overdueCount),
+       loadLevel: getLoadLevel(
+  resource.taskCount,
+  resource.overdueCount,
+  avgProgress
+),
       };
     })
     .sort((a, b) => {
