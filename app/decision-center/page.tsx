@@ -215,6 +215,49 @@ const secondaryDecisionHref = secondaryRiskProject
   : topOverloadedMember
   ? `/tasks?assignee=${encodeURIComponent(topOverloadedMember.assignee)}`
   : "/tasks";
+  const recommendedActions = [
+  ...(topRiskProject
+    ? [
+        {
+          title: `Escalate ${topRiskProject.title}`,
+          description: `${topRiskProject.title} is flagged ${topRiskProject.level} risk and requires immediate review.`,
+          priority: topRiskProject.level,
+          href: `/tasks?project=${encodeURIComponent(topRiskProject.title)}&filter=overdue`,
+        },
+      ]
+    : []),
+
+  ...(topOverloadedMember
+    ? [
+        {
+          title: `Rebalance ${String(topOverloadedMember.assignee || "team member").split("@")[0]} workload`,
+          description: `${String(topOverloadedMember.assignee || "This team member").split("@")[0]} is currently marked ${topOverloadedMember.loadLevel}. Review assignments and redistribute work.`,
+          priority: topOverloadedMember.loadLevel,
+          href: `/tasks?assignee=${encodeURIComponent(topOverloadedMember.assignee)}`,
+        },
+      ]
+    : []),
+
+  ...((dashboardData?.kpis?.overdueTasks || 0) > 0
+    ? [
+        {
+          title: "Review overdue tasks",
+          description: `${dashboardData.kpis.overdueTasks} overdue task(s) need immediate operational follow-up.`,
+          priority: "High",
+          href: "/tasks?filter=overdue",
+        },
+      ]
+    : []),
+
+  ...((dashboardData?.aiSuggestions || []).slice(0, 1).map((suggestion: any) => ({
+    title: suggestion.title,
+    description:
+      suggestion.description ||
+      "Pilot generated this recommendation from live delivery, workload, and risk signals.",
+    priority: "AI",
+    href: "/ai-insights",
+  }))),
+].slice(0, 4);
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1450px] px-4 py-5 sm:px-6 lg:px-8">
@@ -457,6 +500,71 @@ const secondaryDecisionHref = secondaryRiskProject
       <Plus size={20} />
     </button>
   </div>
+</section>
+<section className="mt-6 rounded-[32px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/25">
+  <div className="mb-6 flex items-center justify-between">
+    <div>
+      <p className="text-[10px] uppercase tracking-[0.2em] text-white/35">
+        Recommended Actions
+      </p>
+      <h2 className="mt-2 text-2xl font-semibold text-white">
+        What Pilot suggests next
+      </h2>
+    </div>
+
+    <div className="rounded-2xl border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-4 py-2 text-sm font-medium text-[#9eb7ff]">
+      {recommendedActions.length} active
+    </div>
+  </div>
+
+  <div className="grid gap-4 lg:grid-cols-2">
+    {recommendedActions.map((action, index) => (
+      <div
+        key={index}
+        className="rounded-[24px] border border-white/8 bg-[#0b0e17]/80 p-5"
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h3 className="text-base font-semibold text-white">
+              {action.title}
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-white/60">
+              {action.description}
+            </p>
+          </div>
+
+          <span
+            className={`rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${
+              action.priority === "High" || action.priority === "Critical"
+                ? "bg-[#ff6b6b]/15 text-[#ff8e8e]"
+                : action.priority === "Medium"
+                ? "bg-[#ffb86b]/15 text-[#ffc98f]"
+                : action.priority === "AI"
+                ? "bg-[#8ea8ff]/15 text-[#9eb7ff]"
+                : "bg-white/10 text-white/60"
+            }`}
+          >
+            {action.priority}
+          </span>
+        </div>
+
+        <div className="mt-5">
+          <Link
+            href={action.href}
+            className="inline-flex rounded-2xl bg-white px-4 py-2.5 text-sm font-semibold text-[#0b1020] transition hover:opacity-90"
+          >
+            Open action
+          </Link>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  {recommendedActions.length === 0 && (
+    <div className="rounded-[24px] border border-dashed border-white/10 bg-white/[0.02] p-6 text-center text-sm text-white/50">
+      No urgent action detected right now. Pilot will keep monitoring incoming signals.
+    </div>
+  )}
 </section>
 
         <nav className="mt-8 flex justify-center md:hidden">
