@@ -81,7 +81,7 @@ const isRedistributeMode = mode === "redistribute";
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+const [redistributing, setRedistributing] = useState(false);
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -129,6 +129,11 @@ const filteredTasks = useMemo(() => {
 
   return result;
 }, [tasks, filter, project, assignee]);
+const visibleTaskIds = useMemo(() => {
+  return filteredTasks
+    .map((task) => task._id)
+    .filter((id): id is string => Boolean(id));
+}, [filteredTasks]);
   const stats = useMemo(() => {
     const overdue = tasks.filter(isOverdue).length;
     const completed = tasks.filter((task) => isCompleted(task.status, task.progress)).length;
@@ -139,7 +144,59 @@ const filteredTasks = useMemo(() => {
       completed,
     };
   }, [tasks]);
+const handleRedistribute = async () => {
+  if (!target) {
+    alert("Missing target assignee");
+    return;
+  }
 
+  if (visibleTaskIds.length === 0) {
+    alert("No tasks available to redistribute");
+    return;
+  }
+
+  const confirmed = window.confirm(
+    `Redistribute ${visibleTaskIds.length} task(s) from ${assignee || "current assignee"} to ${target}?`
+  );
+
+  if (!confirmed) return;
+
+  try {
+    setRedistributing(true);
+
+    const res = await fetch("/api/tasks/redistribute", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        taskIds: visibleTaskIds,
+        targetAssignee: target,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      throw new Error(data?.error || "Failed to redistribute tasks");
+    }
+
+    setTasks((prev) =>
+      prev.map((task) =>
+        visibleTaskIds.includes(task._id || "")
+          ? { ...task, assignee_email: target }
+          : task
+      )
+    );
+
+    alert(`Successfully reassigned ${data.updatedCount || visibleTaskIds.length} task(s) to ${target}`);
+  } catch (err: any) {
+    console.error(err);
+    alert(err.message || "Failed to redistribute tasks");
+  } finally {
+    setRedistributing(false);
+  }
+};
   if (loading) {
     return (
       <main className="min-h-screen bg-[#05060b] text-white">
@@ -216,9 +273,9 @@ const filteredTasks = useMemo(() => {
             <p className="mt-2 text-3xl font-semibold">{stats.completed}</p>
           </div>
         </section>
-        {isRedistributeMode && (
+ {isRedistributeMode && (
   <div className="mb-6 rounded-[24px] border border-amber-500/20 bg-amber-500/10 px-5 py-4">
-    <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div>
         <p className="text-xs uppercase tracking-[0.16em] text-amber-300/80">
           Redistribution Mode
@@ -228,7 +285,7 @@ const filteredTasks = useMemo(() => {
         </p>
       </div>
 
-      <div className="flex flex-col gap-1 text-sm">
+      <div className="flex flex-col gap-1 text-sm md:text-right">
         <span className="text-white/65">
           From: <span className="font-medium text-white">{assignee || "-"}</span>
         </span>
@@ -236,6 +293,18 @@ const filteredTasks = useMemo(() => {
           To: <span className="font-medium text-white">{target || "-"}</span>
         </span>
       </div>
+    </div>
+
+    <div className="mt-4">
+      <button
+        onClick={handleRedistribute}
+        disabled={redistributing || visibleTaskIds.length === 0 || !target}
+        className="rounded-2xl bg-amber-300 px-4 py-2 text-sm font-semibold text-black transition hover:bg-amber-200 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {redistributing
+          ? "Reassigning..."
+          : `Reassign ${visibleTaskIds.length} task(s) to ${target || "target"}`}
+      </button>
     </div>
   </div>
 )}
