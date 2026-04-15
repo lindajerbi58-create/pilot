@@ -265,11 +265,13 @@ const decisionStats = [
       (project: any) => project.level === "High"
     ).length,
     tone: "danger",
+    href: "/tasks?filter=overdue",
   },
   {
     label: "Overdue Tasks",
     value: dashboardData?.kpis?.overdueTasks || 0,
     tone: "warning",
+    href: "/tasks?filter=overdue",
   },
   {
     label: "Overloaded Members",
@@ -278,11 +280,13 @@ const decisionStats = [
         member.loadLevel === "Critical" || member.loadLevel === "High"
     ).length,
     tone: "info",
+    href: "/resource-hub",
   },
   {
     label: "AI Recommendations",
     value: (dashboardData?.aiSuggestions || []).length,
     tone: "primary",
+    href: "/ai-insights",
   },
 ];
   return (
@@ -357,9 +361,10 @@ const decisionStats = [
         </section>
 <section className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
   {decisionStats.map((stat, index) => (
-    <div
+    <Link
       key={index}
-      className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5 shadow-xl shadow-black/20"
+      href={stat.href}
+      className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5 shadow-xl shadow-black/20 transition hover:bg-white/[0.05] hover:scale-[1.01]"
     >
       <p className="text-[10px] uppercase tracking-[0.18em] text-white/35">
         {stat.label}
@@ -382,7 +387,7 @@ const decisionStats = [
           Live
         </span>
       </div>
-    </div>
+    </Link>
   ))}
 </section>
         <section className="grid gap-6 xl:grid-cols-[1.65fr_0.85fr]">
