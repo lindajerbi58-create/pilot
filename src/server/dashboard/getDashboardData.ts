@@ -53,6 +53,7 @@ export type DashboardResponse = {
   aiSuggestions: AISuggestion[];
   resourceWorkload: ResourceWorkloadItem[];
   executionTrend: ExecutionTrendItem[];
+  primaryIssue: "overdue" | "risk" | "workload" | "stable";
 };
 
 function normalizeStatus(status?: string) {
@@ -338,7 +339,23 @@ export async function getDashboardData(): Promise<DashboardResponse> {
     .sort((a, b) => b.riskScore - a.riskScore || b.taskCount - a.taskCount);
 
   const dayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const overloadedCount = resourceWorkload.filter(
+  (member) => member.loadLevel === "Critical" || member.loadLevel === "High"
+).length;
 
+let primaryIssue: "overdue" | "risk" | "workload" | "stable" = "stable";
+const highRiskProjects = riskyProjects.filter(
+  (project) => project.level === "High"
+).length;
+if (overdueTasks >= highRiskProjects && overdueTasks >= overloadedCount && overdueTasks > 0) {
+  primaryIssue = "overdue";
+} else if (highRiskProjects >= overloadedCount && highRiskProjects > 0) {
+  primaryIssue = "risk";
+} else if (overloadedCount > 0) {
+  primaryIssue = "workload";
+} else {
+  primaryIssue = "stable";
+}
 const executionTrend = dayLabels.map((day) => {
   const tasksForDay = tasks.filter((task) => {
     const baseDate = new Date(task.start_date || task.due_date || task.createdAt || Date.now());
@@ -369,13 +386,14 @@ const executionTrend = dayLabels.map((day) => {
   };
 });
 
-  return {
-    success: true,
-    kpis,
-    riskyProjects,
-    recentActivity,
-    aiSuggestions,
-    resourceWorkload,
-    executionTrend,
-  };
+ return {
+  success: true,
+  kpis,
+  riskyProjects,
+  recentActivity,
+  aiSuggestions,
+  resourceWorkload,
+  executionTrend,
+  primaryIssue,
+};
 }
