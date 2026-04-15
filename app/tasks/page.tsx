@@ -71,9 +71,13 @@ function getPriorityBadge(priority?: string) {
 
 export default function TasksPage() {
   const searchParams = useSearchParams();
-  const filter = searchParams.get("filter");
+ const filter = searchParams.get("filter");
 const project = searchParams.get("project");
 const assignee = searchParams.get("assignee");
+const target = searchParams.get("target");
+const mode = searchParams.get("mode");
+
+const isRedistributeMode = mode === "redistribute";
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -212,6 +216,29 @@ const filteredTasks = useMemo(() => {
             <p className="mt-2 text-3xl font-semibold">{stats.completed}</p>
           </div>
         </section>
+        {isRedistributeMode && (
+  <div className="mb-6 rounded-[24px] border border-amber-500/20 bg-amber-500/10 px-5 py-4">
+    <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+      <div>
+        <p className="text-xs uppercase tracking-[0.16em] text-amber-300/80">
+          Redistribution Mode
+        </p>
+        <p className="mt-1 text-sm text-white/80">
+          Review tasks before reassigning workload.
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-1 text-sm">
+        <span className="text-white/65">
+          From: <span className="font-medium text-white">{assignee || "-"}</span>
+        </span>
+        <span className="text-white/65">
+          To: <span className="font-medium text-white">{target || "-"}</span>
+        </span>
+      </div>
+    </div>
+  </div>
+)}
 {project && (
   <div className="mb-6 rounded-[22px] border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-4 py-3 text-sm font-medium text-[#9eb7ff]">
     Showing tasks for project: {project}
@@ -231,7 +258,11 @@ const filteredTasks = useMemo(() => {
         <div className="rounded-[28px] border border-white/8 bg-white/[0.03] shadow-2xl shadow-black/20">
           <div className="border-b border-white/8 px-5 py-4">
             <h2 className="text-lg font-semibold text-white">
-              {filter === "overdue" ? `Overdue Tasks (${filteredTasks.length})` : `All Tasks (${filteredTasks.length})`}
+              {isRedistributeMode
+  ? `Redistribution Tasks (${filteredTasks.length})`
+  : filter === "overdue"
+  ? `Overdue Tasks (${filteredTasks.length})`
+  : `All Tasks (${filteredTasks.length})`}
             </h2>
           </div>
 
