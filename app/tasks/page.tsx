@@ -172,7 +172,39 @@ const filteredTasks = useMemo(() => {
     result = result.filter(isOverdue);
   }
 
-  return result;
+  const priorityWeight = (priority?: string) => {
+    const p = String(priority || "").trim().toLowerCase();
+
+    if (p === "critical") return 4;
+    if (p === "high") return 3;
+    if (p === "medium") return 2;
+    if (p === "low") return 1;
+    return 0;
+  };
+
+  return [...result].sort((a, b) => {
+    const aOverdue = isOverdue(a) ? 1 : 0;
+    const bOverdue = isOverdue(b) ? 1 : 0;
+
+    if (bOverdue !== aOverdue) {
+      return bOverdue - aOverdue;
+    }
+
+    const priorityDiff = priorityWeight(b.priority) - priorityWeight(a.priority);
+    if (priorityDiff !== 0) {
+      return priorityDiff;
+    }
+
+    const progressDiff = (a.progress || 0) - (b.progress || 0);
+    if (progressDiff !== 0) {
+      return progressDiff;
+    }
+
+    const aDue = a.due_date ? new Date(a.due_date).getTime() : Number.MAX_SAFE_INTEGER;
+    const bDue = b.due_date ? new Date(b.due_date).getTime() : Number.MAX_SAFE_INTEGER;
+
+    return aDue - bDue;
+  });
 }, [tasks, filter, project, assignee]);
 useEffect(() => {
   if (!isRedistributeMode) return;
@@ -224,16 +256,28 @@ const sourceReliefLevel = useMemo(() => {
   if (shift === 1) return "Low";
   return "None";
 }, [selectedTaskIds.length]);
-  const stats = useMemo(() => {
-    const overdue = tasks.filter(isOverdue).length;
-    const completed = tasks.filter((task) => isCompleted(task.status, task.progress)).length;
+const stats = useMemo(() => {
+  const source = filteredTasks;
 
-    return {
-      total: tasks.length,
-      overdue,
-      completed,
-    };
-  }, [tasks]);
+  const overdue = source.filter(isOverdue).length;
+  const completed = source.filter((task) =>
+    isCompleted(task.status, task.progress)
+  ).length;
+  const inProgress = source.filter((task) => {
+    const s = normalizeStatus(task.status);
+    return (
+      !isCompleted(task.status, task.progress) &&
+      (s === "in progress" || s === "in-progress" || s === "ongoing")
+    );
+  }).length;
+
+  return {
+    total: source.length,
+    overdue,
+    completed,
+    inProgress,
+  };
+}, [filteredTasks]);
 const handleRedistribute = async () => {
   if (!target) {
     alert("Missing target assignee");
@@ -296,7 +340,36 @@ const toggleSelectAllVisible = () => {
 
   setSelectedTaskIds(visibleTaskIds);
 };
-  if (loading) {
+
+const viewTitle = isRedistributeMode
+  ? `Redistribution Tasks (${filteredTasks.length})`
+  : project && filter === "overdue"
+  ? `${project} — Overdue Tasks (${filteredTasks.length})`
+  : project
+  ? `${project} — Tasks (${filteredTasks.length})`
+  : assignee && filter === "overdue"
+  ? `${assignee} — Overdue Tasks (${filteredTasks.length})`
+  : assignee
+  ? `${assignee} — Tasks (${filteredTasks.length})`
+  : filter === "overdue"
+  ? `Overdue Tasks (${filteredTasks.length})`
+  : `All Tasks (${filteredTasks.length})`;
+
+const viewDescription = isRedistributeMode
+  ? `Pilot selected candidate tasks for redistribution${assignee ? ` from ${assignee}` : ""}${target ? ` to ${target}` : ""}.`
+  : project && filter === "overdue"
+  ? `Showing overdue tasks for project ${project}.`
+  : project
+  ? `Showing all tasks for project ${project}.`
+  : assignee && filter === "overdue"
+  ? `Showing overdue tasks assigned to ${assignee}.`
+  : assignee
+  ? `Showing all tasks assigned to ${assignee}.`
+  : filter === "overdue"
+  ? "Showing all overdue tasks across the workspace."
+  : "Showing all tasks across the workspace.";
+
+if (loading) {
     return (
       <main className="min-h-screen bg-[#05060b] text-white">
         <div className="mx-auto max-w-7xl px-4 py-10">
@@ -347,31 +420,47 @@ const toggleSelectAllVisible = () => {
           </Link>
         </div>
 
-        <section className="mb-6 grid gap-4 md:grid-cols-3">
-          <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
-            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-[#d78bff]/10 text-[#d78bff]">
-              <Briefcase size={18} />
-            </div>
-            <p className="text-xs uppercase tracking-[0.16em] text-white/35">Total Tasks</p>
-            <p className="mt-2 text-3xl font-semibold">{stats.total}</p>
-          </div>
+        <section className="mb-6 grid gap-4 md:grid-cols-4">
+  <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
+    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-[#d78bff]/10 text-[#d78bff]">
+      <Briefcase size={18} />
+    </div>
+    <p className="text-xs uppercase tracking-[0.16em] text-white/35">
+      Visible Tasks
+    </p>
+    <p className="mt-2 text-3xl font-semibold">{stats.total}</p>
+  </div>
 
-          <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
-            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-[#ff6b6b]/10 text-[#ff6b6b]">
-              <AlertTriangle size={18} />
-            </div>
-            <p className="text-xs uppercase tracking-[0.16em] text-white/35">Overdue Tasks</p>
-            <p className="mt-2 text-3xl font-semibold">{stats.overdue}</p>
-          </div>
+  <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
+    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-[#ff6b6b]/10 text-[#ff6b6b]">
+      <AlertTriangle size={18} />
+    </div>
+    <p className="text-xs uppercase tracking-[0.16em] text-white/35">
+      Overdue In View
+    </p>
+    <p className="mt-2 text-3xl font-semibold">{stats.overdue}</p>
+  </div>
 
-          <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
-            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-[#8ea8ff]/10 text-[#8ea8ff]">
-              <FolderKanban size={18} />
-            </div>
-            <p className="text-xs uppercase tracking-[0.16em] text-white/35">Completed Tasks</p>
-            <p className="mt-2 text-3xl font-semibold">{stats.completed}</p>
-          </div>
-        </section>
+  <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
+    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-[#f5b942]/10 text-[#f5b942]">
+      <FolderKanban size={18} />
+    </div>
+    <p className="text-xs uppercase tracking-[0.16em] text-white/35">
+      In Progress
+    </p>
+    <p className="mt-2 text-3xl font-semibold">{stats.inProgress}</p>
+  </div>
+
+  <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
+    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-[#8ea8ff]/10 text-[#8ea8ff]">
+      <FolderKanban size={18} />
+    </div>
+    <p className="text-xs uppercase tracking-[0.16em] text-white/35">
+      Completed In View
+    </p>
+    <p className="mt-2 text-3xl font-semibold">{stats.completed}</p>
+  </div>
+</section>
  {isRedistributeMode && (
   <div className="mb-6 rounded-[24px] border border-amber-500/20 bg-amber-500/10 px-5 py-4">
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -464,31 +553,31 @@ const toggleSelectAllVisible = () => {
     </div>
   </div>
 )}
-{project && (
-  <div className="mb-6 rounded-[22px] border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-4 py-3 text-sm font-medium text-[#9eb7ff]">
-    Showing tasks for project: {project}
+<div className="mb-6 rounded-[24px] border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-5 py-4">
+  <p className="text-[10px] uppercase tracking-[0.16em] text-[#9eb7ff]">
+    Active View
+  </p>
+  <h2 className="mt-2 text-xl font-semibold text-white">{viewTitle}</h2>
+  <p className="mt-2 text-sm text-white/65">{viewDescription}</p>
+</div>
+       {(project || assignee || filter === "overdue") && (
+  <div className="mb-6 rounded-[22px] border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-4 py-3 text-sm font-medium text-[#dbe4ff]">
+    {project && filter === "overdue"
+      ? `Showing overdue tasks for project: ${project}`
+      : project
+      ? `Showing all tasks for project: ${project}`
+      : assignee && filter === "overdue"
+      ? `Showing overdue tasks for assignee: ${assignee}`
+      : assignee
+      ? `Showing all tasks for assignee: ${assignee}`
+     
+      : ""}
   </div>
 )}
-{assignee && (
-  <div className="mb-6 rounded-[22px] border border-[#d78bff]/20 bg-[#d78bff]/10 px-4 py-3 text-sm font-medium text-[#df9fff]">
-    Showing tasks for assignee: {assignee}
-  </div>
-)}
-        {filter === "overdue" && (
-          <div className="mb-6 rounded-[22px] border border-[#ff6b6b]/20 bg-[#ff6b6b]/10 px-4 py-3 text-sm font-medium text-[#ff9d6a]">
-            Showing overdue tasks only
-          </div>
-        )}
 
         <div className="rounded-[28px] border border-white/8 bg-white/[0.03] shadow-2xl shadow-black/20">
           <div className="border-b border-white/8 px-5 py-4">
-            <h2 className="text-lg font-semibold text-white">
-              {isRedistributeMode
-  ? `Redistribution Tasks (${filteredTasks.length})`
-  : filter === "overdue"
-  ? `Overdue Tasks (${filteredTasks.length})`
-  : `All Tasks (${filteredTasks.length})`}
-            </h2>
+   <h2 className="text-lg font-semibold text-white">{viewTitle}</h2>
           </div>
 
           {filteredTasks.length === 0 ? (
@@ -500,17 +589,19 @@ const toggleSelectAllVisible = () => {
   <table className="min-w-[1100px] w-full table-fixed">
                <thead className="border-b border-white/8 bg-white/[0.02]">
   <tr className="text-left text-xs uppercase tracking-[0.16em] text-white/35">
-    <th className="px-5 py-4">
-      <input
-        type="checkbox"
-        checked={
-          visibleTaskIds.length > 0 &&
-          selectedTaskIds.length === visibleTaskIds.length
-        }
-        onChange={toggleSelectAllVisible}
-        className="h-4 w-4 accent-[#8ea8ff]"
-      />
-    </th>
+    {isRedistributeMode && (
+  <th className="px-5 py-4">
+    <input
+      type="checkbox"
+      checked={
+        visibleTaskIds.length > 0 &&
+        selectedTaskIds.length === visibleTaskIds.length
+      }
+      onChange={toggleSelectAllVisible}
+      className="h-4 w-4 accent-[#8ea8ff]"
+    />
+  </th>
+)}
     <th className="w-[260px] px-5 py-4">Task</th>
     <th className="px-5 py-4">Project</th>
     <th className="px-5 py-4">Assignee</th>
@@ -527,16 +618,19 @@ const toggleSelectAllVisible = () => {
       key={task._id || `${task.task_name}-${index}`}
       className="border-b border-white/6 text-sm text-white/80 transition hover:bg-white/[0.02]"
     >
-      <td className="px-5 py-4">
-        {task._id ? (
-          <input
-            type="checkbox"
-            checked={selectedTaskIds.includes(task._id)}
-            onChange={() => toggleTaskSelection(task._id!)}
-            className="h-4 w-4 accent-[#8ea8ff]"
-          />
-        ) : null}
-      </td>
+     {isRedistributeMode && (
+  <td className="px-5 py-4">
+    {task._id ? (
+      <input
+        type="checkbox"
+        checked={selectedTaskIds.includes(task._id)}
+        onChange={() => toggleTaskSelection(task._id!)}
+        className="h-4 w-4 accent-[#8ea8ff]"
+      />
+    ) : null}
+  </td>
+)}
+
 <td className="px-5 py-4 font-medium text-white">
   <div className="max-w-[220px] break-words leading-6">
     <div className="flex flex-wrap items-center gap-2">
