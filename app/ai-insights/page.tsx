@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+
 function RiskRing({ score }: { score: number }) {
   const radius = 72;
   const stroke = 10;
@@ -175,8 +176,7 @@ function WorkloadBar({
           <div
             className="h-8 w-8 rounded-full border border-white/10"
             style={{
-              background:
-                `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), ${avatarColor})`,
+              background: `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), ${avatarColor})`,
             }}
           />
           <span className="font-medium text-white/85">{name}</span>
@@ -229,100 +229,107 @@ export default function AIInsightsPage() {
     );
   }
 
-const overdueTasks = dashboardData?.kpis?.overdueTasks || 0;
-const avgProgress = dashboardData?.kpis?.avgProgress || 0;
-const highRiskProjects = (dashboardData?.riskyProjects || []).filter(
-  (project: any) => project.level === "High" || project.level === "Critical"
-).length;
+  const overdueTasks = dashboardData?.kpis?.overdueTasks || 0;
+  const avgProgress = dashboardData?.kpis?.avgProgress || 0;
+  const highRiskProjects = (dashboardData?.riskyProjects || []).filter(
+    (project: any) => project.level === "High" || project.level === "Critical"
+  ).length;
 
-const score = Math.max(
-  0,
-  Math.min(
-    100,
-    100 - overdueTasks * 6 - highRiskProjects * 10 - (100 - avgProgress) * 0.4
-  )
-);
+  const score = Math.max(
+    0,
+    Math.min(
+      100,
+      100 - overdueTasks * 6 - highRiskProjects * 10 - (100 - avgProgress) * 0.4
+    )
+  );
 
-const roundedScore = Math.round(score);
+  const roundedScore = Math.round(score);
 
-const riskLabel =
-  roundedScore < 40 ? "High Risk" : roundedScore < 70 ? "Medium Risk" : "Low Risk";
+  const riskLabel =
+    roundedScore < 40 ? "High Risk" : roundedScore < 70 ? "Medium Risk" : "Low Risk";
 
-const riskBadgeClass =
-  roundedScore < 40
-    ? "border border-[#ff6b6b]/20 bg-[#ff6b6b]/10 text-[#ff7d7d]"
-    : roundedScore < 70
-    ? "border border-[#ffd56a]/20 bg-[#ffd56a]/10 text-[#ffd56a]"
-    : "border border-[#8ab4ff]/20 bg-[#8ab4ff]/10 text-[#9db8ff]";
+  const riskBadgeClass =
+    roundedScore < 40
+      ? "border border-[#ff6b6b]/20 bg-[#ff6b6b]/10 text-[#ff7d7d]"
+      : roundedScore < 70
+      ? "border border-[#ffd56a]/20 bg-[#ffd56a]/10 text-[#ffd56a]"
+      : "border border-[#8ab4ff]/20 bg-[#8ab4ff]/10 text-[#9db8ff]";
 
-const healthTitle =
-  roundedScore < 40
-    ? "Project Health Needs Immediate Attention"
-    : roundedScore < 70
-    ? "Project Health is Under Watch"
-    : "Project Health is Stable";
+  const healthTitle =
+    roundedScore < 40
+      ? "Project Health Needs Immediate Attention"
+      : roundedScore < 70
+      ? "Project Health is Under Watch"
+      : "Project Health is Stable";
 
-const healthDescription =
-  roundedScore < 40
-    ? `Operational risk is elevated. ${overdueTasks} overdue tasks and ${highRiskProjects} risky projects require action.`
-    : roundedScore < 70
-    ? `Execution remains manageable, but ${overdueTasks} overdue tasks and ${highRiskProjects} risky projects still need supervision.`
-    : "Execution looks stable. Current delivery rhythm and project risk indicators are under control.";
+  const healthDescription =
+    roundedScore < 40
+      ? `Operational risk is elevated. ${overdueTasks} overdue tasks and ${highRiskProjects} risky projects require action.`
+      : roundedScore < 70
+      ? `Execution remains manageable, but ${overdueTasks} overdue tasks and ${highRiskProjects} risky projects still need supervision.`
+      : "Execution looks stable. Current delivery rhythm and project risk indicators are under control.";
+
   const workloadData = (dashboardData?.resourceWorkload || []).slice(0, 4);
 
-const averageWorkloadProgress =
-  workloadData.length > 0
-    ? Math.round(
-        workloadData.reduce((sum: number, member: any) => sum + (member.avgProgress || 0), 0) /
-          workloadData.length
-      )
-    : 0;
+  const averageWorkloadProgress =
+    workloadData.length > 0
+      ? Math.round(
+          workloadData.reduce(
+            (sum: number, member: any) => sum + (member.avgProgress || 0),
+            0
+          ) / workloadData.length
+        )
+      : 0;
 
-const overloadedCount = workloadData.filter(
-  (member: any) => member.loadLevel === "Critical" || member.loadLevel === "High"
-).length;
-const inProgressTasks = dashboardData?.kpis?.inProgressTasks || 0;
- const pilotFlags = [
-  {
-    key: "overdue",
-    title: "Schedule pressure",
-    subtitle: "Delivery slowdown detected",
-    description:
-      overdueTasks > 0
-        ? `${overdueTasks} overdue tasks are reducing delivery confidence and increasing execution pressure across active workstreams.`
-        : "No major schedule pressure detected across the current task pipeline.",
-    value: overdueTasks,
-    icon: AlertTriangle,
-    color: "#ff6b6b",
-  },
-  {
-    key: "risk",
-    title: "Portfolio risk",
-    subtitle: "High-risk initiatives identified",
-    description:
-      highRiskProjects > 0
-        ? `${highRiskProjects} projects are currently marked as high risk, which means they need closer monitoring and faster corrective action.`
-        : "No project is currently marked as high risk by Pilot.",
-    value: highRiskProjects,
-    icon: Briefcase,
-    color: "#8aa4ff",
-  },
-  {
-    key: "workload",
-    title: "Team load imbalance",
-    subtitle: "Capacity tension across the team",
-    description:
-      overloadedCount > 0
-        ? `${overloadedCount} team members are under high or critical workload, increasing the risk of bottlenecks and slower execution.`
-        : "Team workload is currently balanced with no major overload signal.",
-    value: overloadedCount,
-    icon: Users,
-    color: "#c28cff",
-  },
-];
+  const overloadedCount = workloadData.filter(
+    (member: any) => member.loadLevel === "Critical" || member.loadLevel === "High"
+  ).length;
 
-const sortedPilotFlags = [...pilotFlags].sort((a, b) => b.value - a.value);
-return (
+  const inProgressTasks = dashboardData?.kpis?.inProgressTasks || 0;
+
+  const pilotFlags = [
+    {
+      key: "overdue",
+      title: "Schedule pressure",
+      subtitle: "Delivery slowdown detected",
+      description:
+        overdueTasks > 0
+          ? `${overdueTasks} overdue tasks are reducing delivery confidence and increasing execution pressure across active workstreams.`
+          : "No major schedule pressure detected across the current task pipeline.",
+      value: overdueTasks,
+      icon: AlertTriangle,
+      color: "#ff6b6b",
+    },
+    {
+      key: "risk",
+      title: "Portfolio risk",
+      subtitle: "High-risk initiatives identified",
+      description:
+        highRiskProjects > 0
+          ? `${highRiskProjects} projects are currently marked as high risk, which means they need closer monitoring and faster corrective action.`
+          : "No project is currently marked as high risk by Pilot.",
+      value: highRiskProjects,
+      icon: Briefcase,
+      color: "#8aa4ff",
+    },
+    {
+      key: "workload",
+      title: "Team load imbalance",
+      subtitle: "Capacity tension across the team",
+      description:
+        overloadedCount > 0
+          ? `${overloadedCount} team members are under high or critical workload, increasing the risk of bottlenecks and slower execution.`
+          : "Team workload is currently balanced with no major overload signal.",
+      value: overloadedCount,
+      icon: Users,
+      color: "#c28cff",
+    },
+  ];
+
+  const recentActivity = (dashboardData?.recentActivity || []).slice(0, 5);
+  const sortedPilotFlags = [...pilotFlags].sort((a, b) => b.value - a.value);
+
+  return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto flex min-h-screen max-w-[1500px]">
         <aside className="hidden w-[220px] border-r border-white/6 bg-[#070910] px-4 py-6 lg:flex lg:flex-col lg:justify-between">
@@ -337,28 +344,29 @@ return (
               </div>
             </div>
 
-  <div className="space-y-2">
-  <Link href="/dashboard">
-    <NavItem icon={FolderKanban} label="Projects" />
-  </Link>
+            <div className="space-y-2">
+              <Link href="/dashboard">
+                <NavItem icon={FolderKanban} label="Projects" />
+              </Link>
 
-  <Link href="/ai-insights">
-    <NavItem icon={Brain} label="Insights" active />
-  </Link>
+              <Link href="/ai-insights">
+                <NavItem icon={Brain} label="Insights" active />
+              </Link>
 
-  <Link href="/decision-center">
-    <NavItem icon={Zap} label="Decision" />
-  </Link>
+              <Link href="/decision-center">
+                <NavItem icon={Zap} label="Decision" />
+              </Link>
 
-  <Link href="/resource-hub">
-    <NavItem icon={Users} label="Resources" />
-  </Link>
+              <Link href="/resource-hub">
+                <NavItem icon={Users} label="Resources" />
+              </Link>
 
-  <Link href="/settings">
-    <NavItem icon={Settings} label="Settings" />
-  </Link>
-</div>
-</div>
+              <Link href="/settings">
+                <NavItem icon={Settings} label="Settings" />
+              </Link>
+            </div>
+          </div>
+
           <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
             <p className="text-xs uppercase tracking-[0.2em] text-white/35">AI status</p>
             <p className="mt-2 text-sm font-semibold text-white">Live analysis enabled</p>
@@ -405,37 +413,39 @@ return (
 
                 <div className="flex-1">
                   <div className="mb-4 flex flex-wrap gap-2">
-                  <span className={`rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] ${riskBadgeClass}`}>
-  {riskLabel}
-</span>
+                    <span
+                      className={`rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] ${riskBadgeClass}`}
+                    >
+                      {riskLabel}
+                    </span>
                     <span className="rounded-full border border-[#8ab4ff]/20 bg-[#8ab4ff]/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9db8ff]">
                       AI Decision
                     </span>
                   </div>
 
-                 <h2 className="text-3xl font-semibold tracking-tight text-white">
-  {healthTitle}
-</h2>
+                  <h2 className="text-3xl font-semibold tracking-tight text-white">
+                    {healthTitle}
+                  </h2>
 
-                 <p className="mt-4 max-w-2xl text-base leading-7 text-white/55">
-  {healthDescription}
-</p>
+                  <p className="mt-4 max-w-2xl text-base leading-7 text-white/55">
+                    {healthDescription}
+                  </p>
 
-                 <div className="mt-6 flex flex-wrap gap-3">
- <Link
-  href="/tasks?filter=overdue"
-  className="rounded-2xl bg-[#8aa4ff] px-5 py-3 text-sm font-semibold text-[#111629] transition hover:brightness-110"
->
-  View Detailed Report
-</Link>
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <Link
+                      href="/tasks?filter=overdue"
+                      className="rounded-2xl bg-[#8aa4ff] px-5 py-3 text-sm font-semibold text-[#111629] transition hover:brightness-110"
+                    >
+                      View Detailed Report
+                    </Link>
 
-  <Link
-    href="/decision-center"
-    className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white"
-  >
-    Go to Decision Center
-  </Link>
-</div>
+                    <Link
+                      href="/decision-center"
+                      className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white"
+                    >
+                      Go to Decision Center
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -449,212 +459,348 @@ return (
               </div>
 
               <div className="space-y-4">
-  <FactorCard
-    title="Overdue Tasks"
-    subtitle={`${dashboardData?.kpis?.overdueTasks || 0} tasks behind schedule`}
-    icon={AlertTriangle}
-    color="#ff6b6b"
-  />
+                <FactorCard
+                  title="Overdue Tasks"
+                  subtitle={`${dashboardData?.kpis?.overdueTasks || 0} tasks behind schedule`}
+                  icon={AlertTriangle}
+                  color="#ff6b6b"
+                />
 
-  <FactorCard
-    title="Active Projects"
-    subtitle={`${dashboardData?.kpis?.activeProjects || 0} active portfolios tracked`}
-    icon={Briefcase}
-    color="#8aa4ff"
-  />
+                <FactorCard
+                  title="Active Projects"
+                  subtitle={`${dashboardData?.kpis?.activeProjects || 0} active portfolios tracked`}
+                  icon={Briefcase}
+                  color="#8aa4ff"
+                />
 
-  <FactorCard
-    title="Team Overload"
-    subtitle={`${
-      (dashboardData?.resourceWorkload || []).filter(
-        (member: any) => member.loadLevel === "Critical" || member.loadLevel === "High"
-      ).length
-    } team members need attention`}
-    icon={Users}
-    color="#c28cff"
-  />
-</div>
+                <FactorCard
+                  title="Team Overload"
+                  subtitle={`${
+                    (dashboardData?.resourceWorkload || []).filter(
+                      (member: any) =>
+                        member.loadLevel === "Critical" || member.loadLevel === "High"
+                    ).length
+                  } team members need attention`}
+                  icon={Users}
+                  color="#c28cff"
+                />
+              </div>
             </div>
           </div>
 
-          <div className="space-y-6">
-  <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
-    <div className="mb-6 flex items-center justify-between">
-      <div>
-        <h3 className="text-xl font-semibold text-white">Execution Health</h3>
-        <p className="text-sm text-white/40">
-          Live indicators showing delivery rhythm and operational pressure
-        </p>
-      </div>
+          <div className="mt-6 grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+            <div className="space-y-6">
+              <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
+                <div className="mb-6 flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xl font-semibold text-white">Execution Health</h3>
+                    <p className="text-sm text-white/40">
+                      Live indicators showing delivery rhythm and operational pressure
+                    </p>
+                  </div>
 
-      <span className="rounded-full border border-[#8ab4ff]/20 bg-[#8ab4ff]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9db8ff]">
-        Live
-      </span>
-    </div>
+                  <span className="rounded-full border border-[#8ab4ff]/20 bg-[#8ab4ff]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9db8ff]">
+                    Live
+                  </span>
+                </div>
 
+                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                  <div className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
+                    <p className="text-xs uppercase tracking-[0.18em] text-white/35">
+                      Avg Progress
+                    </p>
+                    <p className="mt-3 text-3xl font-semibold text-white">{avgProgress}%</p>
+                    <p className="mt-2 text-sm text-white/45">
+                      Overall execution average across tracked work
+                    </p>
+                  </div>
 
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      <div className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
-        <p className="text-xs uppercase tracking-[0.18em] text-white/35">
-          Avg Progress
-        </p>
-        <p className="mt-3 text-3xl font-semibold text-white">{avgProgress}%</p>
-        <p className="mt-2 text-sm text-white/45">
-          Overall execution average across tracked work
-        </p>
-      </div>
+                  <div className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
+                    <p className="text-xs uppercase tracking-[0.18em] text-white/35">
+                      In Progress
+                    </p>
+                    <p className="mt-3 text-3xl font-semibold text-white">
+                      {inProgressTasks}
+                    </p>
+                    <p className="mt-2 text-sm text-white/45">
+                      Tasks currently moving through execution
+                    </p>
+                  </div>
 
-      <div className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
-        <p className="text-xs uppercase tracking-[0.18em] text-white/35">
-          In Progress
-        </p>
-        <p className="mt-3 text-3xl font-semibold text-white">{inProgressTasks}</p>
-        <p className="mt-2 text-sm text-white/45">
-          Tasks currently moving through execution
-        </p>
-      </div>
+                  <div className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
+                    <p className="text-xs uppercase tracking-[0.18em] text-white/35">
+                      Overdue
+                    </p>
+                    <p className="mt-3 text-3xl font-semibold text-white">{overdueTasks}</p>
+                    <p className="mt-2 text-sm text-white/45">
+                      Delayed tasks impacting delivery confidence
+                    </p>
+                  </div>
 
-      <div className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
-        <p className="text-xs uppercase tracking-[0.18em] text-white/35">
-          Overdue
-        </p>
-        <p className="mt-3 text-3xl font-semibold text-white">{overdueTasks}</p>
-        <p className="mt-2 text-sm text-white/45">
-          Delayed tasks impacting delivery confidence
-        </p>
-      </div>
+                  <div className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
+                    <p className="text-xs uppercase tracking-[0.18em] text-white/35">
+                      Risky Projects
+                    </p>
+                    <p className="mt-3 text-3xl font-semibold text-white">
+                      {highRiskProjects}
+                    </p>
+                    <p className="mt-2 text-sm text-white/45">
+                      Projects currently flagged by Pilot intelligence
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-      <div className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
-        <p className="text-xs uppercase tracking-[0.18em] text-white/35">
-          Risky Projects
-        </p>
-        <p className="mt-3 text-3xl font-semibold text-white">{highRiskProjects}</p>
-        <p className="mt-2 text-sm text-white/45">
-          Projects currently flagged by Pilot intelligence
-        </p>
-      </div>
-    </div>
-  </div>
-<div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
-  <div className="mb-6 flex items-center justify-between">
-    <div>
-      <h3 className="text-xl font-semibold text-white">Why Pilot is flagging this</h3>
-      <p className="text-sm text-white/40">
-        Main drivers behind the current health score and AI alerts
-      </p>
-    </div>
+              <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
+                <div className="mb-6 flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xl font-semibold text-white">
+                      Why Pilot is flagging this
+                    </h3>
+                    <p className="text-sm text-white/40">
+                      Main drivers behind the current health score and AI alerts
+                    </p>
+                  </div>
 
-    <span className="rounded-full border border-[#ffcf66]/20 bg-[#ffcf66]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#ffcf66]">
-      Dynamic Analysis
-    </span>
-  </div>
+                  <span className="rounded-full border border-[#ffcf66]/20 bg-[#ffcf66]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#ffcf66]">
+                    Dynamic Analysis
+                  </span>
+                </div>
 
-  <div className="mb-5 rounded-2xl border border-white/6 bg-white/[0.03] p-4">
-    <p className="text-xs uppercase tracking-[0.18em] text-white/35">
-      Primary Driver
-    </p>
-    <p className="mt-3 text-lg font-semibold text-white">
-      {sortedPilotFlags[0].value > 0
-        ? sortedPilotFlags[0].title
-        : "System currently stable"}
-    </p>
-    <p className="mt-2 text-sm leading-6 text-white/55">
-      {sortedPilotFlags[0].value > 0
-        ? sortedPilotFlags[0].description
-        : "Pilot is not detecting a major alert driver right now. Current execution, project risk, and workload signals remain under control."}
-    </p>
-  </div>
+                <div className="mb-5 rounded-2xl border border-white/6 bg-white/[0.03] p-4">
+                  <p className="text-xs uppercase tracking-[0.18em] text-white/35">
+                    Primary Driver
+                  </p>
+                  <p className="mt-3 text-lg font-semibold text-white">
+                    {sortedPilotFlags[0].value > 0
+                      ? sortedPilotFlags[0].title
+                      : "System currently stable"}
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-white/55">
+                    {sortedPilotFlags[0].value > 0
+                      ? sortedPilotFlags[0].description
+                      : "Pilot is not detecting a major alert driver right now. Current execution, project risk, and workload signals remain under control."}
+                  </p>
+                </div>
 
-  <div className="grid gap-4 md:grid-cols-3">
-    {sortedPilotFlags.map((flag) => {
-      const Icon = flag.icon;
+                <div className="grid gap-4 md:grid-cols-3">
+                  {sortedPilotFlags.map((flag) => {
+                    const Icon = flag.icon;
 
-      return (
-        <div
-          key={flag.key}
-          className="rounded-2xl border border-white/6 bg-white/[0.03] p-4"
-        >
-          <div className="flex items-center gap-3">
-            <div
-              className="flex h-10 w-10 items-center justify-center rounded-2xl"
-              style={{
-                backgroundColor: `${flag.color}12`,
-                color: flag.color,
-              }}
-            >
-              <Icon size={18} />
+                    return (
+                      <div
+                        key={flag.key}
+                        className="rounded-2xl border border-white/6 bg-white/[0.03] p-4"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div
+                            className="flex h-10 w-10 items-center justify-center rounded-2xl"
+                            style={{
+                              backgroundColor: `${flag.color}12`,
+                              color: flag.color,
+                            }}
+                          >
+                            <Icon size={18} />
+                          </div>
+
+                          <div>
+                            <p className="text-sm font-semibold text-white">{flag.title}</p>
+                            <p className="text-xs text-white/45">{flag.subtitle}</p>
+                          </div>
+                        </div>
+
+                        <p className="mt-4 text-2xl font-semibold text-white">
+                          {flag.value}
+                        </p>
+
+                        <p className="mt-3 text-sm leading-6 text-white/55">
+                          {flag.description}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
+                <div className="mb-5 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#8ab4ff]/10 text-[#9db8ff]">
+                      <Brain size={18} />
+                    </div>
+
+                    <div>
+                      <h3 className="text-xl font-semibold text-white">
+                        Smart AI Suggestions
+                      </h3>
+                      <p className="text-sm text-white/40">
+                        Context-aware action proposals
+                      </p>
+                    </div>
+                  </div>
+
+                  <span className="rounded-full border border-[#8ab4ff]/20 bg-[#8ab4ff]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9db8ff]">
+                    Live Analysis
+                  </span>
+                </div>
+
+                <div className="space-y-4">
+                  {(dashboardData?.aiSuggestions || []).map(
+                    (suggestion: any, index: number) => {
+                      let primaryHref = "/tasks";
+                      let secondaryHref = "/ai-insights";
+
+                      if (suggestion.title.toLowerCase().includes("overdue")) {
+                        primaryHref = "/tasks?filter=overdue";
+                        secondaryHref = "/tasks?filter=overdue";
+                      } else if (suggestion.title.toLowerCase().includes("review")) {
+                        const matchedProject = (dashboardData?.riskyProjects || []).find(
+                          (project: any) =>
+                            suggestion.title
+                              .toLowerCase()
+                              .includes(project.title.toLowerCase())
+                        );
+
+                        if (matchedProject) {
+                          primaryHref = `/tasks?project=${encodeURIComponent(
+                            matchedProject.title
+                          )}&filter=overdue`;
+                          secondaryHref = `/projects`;
+                        }
+                      } else if (suggestion.title.toLowerCase().includes("focus")) {
+                        primaryHref = "/tasks";
+                        secondaryHref = "/dashboard";
+                      }
+
+                      return (
+                        <SuggestionCard
+                          key={index}
+                          title={suggestion.title}
+                          description={suggestion.description}
+                          tag={index === 0 ? "High Impact" : index === 1 ? "Efficiency" : "AI"}
+                          primaryHref={primaryHref}
+                          secondaryHref={secondaryHref}
+                        />
+                      );
+                    }
+                  )}
+                </div>
+              </div>
             </div>
 
-            <div>
-              <p className="text-sm font-semibold text-white">{flag.title}</p>
-              <p className="text-xs text-white/45">{flag.subtitle}</p>
+            <div className="space-y-6">
+              <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
+                <div className="mb-6 flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xl font-semibold text-white">
+                      Workload Distribution
+                    </h3>
+                    <p className="text-sm text-white/40">
+                      Weekly team performance overview
+                    </p>
+                  </div>
+
+                  <div className="flex gap-1">
+                    <span className="h-10 w-1 rounded-full bg-white/10" />
+                    <span className="h-7 w-1 rounded-full bg-white/10" />
+                    <span className="h-12 w-1 rounded-full bg-[#8ab4ff]" />
+                    <span className="h-8 w-1 rounded-full bg-[#8ab4ff]" />
+                    <span className="h-14 w-1 rounded-full bg-[#8ab4ff]" />
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
+                  <p className="text-xs uppercase tracking-[0.18em] text-white/35">
+                    Team Execution Average
+                  </p>
+                  <div className="mt-3 flex items-end gap-3">
+                    <span className="text-4xl font-semibold text-white">
+                      {averageWorkloadProgress}%
+                    </span>
+                    <span className="mb-1 text-sm font-medium text-[#8fd19e]">
+                      {overloadedCount} under watch
+                    </span>
+                  </div>
+
+                  <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-white/[0.06]">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-[#7da2ff] to-[#8ab4ff]"
+                      style={{ width: `${averageWorkloadProgress}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-6 space-y-5">
+                  {workloadData.map((member: any, index: number) => (
+                    <WorkloadBar
+                      key={index}
+                      name={(member.assignee || "Unknown").split("@")[0]}
+                      value={member.avgProgress || 0}
+                      avatarColor={
+                        member.loadLevel === "Critical"
+                          ? "#ff6b6b"
+                          : member.loadLevel === "High"
+                          ? "#ff8f5a"
+                          : "#8a6bff"
+                      }
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
+                <div className="mb-6 flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xl font-semibold text-white">Recent Activity</h3>
+                    <p className="text-sm text-white/40">
+                      Latest signals captured across execution
+                    </p>
+                  </div>
+
+                  <span className="rounded-full border border-[#8ab4ff]/20 bg-[#8ab4ff]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9db8ff]">
+                    Live Feed
+                  </span>
+                </div>
+
+                <div className="space-y-4">
+                  {recentActivity.length > 0 ? (
+                    recentActivity.map((item: any, index: number) => (
+                      <div
+                        key={index}
+                        className="rounded-2xl border border-white/6 bg-white/[0.03] p-4"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-sm font-semibold text-white">
+                              {item.title || "Activity detected"}
+                            </p>
+                            <p className="mt-1 text-sm leading-6 text-white/55">
+                              {item.description ||
+                                "A new execution signal was captured by Pilot."}
+                            </p>
+                          </div>
+
+                          <span className="rounded-full border border-white/10 px-2 py-1 text-[10px] uppercase tracking-[0.16em] text-white/40">
+                            {item.time || "Live"}
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
+                      <p className="text-sm font-medium text-white">
+                        No recent activity yet
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-white/55">
+                        Pilot will surface the latest execution signals here as soon as
+                        new activity is detected.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
-
-          <p className="mt-4 text-2xl font-semibold text-white">{flag.value}</p>
-
-          <p className="mt-3 text-sm leading-6 text-white/55">
-            {flag.description}
-          </p>
-        </div>
-      );
-    })}
-  </div>
-</div>
-  <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
-    <div className="mb-5 flex items-center justify-between">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#8ab4ff]/10 text-[#9db8ff]">
-          <Brain size={18} />
-        </div>
-        
-        <div>
-          <h3 className="text-xl font-semibold text-white">Smart AI Suggestions</h3>
-          <p className="text-sm text-white/40">Context-aware action proposals</p>
-        </div>
-      </div>
-
-      <span className="rounded-full border border-[#8ab4ff]/20 bg-[#8ab4ff]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9db8ff]">
-        Live Analysis
-      </span>
-    </div>
-
-    <div className="space-y-4">
-      {(dashboardData?.aiSuggestions || []).map((suggestion: any, index: number) => {
-        let primaryHref = "/tasks";
-        let secondaryHref = "/ai-insights";
-
-        if (suggestion.title.toLowerCase().includes("overdue")) {
-          primaryHref = "/tasks?filter=overdue";
-          secondaryHref = "/tasks?filter=overdue";
-        } else if (suggestion.title.toLowerCase().includes("review")) {
-          const matchedProject = (dashboardData?.riskyProjects || []).find((project: any) =>
-            suggestion.title.toLowerCase().includes(project.title.toLowerCase())
-          );
-
-          if (matchedProject) {
-            primaryHref = `/tasks?project=${encodeURIComponent(matchedProject.title)}&filter=overdue`;
-            secondaryHref = `/projects`;
-          }
-        } else if (suggestion.title.toLowerCase().includes("focus")) {
-          primaryHref = "/tasks";
-          secondaryHref = "/dashboard";
-        }
-
-        return (
-          <SuggestionCard
-            key={index}
-            title={suggestion.title}
-            description={suggestion.description}
-            tag={index === 0 ? "High Impact" : index === 1 ? "Efficiency" : "AI"}
-            primaryHref={primaryHref}
-            secondaryHref={secondaryHref}
-          />
-        );
-      })}
-    </div>
-  </div>
-</div>
         </section>
       </div>
 
