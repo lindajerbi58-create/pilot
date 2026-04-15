@@ -372,6 +372,40 @@ const systemRiskText =
   <AlertTriangle size={15} />
   <span>{systemRiskText}</span>
 </div>
+<div className="mt-4 rounded-2xl border border-[#8ea8ff]/15 bg-[#8ea8ff]/10 p-4">
+  <p className="text-xs uppercase tracking-[0.18em] text-[#9eb7ff]">
+    AI Next Action
+  </p>
+
+  <p className="mt-2 text-sm font-semibold text-white">
+    {systemRiskLevel === "Critical"
+      ? "Immediate intervention required on critical projects"
+      : systemRiskLevel === "High"
+      ? "Prioritize high-risk projects and monitor execution"
+      : "Maintain current execution rhythm"}
+  </p>
+
+  <div className="mt-3">
+    <Link
+      href={
+        systemRiskLevel === "Critical"
+          ? "/decision-center"
+          : systemRiskLevel === "High"
+          ? "/ai-insights"
+          : "/dashboard"
+      }
+      className="inline-flex items-center gap-2 text-xs font-medium text-[#9eb7ff] hover:text-white"
+    >
+      {systemRiskLevel === "Critical"
+        ? "Open Decision Center"
+        : systemRiskLevel === "High"
+        ? "View AI Insights"
+        : "Stay on Dashboard"}
+
+      <ArrowRight size={14} />
+    </Link>
+  </div>
+</div>
             </div>
 
             <div className="flex flex-wrap gap-3">
