@@ -374,6 +374,41 @@ const toggleSelectAllVisible = () => {
       <p className="mt-2 text-xs text-white/50">
   Pilot preselects the best redistribution candidates. You can adjust them below.
 </p>
+<div className="mt-4 grid gap-3 md:grid-cols-3">
+  <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3">
+    <p className="text-[10px] uppercase tracking-[0.14em] text-white/35">
+      Selected Tasks
+    </p>
+    <p className="mt-2 text-lg font-semibold text-white">
+      {selectedTaskIds.length}
+    </p>
+  </div>
+
+  <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3">
+    <p className="text-[10px] uppercase tracking-[0.14em] text-white/35">
+      Expected Relief
+    </p>
+    <p className="mt-2 text-lg font-semibold text-white">
+      {selectedTaskIds.length >= 3
+        ? "High"
+        : selectedTaskIds.length === 2
+        ? "Moderate"
+        : selectedTaskIds.length === 1
+        ? "Low"
+        : "None"}
+    </p>
+  </div>
+
+  <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3">
+    <p className="text-[10px] uppercase tracking-[0.14em] text-white/35">
+      Target Load Impact
+    </p>
+    <p className="mt-2 text-lg font-semibold text-white">
+      {selectedTaskIds.length >= recommendedCount ? "Safe" : "Review"}
+    </p>
+  </div>
+</div>
+
     </div>
   </div>
 )}
