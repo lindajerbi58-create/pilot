@@ -495,11 +495,21 @@ const secondaryDecisionHref = secondaryRiskProject
 />
   ))}
 
-  <div className="flex items-center justify-center rounded-[24px] border border-dashed border-white/10 bg-white/[0.02] p-4 transition hover:bg-white/[0.04]">
-    <button className="flex h-12 w-12 items-center justify-center rounded-full bg-[#8ea8ff] text-[#0b1020] shadow-lg shadow-[#8ea8ff]/20 transition hover:scale-105">
-      <Plus size={20} />
-    </button>
+  <Link
+  href="/tasks"
+  className="flex min-h-[140px] flex-col justify-between rounded-[24px] border border-dashed border-white/10 bg-white/[0.02] p-5 transition hover:bg-white/[0.04]"
+>
+  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#8ea8ff] text-[#0b1020] shadow-lg shadow-[#8ea8ff]/20">
+    <Plus size={20} />
   </div>
+
+  <div>
+    <h3 className="text-sm font-semibold text-white">Open all recommendations</h3>
+    <p className="mt-2 text-sm leading-6 text-white/55">
+      Review all operational tasks, overdue items, and execution signals in one place.
+    </p>
+  </div>
+</Link>
 </section>
 <section className="mt-6 rounded-[32px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/25">
   <div className="mb-6 flex items-center justify-between">
