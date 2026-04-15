@@ -182,29 +182,43 @@ const filteredTasks = useMemo(() => {
     return 0;
   };
 
-  return [...result].sort((a, b) => {
-    const aOverdue = isOverdue(a) ? 1 : 0;
-    const bOverdue = isOverdue(b) ? 1 : 0;
+ return [...result].sort((a, b) => {
+  const aOverdue = isOverdue(a) ? 1 : 0;
+  const bOverdue = isOverdue(b) ? 1 : 0;
 
-    if (bOverdue !== aOverdue) {
-      return bOverdue - aOverdue;
-    }
+  if (bOverdue !== aOverdue) {
+    return bOverdue - aOverdue;
+  }
 
-    const priorityDiff = priorityWeight(b.priority) - priorityWeight(a.priority);
-    if (priorityDiff !== 0) {
-      return priorityDiff;
-    }
+  const priorityDiff = priorityWeight(b.priority) - priorityWeight(a.priority);
+  if (priorityDiff !== 0) {
+    return priorityDiff;
+  }
+const projectDiff = String(a.project_name || "").localeCompare(
+  String(b.project_name || "")
+);
+if (projectDiff !== 0) {
+  return projectDiff;
+}
 
-    const progressDiff = (a.progress || 0) - (b.progress || 0);
-    if (progressDiff !== 0) {
-      return progressDiff;
-    }
+const aDue = a.due_date
+  ? new Date(a.due_date).getTime()
+  : Number.MAX_SAFE_INTEGER;
+const bDue = b.due_date
+  ? new Date(b.due_date).getTime()
+  : Number.MAX_SAFE_INTEGER;
 
-    const aDue = a.due_date ? new Date(a.due_date).getTime() : Number.MAX_SAFE_INTEGER;
-    const bDue = b.due_date ? new Date(b.due_date).getTime() : Number.MAX_SAFE_INTEGER;
+if (aDue !== bDue) {
+  return aDue - bDue;
+}
 
-    return aDue - bDue;
-  });
+const progressDiff = (a.progress || 0) - (b.progress || 0);
+if (progressDiff !== 0) {
+  return progressDiff;
+}
+
+return String(a.task_name || "").localeCompare(String(b.task_name || ""));
+});
 }, [tasks, filter, project, assignee]);
 useEffect(() => {
   if (!isRedistributeMode) return;
