@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AlertTriangle, ArrowLeft, Briefcase, CalendarDays, FolderKanban } from "lucide-react";
 
 type TaskItem = {
@@ -71,6 +71,7 @@ function getPriorityBadge(priority?: string) {
 
 export default function TasksPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
  const filter = searchParams.get("filter");
 const project = searchParams.get("project");
 const assignee = searchParams.get("assignee");
@@ -181,15 +182,8 @@ const handleRedistribute = async () => {
       throw new Error(data?.error || "Failed to redistribute tasks");
     }
 
-    setTasks((prev) =>
-      prev.map((task) =>
-        visibleTaskIds.includes(task._id || "")
-          ? { ...task, assignee_email: target }
-          : task
-      )
-    );
-
-    alert(`Successfully reassigned ${data.updatedCount || visibleTaskIds.length} task(s) to ${target}`);
+alert(`Successfully reassigned ${data.updatedCount || visibleTaskIds.length} task(s) to ${target}`);
+router.refresh();
   } catch (err: any) {
     console.error(err);
     alert(err.message || "Failed to redistribute tasks");
@@ -340,11 +334,11 @@ const handleRedistribute = async () => {
               No tasks found for this view.
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full">
+           <div className="overflow-x-auto">
+  <table className="min-w-[1100px] w-full table-fixed">
                 <thead className="border-b border-white/8 bg-white/[0.02]">
                   <tr className="text-left text-xs uppercase tracking-[0.16em] text-white/35">
-                    <th className="px-5 py-4">Task</th>
+                   <th className="w-[260px] px-5 py-4">Task</th>
                     <th className="px-5 py-4">Project</th>
                     <th className="px-5 py-4">Assignee</th>
                     <th className="px-5 py-4">Status</th>
@@ -360,7 +354,11 @@ const handleRedistribute = async () => {
                       key={task._id || `${task.task_name}-${index}`}
                       className="border-b border-white/6 text-sm text-white/80 transition hover:bg-white/[0.02]"
                     >
-                      <td className="px-5 py-4 font-medium text-white">{task.task_name}</td>
+                    <td className="px-5 py-4 font-medium text-white">
+  <div className="max-w-[220px] break-words leading-6">
+    {task.task_name}
+  </div>
+</td>
                       <td className="px-5 py-4 text-white/65">{task.project_name}</td>
                       <td className="px-5 py-4 text-white/65">{task.assignee_email}</td>
                       <td className="px-5 py-4">
