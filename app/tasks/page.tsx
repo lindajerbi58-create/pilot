@@ -617,7 +617,7 @@ if (loading) {
   </th>
 )}
     <th className="w-[260px] px-5 py-4">Task</th>
-    <th className="px-5 py-4">Project</th>
+    {!project && <th className="px-5 py-4">Project</th>}
     <th className="px-5 py-4">Assignee</th>
     <th className="px-5 py-4">Status</th>
     <th className="px-5 py-4">Priority</th>
@@ -638,7 +638,15 @@ if (loading) {
         {showProjectDivider && (
           <tr>
             <td
-              colSpan={isRedistributeMode ? 8 : 7}
+             colSpan={
+  isRedistributeMode
+    ? project
+      ? 7
+      : 8
+    : project
+    ? 6
+    : 7
+}
               className="border-b border-white/8 bg-white/[0.02] px-5 py-3"
             >
               <div className="flex items-center gap-3">
@@ -696,7 +704,9 @@ if (loading) {
             </div>
           </td>
 
-          <td className="px-5 py-4 text-white/65">{task.project_name}</td>
+          {!project && (
+  <td className="px-5 py-4 text-white/65">{task.project_name}</td>
+)}
           <td className="px-5 py-4 text-white/65">{task.assignee_email}</td>
 
           <td className="px-5 py-4">
