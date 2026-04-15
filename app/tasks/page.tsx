@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AlertTriangle, ArrowLeft, Briefcase, CalendarDays, FolderKanban } from "lucide-react";
 
@@ -627,96 +627,127 @@ if (loading) {
 </thead>
 
 <tbody>
-  {filteredTasks.map((task, index) => (
-    <tr
-      key={task._id || `${task.task_name}-${index}`}
-      className="border-b border-white/6 text-sm text-white/80 transition hover:bg-white/[0.02]"
-    >
-     {isRedistributeMode && (
-  <td className="px-5 py-4">
-    {task._id ? (
-      <input
-        type="checkbox"
-        checked={selectedTaskIds.includes(task._id)}
-        onChange={() => toggleTaskSelection(task._id!)}
-        className="h-4 w-4 accent-[#8ea8ff]"
-      />
-    ) : null}
-  </td>
-)}
+  {filteredTasks.map((task, index) => {
+    const previousProject =
+      index > 0 ? filteredTasks[index - 1].project_name : null;
+    const showProjectDivider =
+      index === 0 || previousProject !== task.project_name;
 
-<td className="px-5 py-4 font-medium text-white">
-  <div className="max-w-[220px] break-words leading-6">
-    <div className="flex flex-wrap items-center gap-2">
-      <span>{task.task_name}</span>
-      {task._id && selectedTaskIds.includes(task._id) && (
-        <span className="rounded-full border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#b7c8ff]">
-          Selected
-        </span>
-      )}
-    </div>
+   return (
+  <React.Fragment key={task._id || `${task.task_name}-${index}`}>
+        {showProjectDivider && (
+          <tr>
+            <td
+              colSpan={isRedistributeMode ? 8 : 7}
+              className="border-b border-white/8 bg-white/[0.02] px-5 py-3"
+            >
+              <div className="flex items-center gap-3">
+                <span className="rounded-full border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9eb7ff]">
+                  Project
+                </span>
+                <span className="text-sm font-semibold text-white">
+                  {task.project_name || "Untitled Project"}
+                </span>
+              </div>
+            </td>
+          </tr>
+        )}
 
-    {task._id && selectedTaskIds.includes(task._id) && (
-      <div className="mt-2 flex flex-wrap gap-2">
-        {getTaskRecommendationReasons(task).map((reason) => (
-          <span
-            key={reason}
-            className="rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-white/60"
-          >
-            {reason}
-          </span>
-        ))}
-      </div>
-    )}
-  </div>
-</td>
+        <tr
+          key={task._id || `${task.task_name}-${index}`}
+          className="border-b border-white/6 text-sm text-white/80 transition hover:bg-white/[0.02]"
+        >
+          {isRedistributeMode && (
+            <td className="px-5 py-4">
+              {task._id ? (
+                <input
+                  type="checkbox"
+                  checked={selectedTaskIds.includes(task._id)}
+                  onChange={() => toggleTaskSelection(task._id!)}
+                  className="h-4 w-4 accent-[#8ea8ff]"
+                />
+              ) : null}
+            </td>
+          )}
 
-      <td className="px-5 py-4 text-white/65">{task.project_name}</td>
-      <td className="px-5 py-4 text-white/65">{task.assignee_email}</td>
-                      <td className="px-5 py-4">
-                        <span
-                          className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] ${getStatusBadge(
-                            task.status,
-                            task.progress
-                          )}`}
-                        >
-                          {task.status}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span
-                          className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] ${getPriorityBadge(
-                            task.priority
-                          )}`}
-                        >
-                          {task.priority}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="h-2 w-24 overflow-hidden rounded-full bg-white/[0.06]">
-                            <div
-                              className="h-full rounded-full bg-gradient-to-r from-[#8ea8ff] to-[#d78bff]"
-                              style={{ width: `${task.progress || 0}%` }}
-                            />
-                          </div>
-                          <span className="text-white/65">{task.progress || 0}%</span>
-                        </div>
-                      </td>
-                      <td className="px-5 py-4">
-                        <div className="flex items-center gap-2 text-white/65">
-                          <CalendarDays size={14} />
-                          <span>{task.due_date || "-"}</span>
-                          {isOverdue(task) && (
-                            <span className="rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-red-300">
-                              Overdue
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
+          <td className="px-5 py-4 font-medium text-white">
+            <div className="max-w-[220px] break-words leading-6">
+              <div className="flex flex-wrap items-center gap-2">
+                <span>{task.task_name}</span>
+                {task._id && selectedTaskIds.includes(task._id) && (
+                  <span className="rounded-full border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#b7c8ff]">
+                    Selected
+                  </span>
+                )}
+              </div>
+
+              {task._id && selectedTaskIds.includes(task._id) && (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {getTaskRecommendationReasons(task).map((reason) => (
+                    <span
+                      key={reason}
+                      className="rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-white/60"
+                    >
+                      {reason}
+                    </span>
                   ))}
-                </tbody>
+                </div>
+              )}
+            </div>
+          </td>
+
+          <td className="px-5 py-4 text-white/65">{task.project_name}</td>
+          <td className="px-5 py-4 text-white/65">{task.assignee_email}</td>
+
+          <td className="px-5 py-4">
+            <span
+              className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] ${getStatusBadge(
+                task.status,
+                task.progress
+              )}`}
+            >
+              {task.status}
+            </span>
+          </td>
+
+          <td className="px-5 py-4">
+            <span
+              className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] ${getPriorityBadge(
+                task.priority
+              )}`}
+            >
+              {task.priority}
+            </span>
+          </td>
+
+          <td className="px-5 py-4">
+            <div className="flex items-center gap-3">
+              <div className="h-2 w-24 overflow-hidden rounded-full bg-white/[0.06]">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-[#8ea8ff] to-[#d78bff]"
+                  style={{ width: `${task.progress || 0}%` }}
+                />
+              </div>
+              <span className="text-white/65">{task.progress || 0}%</span>
+            </div>
+          </td>
+
+          <td className="px-5 py-4">
+            <div className="flex items-center gap-2 text-white/65">
+              <CalendarDays size={14} />
+              <span>{task.due_date || "-"}</span>
+              {isOverdue(task) && (
+                <span className="rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-red-300">
+                  Overdue
+                </span>
+              )}
+            </div>
+          </td>
+        </tr>
+            </React.Fragment>
+    );
+  })}
+</tbody>
               </table>
             </div>
           )}
