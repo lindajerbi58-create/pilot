@@ -307,7 +307,7 @@ const highRiskCount = riskyProjects.filter(
 const totalRiskCount = riskyProjects.filter(
   (project: any) => project.level === "Critical" || project.level === "High"
 ).length;
-
+const primaryIssue = dashboardData?.primaryIssue || "stable";
 const systemRiskLevel =
   criticalRiskCount > 0 ? "Critical" : highRiskCount > 0 ? "High" : "Stable";
 
@@ -378,22 +378,27 @@ const systemRiskText =
   </p>
 
   <p className="mt-2 text-sm font-semibold text-white">
-    {systemRiskLevel === "Critical"
-      ? "Immediate intervention required on critical projects"
-      : systemRiskLevel === "High"
-      ? "Prioritize high-risk projects and monitor execution"
-      : "Maintain current execution rhythm"}
+    {primaryIssue === "overdue"
+  ? "Immediate action required on overdue tasks"
+  : primaryIssue === "risk"
+  ? "High-risk projects need decision review"
+  : primaryIssue === "workload"
+  ? "Team workload needs balancing"
+  : "Execution is stable"}
+  
   </p>
 
   <div className="mt-3">
     <Link
-      href={
-        systemRiskLevel === "Critical"
-          ? "/decision-center"
-          : systemRiskLevel === "High"
-          ? "/ai-insights"
-          : "/dashboard"
-      }
+  href={
+    primaryIssue === "overdue"
+      ? "/tasks?filter=overdue"
+      : primaryIssue === "risk"
+      ? "/decision-center"
+      : primaryIssue === "workload"
+      ? "/resource-hub"
+      : "/dashboard"
+  }
       className="inline-flex items-center gap-2 text-xs font-medium text-[#9eb7ff] hover:text-white"
     >
       {systemRiskLevel === "Critical"
