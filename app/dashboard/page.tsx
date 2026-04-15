@@ -332,7 +332,7 @@ const systemRiskText =
               <TopNavLink href="/dashboard" label="Dashboard" active />
               <TopNavLink href="/projects" label="Projects" />
               <TopNavLink href="/tasks" label="Tasks" />
-              <TopNavLink href="/activity" label="Activity" />
+             
             </nav>
           </div>
 
@@ -414,21 +414,22 @@ const systemRiskText =
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <button className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white">
-                <CalendarDays size={16} />
-                Last 30 Days
-              </button>
+  
 
-              <button className="rounded-2xl bg-[#8ea8ff] px-5 py-3 text-sm font-semibold text-[#0b1020] transition hover:brightness-110">
-                + New Project
-              </button>
-              <Link
-  href="/import"
-  className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-semibold text-white/70 hover:bg-white/[0.05]"
->
-  Import Data
-</Link>
-            </div>
+  <Link
+    href="/import"
+    className="rounded-2xl bg-[#8ea8ff] px-5 py-3 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
+  >
+    + New Project
+  </Link>
+
+  <Link
+    href="/import"
+    className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-semibold text-white/70 transition hover:bg-white/[0.05] hover:text-white"
+  >
+    Import Data
+  </Link>
+</div>
             <div className="mt-4">
   <div
     className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] ${

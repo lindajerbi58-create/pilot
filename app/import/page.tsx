@@ -116,7 +116,37 @@ setSuccessMessage("");
     skipEmptyLines: true,
     complete: (results) => {
       const rows = results.data as any[];
+      const columnMapping: any = {
+  task: "task_name",
+  name: "task_name",
+  title: "task_name",
 
+  project: "project_name",
+
+  assignee: "assignee_email",
+  user: "assignee_email",
+
+  state: "status",
+
+  level: "priority",
+
+  start: "start_date",
+  due: "due_date",
+
+  completion: "progress",
+};
+const normalizedRows = rows.map((row) => {
+  const newRow: any = {};
+
+  Object.keys(row).forEach((key) => {
+    const normalizedKey =
+      columnMapping[key.trim().toLowerCase()] || key;
+
+    newRow[normalizedKey] = row[key];
+  });
+
+  return newRow;
+});
       const requiredColumns = [
         "task_name",
         "project_name",
@@ -128,7 +158,8 @@ setSuccessMessage("");
         "progress",
       ];
 
-      const columns = results.meta.fields || [];
+     const columns =
+  normalizedRows.length > 0 ? Object.keys(normalizedRows[0]) : [];
       const missingColumns = requiredColumns.filter(
         (col) => !columns.includes(col)
       );
@@ -140,7 +171,7 @@ setSuccessMessage("");
         return;
       }
 
-      setParsedRows(rows);
+     setParsedRows(normalizedRows);
       setValidationMessage("Valid template");
       setImportStatus(`${rows.length} rows ready to import`);
     },
