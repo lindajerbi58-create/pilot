@@ -525,9 +525,11 @@ const recommendationIsCalm = !sourceMember || !targetMember;
   </div>
 
   <div className="mt-6 flex flex-wrap gap-3">
-   {urgentMemberEmail ? (
+ {urgentMemberEmail ? (
   <Link
-    href={`/tasks?assignee=${encodeURIComponent(urgentMemberEmail)}`}
+    href={`/tasks?assignee=${encodeURIComponent(
+      urgentMemberEmail
+    )}&target=${encodeURIComponent(targetMemberEmail || "")}&mode=redistribute`}
     className="rounded-2xl bg-[#ff7d7d] px-5 py-3 text-sm font-semibold text-[#180b0b] transition hover:brightness-110"
   >
     Redistribute Tasks
@@ -540,7 +542,6 @@ const recommendationIsCalm = !sourceMember || !targetMember;
     Redistribute Tasks
   </button>
 )}
-
    {urgentMemberEmail ? (
   <Link
     href={`/tasks?assignee=${encodeURIComponent(urgentMemberEmail)}`}
