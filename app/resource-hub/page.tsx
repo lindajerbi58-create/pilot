@@ -205,13 +205,10 @@ const getActiveSortLabel = () => {
   return "Most Overloaded";
 };
 const teamMembers = [...(dashboardData?.resourceWorkload || [])].sort((a: any, b: any) => {
-  const loadScore = (member: any) =>
-    member.loadLevel === "Critical" ? 3 : member.loadLevel === "High" ? 2 : 1;
-
   if (sortMode === "overdue") {
     return (
       (b.overdueCount || 0) - (a.overdueCount || 0) ||
-      loadScore(b) - loadScore(a) ||
+      (b.riskScore || 0) - (a.riskScore || 0) ||
       (b.taskCount || 0) - (a.taskCount || 0)
     );
   }
@@ -219,13 +216,13 @@ const teamMembers = [...(dashboardData?.resourceWorkload || [])].sort((a: any, b
   if (sortMode === "progress") {
     return (
       (b.avgProgress || 0) - (a.avgProgress || 0) ||
-      loadScore(b) - loadScore(a) ||
+      (b.riskScore || 0) - (a.riskScore || 0) ||
       (b.taskCount || 0) - (a.taskCount || 0)
     );
   }
 
   return (
-    loadScore(b) - loadScore(a) ||
+    (b.riskScore || 0) - (a.riskScore || 0) ||
     (b.overdueCount || 0) - (a.overdueCount || 0) ||
     (b.taskCount || 0) - (a.taskCount || 0)
   );
@@ -323,16 +320,12 @@ const totalOverdueTasksHint =
   totalOverdueTasks > 0 ? "total delayed items" : "no overdue tasks";
 const averageTeamProgressHint = "current team average";
 const mostCriticalMember =
-  [...teamMembers].sort((a: any, b: any) => {
-    const loadScore = (member: any) =>
-      member.loadLevel === "Critical" ? 3 : member.loadLevel === "High" ? 2 : 1;
-
-    return (
-      loadScore(b) - loadScore(a) ||
+  [...teamMembers].sort(
+    (a: any, b: any) =>
+      (b.riskScore || 0) - (a.riskScore || 0) ||
       (b.overdueCount || 0) - (a.overdueCount || 0) ||
       (a.avgProgress || 0) - (b.avgProgress || 0)
-    );
-  })[0] || null;
+  )[0] || null;
 
 const urgentMemberName = mostCriticalMember?.assignee
   ? mostCriticalMember.assignee.split("@")[0]
@@ -350,13 +343,13 @@ const urgentMemberLoad =
 const urgentMemberLoadValue = mostCriticalMember?.avgProgress || 0;
 const urgentMemberTasks = mostCriticalMember?.taskCount || 0;
 const urgentMemberEmail = mostCriticalMember?.assignee || "";
-const overloadedMembers = teamMembers.filter(
-  (member: any) => member.loadLevel === "Critical" || member.loadLevel === "High"
-);
+const overloadedMembers = [...teamMembers]
+  .filter((member: any) => member.loadLevel === "Critical" || member.loadLevel === "High")
+  .sort((a: any, b: any) => (b.riskScore || 0) - (a.riskScore || 0));
 
-const balancedMembers = teamMembers.filter(
-  (member: any) => member.loadLevel === "Balanced"
-);
+const balancedMembers = [...teamMembers]
+  .filter((member: any) => member.loadLevel === "Balanced" || member.loadLevel === "Light")
+  .sort((a: any, b: any) => (a.riskScore || 0) - (b.riskScore || 0));
 
 const sourceMember = overloadedMembers[0] || null;
 const targetMember = balancedMembers[0] || null;
@@ -769,6 +762,10 @@ return (
               <span>Avg Progress</span>
               <span className="font-medium text-white">{member.avgProgress}%</span>
             </div>
+            <div className="flex items-center justify-between">
+  <span>Risk Score</span>
+  <span className="font-medium text-white">{member.riskScore ?? 0}/100</span>
+</div>
           </div>
 
           <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/[0.06]">
