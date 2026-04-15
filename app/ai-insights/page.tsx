@@ -281,6 +281,7 @@ const averageWorkloadProgress =
 const overloadedCount = workloadData.filter(
   (member: any) => member.loadLevel === "Critical" || member.loadLevel === "High"
 ).length;
+const inProgressTasks = dashboardData?.kpis?.inProgressTasks || 0;
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto flex min-h-screen max-w-[1500px]">
@@ -436,115 +437,117 @@ const overloadedCount = workloadData.filter(
             </div>
           </div>
 
-          <div className="mt-6 grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-            <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
-              <div className="mb-5 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#8ab4ff]/10 text-[#9db8ff]">
-                    <Brain size={18} />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-semibold text-white">Smart AI Suggestions</h3>
-                    <p className="text-sm text-white/40">Context-aware action proposals</p>
-                  </div>
-                </div>
+          <div className="space-y-6">
+  <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
+    <div className="mb-6 flex items-center justify-between">
+      <div>
+        <h3 className="text-xl font-semibold text-white">Execution Health</h3>
+        <p className="text-sm text-white/40">
+          Live indicators showing delivery rhythm and operational pressure
+        </p>
+      </div>
 
-                <span className="rounded-full border border-[#8ab4ff]/20 bg-[#8ab4ff]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9db8ff]">
-                  Live Analysis
-                </span>
-              </div>
+      <span className="rounded-full border border-[#8ab4ff]/20 bg-[#8ab4ff]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9db8ff]">
+        Live
+      </span>
+    </div>
 
-             <div className="space-y-4">
-  {(dashboardData?.aiSuggestions || []).map((suggestion: any, index: number) => {
-  let primaryHref = "/tasks";
-  let secondaryHref = "/ai-insights";
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
+        <p className="text-xs uppercase tracking-[0.18em] text-white/35">
+          Avg Progress
+        </p>
+        <p className="mt-3 text-3xl font-semibold text-white">{avgProgress}%</p>
+        <p className="mt-2 text-sm text-white/45">
+          Overall execution average across tracked work
+        </p>
+      </div>
 
-  if (suggestion.title.toLowerCase().includes("overdue")) {
-    primaryHref = "/tasks?filter=overdue";
-    secondaryHref = "/tasks?filter=overdue";
-  } else if (suggestion.title.toLowerCase().includes("review")) {
-    const matchedProject = (dashboardData?.riskyProjects || []).find((project: any) =>
-      suggestion.title.toLowerCase().includes(project.title.toLowerCase())
-    );
+      <div className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
+        <p className="text-xs uppercase tracking-[0.18em] text-white/35">
+          In Progress
+        </p>
+        <p className="mt-3 text-3xl font-semibold text-white">{inProgressTasks}</p>
+        <p className="mt-2 text-sm text-white/45">
+          Tasks currently moving through execution
+        </p>
+      </div>
 
-    if (matchedProject) {
-      primaryHref = `/tasks?project=${encodeURIComponent(matchedProject.title)}&filter=overdue`;
-      secondaryHref = `/projects`;
-    }
-  } else if (suggestion.title.toLowerCase().includes("focus")) {
-    primaryHref = "/tasks";
-    secondaryHref = "/dashboard";
-  }
+      <div className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
+        <p className="text-xs uppercase tracking-[0.18em] text-white/35">
+          Overdue
+        </p>
+        <p className="mt-3 text-3xl font-semibold text-white">{overdueTasks}</p>
+        <p className="mt-2 text-sm text-white/45">
+          Delayed tasks impacting delivery confidence
+        </p>
+      </div>
 
-  return (
-    <SuggestionCard
-      key={index}
-      title={suggestion.title}
-      description={suggestion.description}
-      tag={index === 0 ? "High Impact" : index === 1 ? "Efficiency" : "AI"}
-      primaryHref={primaryHref}
-      secondaryHref={secondaryHref}
-    />
-  );
-})}
-</div>
-            </div>
-
-            <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
-              <div className="mb-6 flex items-center justify-between">
-                <div>
-                  <h3 className="text-xl font-semibold text-white">Workload Distribution</h3>
-                  <p className="text-sm text-white/40">Weekly team performance overview</p>
-                </div>
-
-                <div className="flex gap-1">
-                  <span className="h-10 w-1 rounded-full bg-white/10" />
-                  <span className="h-7 w-1 rounded-full bg-white/10" />
-                  <span className="h-12 w-1 rounded-full bg-[#8ab4ff]" />
-                  <span className="h-8 w-1 rounded-full bg-[#8ab4ff]" />
-                  <span className="h-14 w-1 rounded-full bg-[#8ab4ff]" />
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
-  <p className="text-xs uppercase tracking-[0.18em] text-white/35">
-    Team Execution Average
-  </p>
-  <div className="mt-3 flex items-end gap-3">
-    <span className="text-4xl font-semibold text-white">
-      {averageWorkloadProgress}%
-    </span>
-    <span className="mb-1 text-sm font-medium text-[#8fd19e]">
-      {overloadedCount} under watch
-    </span>
+      <div className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
+        <p className="text-xs uppercase tracking-[0.18em] text-white/35">
+          Risky Projects
+        </p>
+        <p className="mt-3 text-3xl font-semibold text-white">{highRiskProjects}</p>
+        <p className="mt-2 text-sm text-white/45">
+          Projects currently flagged by Pilot intelligence
+        </p>
+      </div>
+    </div>
   </div>
 
-  <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-white/[0.06]">
-    <div
-      className="h-full rounded-full bg-gradient-to-r from-[#7da2ff] to-[#8ab4ff]"
-      style={{ width: `${averageWorkloadProgress}%` }}
-    />
+  <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
+    <div className="mb-5 flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#8ab4ff]/10 text-[#9db8ff]">
+          <Brain size={18} />
+        </div>
+        <div>
+          <h3 className="text-xl font-semibold text-white">Smart AI Suggestions</h3>
+          <p className="text-sm text-white/40">Context-aware action proposals</p>
+        </div>
+      </div>
+
+      <span className="rounded-full border border-[#8ab4ff]/20 bg-[#8ab4ff]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9db8ff]">
+        Live Analysis
+      </span>
+    </div>
+
+    <div className="space-y-4">
+      {(dashboardData?.aiSuggestions || []).map((suggestion: any, index: number) => {
+        let primaryHref = "/tasks";
+        let secondaryHref = "/ai-insights";
+
+        if (suggestion.title.toLowerCase().includes("overdue")) {
+          primaryHref = "/tasks?filter=overdue";
+          secondaryHref = "/tasks?filter=overdue";
+        } else if (suggestion.title.toLowerCase().includes("review")) {
+          const matchedProject = (dashboardData?.riskyProjects || []).find((project: any) =>
+            suggestion.title.toLowerCase().includes(project.title.toLowerCase())
+          );
+
+          if (matchedProject) {
+            primaryHref = `/tasks?project=${encodeURIComponent(matchedProject.title)}&filter=overdue`;
+            secondaryHref = `/projects`;
+          }
+        } else if (suggestion.title.toLowerCase().includes("focus")) {
+          primaryHref = "/tasks";
+          secondaryHref = "/dashboard";
+        }
+
+        return (
+          <SuggestionCard
+            key={index}
+            title={suggestion.title}
+            description={suggestion.description}
+            tag={index === 0 ? "High Impact" : index === 1 ? "Efficiency" : "AI"}
+            primaryHref={primaryHref}
+            secondaryHref={secondaryHref}
+          />
+        );
+      })}
+    </div>
   </div>
 </div>
-
-            <div className="mt-6 space-y-5">
-  {workloadData.map((member: any, index: number) => (
-    <WorkloadBar
-      key={index}
-      name={(member.assignee || "Unknown").split("@")[0]}
-      value={member.avgProgress || 0}
-      avatarColor={
-        member.loadLevel === "Critical"
-          ? "#ff6b6b"
-          : member.loadLevel === "High"
-          ? "#ff8f5a"
-          : "#8a6bff"
-      }
-    />
-  ))}
-</div>
-            </div>
-          </div>
         </section>
       </div>
 
