@@ -85,6 +85,31 @@ function getRecommendedTasks(tasks: TaskItem[], count: number) {
     .map((task) => task._id)
     .filter((id): id is string => Boolean(id));
 }
+function getTaskRecommendationReasons(task: TaskItem) {
+  const reasons: string[] = [];
+
+  if (isOverdue(task)) {
+    reasons.push("Overdue");
+  }
+
+  if ((task.progress || 0) <= 40) {
+    reasons.push("Low progress");
+  }
+
+  const priority = String(task.priority || "").trim().toLowerCase();
+
+  if (priority === "critical") {
+    reasons.push("Critical priority");
+  } else if (priority === "high") {
+    reasons.push("High priority");
+  }
+
+  if (reasons.length === 0) {
+    reasons.push("Best candidate");
+  }
+
+  return reasons.slice(0, 2);
+}
 export default function TasksPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -425,10 +450,9 @@ const toggleSelectAllVisible = () => {
           />
         ) : null}
       </td>
-
-      <td className="px-5 py-4 font-medium text-white">
+<td className="px-5 py-4 font-medium text-white">
   <div className="max-w-[220px] break-words leading-6">
-    <div className="flex items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2">
       <span>{task.task_name}</span>
       {task._id && selectedTaskIds.includes(task._id) && (
         <span className="rounded-full border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#b7c8ff]">
@@ -436,6 +460,19 @@ const toggleSelectAllVisible = () => {
         </span>
       )}
     </div>
+
+    {task._id && selectedTaskIds.includes(task._id) && (
+      <div className="mt-2 flex flex-wrap gap-2">
+        {getTaskRecommendationReasons(task).map((reason) => (
+          <span
+            key={reason}
+            className="rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-white/60"
+          >
+            {reason}
+          </span>
+        ))}
+      </div>
+    )}
   </div>
 </td>
 
