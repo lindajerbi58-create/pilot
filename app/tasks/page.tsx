@@ -186,6 +186,23 @@ const visibleTaskIds = useMemo(() => {
     .map((task) => task._id)
     .filter((id): id is string => Boolean(id));
 }, [filteredTasks]);
+const targetCurrentTaskCount = useMemo(() => {
+  if (!target) return 0;
+
+  return tasks.filter(
+    (task) => String(task.assignee_email || "").trim() === target
+  ).length;
+}, [tasks, target]);
+
+const projectedTargetTaskCount = targetCurrentTaskCount + selectedTaskIds.length;
+
+const targetLoadImpact = useMemo(() => {
+  if (!target) return "Unknown";
+
+  if (projectedTargetTaskCount <= 4) return "Safe";
+  if (projectedTargetTaskCount <= 7) return "Watch";
+  return "Risk";
+}, [target, projectedTargetTaskCount]);
   const stats = useMemo(() => {
     const overdue = tasks.filter(isOverdue).length;
     const completed = tasks.filter((task) => isCompleted(task.status, task.progress)).length;
@@ -403,9 +420,12 @@ const toggleSelectAllVisible = () => {
     <p className="text-[10px] uppercase tracking-[0.14em] text-white/35">
       Target Load Impact
     </p>
-    <p className="mt-2 text-lg font-semibold text-white">
-      {selectedTaskIds.length >= recommendedCount ? "Safe" : "Review"}
-    </p>
+   <p className="mt-2 text-lg font-semibold text-white">
+  {targetLoadImpact}
+</p>
+<p className="mt-1 text-xs text-white/45">
+  {targetCurrentTaskCount} → {projectedTargetTaskCount} tasks
+</p>
   </div>
 </div>
 
