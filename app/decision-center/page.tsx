@@ -258,6 +258,33 @@ const secondaryDecisionHref = secondaryRiskProject
     href: "/ai-insights",
   }))),
 ].slice(0, 4);
+const decisionStats = [
+  {
+    label: "High Risk Projects",
+    value: (dashboardData?.riskyProjects || []).filter(
+      (project: any) => project.level === "High"
+    ).length,
+    tone: "danger",
+  },
+  {
+    label: "Overdue Tasks",
+    value: dashboardData?.kpis?.overdueTasks || 0,
+    tone: "warning",
+  },
+  {
+    label: "Overloaded Members",
+    value: (dashboardData?.resourceWorkload || []).filter(
+      (member: any) =>
+        member.loadLevel === "Critical" || member.loadLevel === "High"
+    ).length,
+    tone: "info",
+  },
+  {
+    label: "AI Recommendations",
+    value: (dashboardData?.aiSuggestions || []).length,
+    tone: "primary",
+  },
+];
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1450px] px-4 py-5 sm:px-6 lg:px-8">
@@ -328,7 +355,36 @@ const secondaryDecisionHref = secondaryRiskProject
 </div>
           </div>
         </section>
+<section className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+  {decisionStats.map((stat, index) => (
+    <div
+      key={index}
+      className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5 shadow-xl shadow-black/20"
+    >
+      <p className="text-[10px] uppercase tracking-[0.18em] text-white/35">
+        {stat.label}
+      </p>
 
+      <div className="mt-4 flex items-end justify-between gap-3">
+        <span className="text-3xl font-semibold text-white">{stat.value}</span>
+
+        <span
+          className={`rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${
+            stat.tone === "danger"
+              ? "bg-[#ff6b6b]/15 text-[#ff9a9a]"
+              : stat.tone === "warning"
+              ? "bg-[#ffb86b]/15 text-[#ffd089]"
+              : stat.tone === "info"
+              ? "bg-[#7dd3fc]/15 text-[#9fe3ff]"
+              : "bg-[#8ea8ff]/15 text-[#9eb7ff]"
+          }`}
+        >
+          Live
+        </span>
+      </div>
+    </div>
+  ))}
+</section>
         <section className="grid gap-6 xl:grid-cols-[1.65fr_0.85fr]">
           <div className="rounded-[32px] border border-white/8 bg-[radial-gradient(circle_at_top_left,rgba(142,168,255,0.16),transparent_36%),linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-6 shadow-2xl shadow-black/30">
             <div className="mb-6 flex items-start justify-between gap-4">
