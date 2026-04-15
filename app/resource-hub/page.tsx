@@ -385,7 +385,7 @@ const recommendationIsCalm = !sourceMember || !targetMember;
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1450px] px-4 py-5 sm:px-6 lg:px-8">
-        <header className="mb-8 flex items-center justify-between rounded-[28px] border border-white/8 bg-[#070910]/90 px-5 py-4 shadow-2xl shadow-black/30 backdrop-blur">
+        <header className="mb-8 flex flex-col gap-4 rounded-[28px] border border-white/8 bg-[#070910]/90 px-5 py-4 shadow-2xl shadow-black/30 backdrop-blur lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-3">
             <div className="text-sm font-semibold text-white">Pilot</div>
           </div>
@@ -398,7 +398,7 @@ const recommendationIsCalm = !sourceMember || !targetMember;
   <NavPill label="Settings" href="/settings" />
 </nav>
 
-<div className="flex items-center gap-4">
+<div className="flex w-full flex-wrap items-center justify-between gap-3 lg:w-auto lg:justify-end">
   <div className="hidden text-right sm:block">
     <p className="text-[10px] uppercase tracking-[0.18em] text-white/30">
       Last updated
@@ -525,9 +525,21 @@ const recommendationIsCalm = !sourceMember || !targetMember;
   </div>
 
   <div className="mt-6 flex flex-wrap gap-3">
-    <button className="rounded-2xl bg-[#ff7d7d] px-5 py-3 text-sm font-semibold text-[#180b0b] transition hover:brightness-110">
-      Redistribute Tasks
-    </button>
+   {urgentMemberEmail ? (
+  <Link
+    href={`/tasks?assignee=${encodeURIComponent(urgentMemberEmail)}`}
+    className="rounded-2xl bg-[#ff7d7d] px-5 py-3 text-sm font-semibold text-[#180b0b] transition hover:brightness-110"
+  >
+    Redistribute Tasks
+  </Link>
+) : (
+  <button
+    disabled
+    className="rounded-2xl bg-[#ff7d7d]/60 px-5 py-3 text-sm font-semibold text-[#180b0b]/70"
+  >
+    Redistribute Tasks
+  </button>
+)}
 
    {urgentMemberEmail ? (
   <Link
