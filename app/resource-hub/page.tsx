@@ -372,15 +372,38 @@ const recommendationTitle =
   sourceMember && targetMember
     ? "Resource Recommendation"
     : "Workload Recommendation";
+    const recommendationIsCalm = !sourceMember || !targetMember;
+const sortedByLoad = [...teamMembers].sort(
+  (a: any, b: any) => (b.taskCount || 0) - (a.taskCount || 0)
+);
+
+const lightestMember = [...teamMembers].sort(
+  (a: any, b: any) => (a.taskCount || 0) - (b.taskCount || 0)
+)[0];
+
+const optimizationSource = sortedByLoad[0];
+const optimizationTarget = lightestMember;
+
+const canOptimize =
+  recommendationIsCalm &&
+  optimizationSource &&
+  optimizationTarget &&
+  optimizationSource.assignee !== optimizationTarget.assignee &&
+  (optimizationSource.taskCount || 0) - (optimizationTarget.taskCount || 0) >= 2;
 
 const recommendationText =
   sourceMember && targetMember
     ? `Pilot suggests moving ${suggestedTaskShift} task${
         suggestedTaskShift > 1 ? "s" : ""
-      } from ${sourceMemberName} to ${targetMemberName} to reduce delivery pressure, lower overdue risk, and rebalance current execution capacity.`
-    : "Pilot does not detect an immediate redistribution action right now. Current workload appears relatively stable across the team.";
+      } from ${sourceMemberName} to ${targetMemberName} to reduce delivery pressure and rebalance execution.`
+    : canOptimize
+    ? `System is stable, but minor optimization is possible. Pilot suggests shifting 1 low-impact task from ${
+        optimizationSource.assignee.split("@")[0]
+      } to ${
+        optimizationTarget.assignee.split("@")[0]
+      } to further balance workload.`
+    : "System is currently balanced. No immediate redistribution required.";
 
-const recommendationIsCalm = !sourceMember || !targetMember;
 
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
@@ -835,26 +858,38 @@ return (
     </div>
   </div>
 )}
+
     <div className="mt-4 flex flex-wrap gap-3">
-  {recommendationIsCalm ? (
-    <Link
-      href="/tasks"
-      className="inline-flex items-center gap-2 rounded-xl bg-[#8ea8ff] px-4 py-2 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
-    >
-      View All Tasks →
-    </Link>
-  ) : (
-    <Link
-      href={`/tasks?assignee=${encodeURIComponent(
-        sourceMemberEmail
-      )}&target=${encodeURIComponent(
-        targetMemberEmail
-      )}&mode=redistribute&count=${suggestedTaskShift}`}
-      className="inline-flex items-center gap-2 rounded-xl bg-[#ffb86a] px-4 py-2 text-sm font-semibold text-[#1a0f00] transition hover:brightness-110"
-    >
-      Redistribute from {sourceMemberName} → {targetMemberName}
-    </Link>
-  )}
+  {sourceMemberEmail && targetMemberEmail ? (
+  <Link
+    href={`/tasks?assignee=${encodeURIComponent(
+      sourceMemberEmail
+    )}&target=${encodeURIComponent(
+      targetMemberEmail
+    )}&mode=redistribute&count=${suggestedTaskShift}`}
+    className="inline-flex items-center gap-2 rounded-xl bg-[#ffb86a] px-4 py-2 text-sm font-semibold text-[#1a0f00] transition hover:brightness-110"
+  >
+    Redistribute from {sourceMemberName} → {targetMemberName}
+  </Link>
+) : canOptimize ? (
+  <Link
+    href={`/tasks?assignee=${encodeURIComponent(
+      optimizationSource.assignee
+    )}&target=${encodeURIComponent(
+      optimizationTarget.assignee
+    )}&mode=redistribute&count=1`}
+    className="inline-flex items-center gap-2 rounded-xl bg-[#8ea8ff] px-4 py-2 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
+  >
+    Optimize workload →
+  </Link>
+) : (
+  <Link
+    href="/tasks"
+    className="inline-flex items-center gap-2 rounded-xl bg-[#8ea8ff] px-4 py-2 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
+  >
+    View All Tasks →
+  </Link>
+)}
 
   {sourceMemberEmail && (
     <Link
