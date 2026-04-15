@@ -265,7 +265,9 @@ const decisionStats = [
       (project: any) => project.level === "High"
     ).length,
     tone: "danger",
-    href: "/tasks?filter=overdue",
+    href: topRiskProject
+      ? `/tasks?project=${encodeURIComponent(topRiskProject.title)}&filter=overdue`
+      : "/tasks?filter=overdue",
   },
   {
     label: "Overdue Tasks",
