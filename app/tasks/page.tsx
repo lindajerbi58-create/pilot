@@ -68,7 +68,23 @@ function getPriorityBadge(priority?: string) {
 
   return "border border-white/10 bg-white/[0.04] text-white/70";
 }
+function getRecommendedTasks(tasks: TaskItem[]) {
+  return [...tasks]
+    .filter((task) => !isCompleted(task.status, task.progress))
+    .sort((a, b) => {
+      const aOverdue = isOverdue(a) ? 1 : 0;
+      const bOverdue = isOverdue(b) ? 1 : 0;
 
+      return (
+        bOverdue - aOverdue ||
+        (a.progress || 0) - (b.progress || 0) ||
+        String(b.priority || "").localeCompare(String(a.priority || ""))
+      );
+    })
+    .slice(0, 2)
+    .map((task) => task._id)
+    .filter((id): id is string => Boolean(id));
+}
 export default function TasksPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -83,6 +99,7 @@ const isRedistributeMode = mode === "redistribute";
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 const [redistributing, setRedistributing] = useState(false);
+const [selectedTaskIds, setSelectedTaskIds] = useState<string[]>([]);
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -130,6 +147,12 @@ const filteredTasks = useMemo(() => {
 
   return result;
 }, [tasks, filter, project, assignee]);
+useEffect(() => {
+  if (!isRedistributeMode) return;
+
+  const recommended = getRecommendedTasks(filteredTasks);
+  setSelectedTaskIds(recommended);
+}, [isRedistributeMode, filteredTasks]);
 const visibleTaskIds = useMemo(() => {
   return filteredTasks
     .map((task) => task._id)
@@ -151,14 +174,14 @@ const handleRedistribute = async () => {
     return;
   }
 
-  if (visibleTaskIds.length === 0) {
-    alert("No tasks available to redistribute");
-    return;
-  }
+ if (selectedTaskIds.length === 0) {
+  alert("No selected tasks available to redistribute");
+  return;
+}
 
-  const confirmed = window.confirm(
-    `Redistribute ${visibleTaskIds.length} task(s) from ${assignee || "current assignee"} to ${target}?`
-  );
+ const confirmed = window.confirm(
+  `Redistribute ${selectedTaskIds.length} selected task(s) from ${assignee || "current assignee"} to ${target}?`
+);
 
   if (!confirmed) return;
 
@@ -171,7 +194,7 @@ const handleRedistribute = async () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        taskIds: visibleTaskIds,
+       taskIds: selectedTaskIds,
         targetAssignee: target,
       }),
     });
@@ -182,7 +205,7 @@ const handleRedistribute = async () => {
       throw new Error(data?.error || "Failed to redistribute tasks");
     }
 
-alert(`Successfully reassigned ${data.updatedCount || visibleTaskIds.length} task(s) to ${target}`);
+alert(`Successfully reassigned ${data.updatedCount || selectedTaskIds.length} task(s) to ${target}`);
 router.refresh();
   } catch (err: any) {
     console.error(err);
@@ -190,6 +213,22 @@ router.refresh();
   } finally {
     setRedistributing(false);
   }
+};
+const toggleTaskSelection = (taskId: string) => {
+  setSelectedTaskIds((prev) =>
+    prev.includes(taskId)
+      ? prev.filter((id) => id !== taskId)
+      : [...prev, taskId]
+  );
+};
+
+const toggleSelectAllVisible = () => {
+  if (selectedTaskIds.length === visibleTaskIds.length) {
+    setSelectedTaskIds([]);
+    return;
+  }
+
+  setSelectedTaskIds(visibleTaskIds);
 };
   if (loading) {
     return (
@@ -292,13 +331,18 @@ router.refresh();
     <div className="mt-4">
       <button
         onClick={handleRedistribute}
-        disabled={redistributing || visibleTaskIds.length === 0 || !target}
+        disabled={redistributing || selectedTaskIds.length === 0 || !target}
         className="rounded-2xl bg-amber-300 px-4 py-2 text-sm font-semibold text-black transition hover:bg-amber-200 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {redistributing
-          ? "Reassigning..."
-          : `Reassign ${visibleTaskIds.length} task(s) to ${target || "target"}`}
+       {redistributing
+  ? "Reassigning..."
+  : selectedTaskIds.length === 0
+  ? "No tasks selected"
+  : `Reassign ${selectedTaskIds.length} selected task(s) to ${target || "target"}`}
       </button>
+      <p className="mt-2 text-xs text-white/50">
+  Pilot preselects the best redistribution candidates. You can adjust them below.
+</p>
     </div>
   </div>
 )}
@@ -336,31 +380,61 @@ router.refresh();
           ) : (
            <div className="overflow-x-auto">
   <table className="min-w-[1100px] w-full table-fixed">
-                <thead className="border-b border-white/8 bg-white/[0.02]">
-                  <tr className="text-left text-xs uppercase tracking-[0.16em] text-white/35">
-                   <th className="w-[260px] px-5 py-4">Task</th>
-                    <th className="px-5 py-4">Project</th>
-                    <th className="px-5 py-4">Assignee</th>
-                    <th className="px-5 py-4">Status</th>
-                    <th className="px-5 py-4">Priority</th>
-                    <th className="px-5 py-4">Progress</th>
-                    <th className="px-5 py-4">Due Date</th>
-                  </tr>
-                </thead>
+               <thead className="border-b border-white/8 bg-white/[0.02]">
+  <tr className="text-left text-xs uppercase tracking-[0.16em] text-white/35">
+    <th className="px-5 py-4">
+      <input
+        type="checkbox"
+        checked={
+          visibleTaskIds.length > 0 &&
+          selectedTaskIds.length === visibleTaskIds.length
+        }
+        onChange={toggleSelectAllVisible}
+        className="h-4 w-4 accent-[#8ea8ff]"
+      />
+    </th>
+    <th className="w-[260px] px-5 py-4">Task</th>
+    <th className="px-5 py-4">Project</th>
+    <th className="px-5 py-4">Assignee</th>
+    <th className="px-5 py-4">Status</th>
+    <th className="px-5 py-4">Priority</th>
+    <th className="px-5 py-4">Progress</th>
+    <th className="px-5 py-4">Due Date</th>
+  </tr>
+</thead>
 
-                <tbody>
-                  {filteredTasks.map((task, index) => (
-                    <tr
-                      key={task._id || `${task.task_name}-${index}`}
-                      className="border-b border-white/6 text-sm text-white/80 transition hover:bg-white/[0.02]"
-                    >
-                    <td className="px-5 py-4 font-medium text-white">
+<tbody>
+  {filteredTasks.map((task, index) => (
+    <tr
+      key={task._id || `${task.task_name}-${index}`}
+      className="border-b border-white/6 text-sm text-white/80 transition hover:bg-white/[0.02]"
+    >
+      <td className="px-5 py-4">
+        {task._id ? (
+          <input
+            type="checkbox"
+            checked={selectedTaskIds.includes(task._id)}
+            onChange={() => toggleTaskSelection(task._id!)}
+            className="h-4 w-4 accent-[#8ea8ff]"
+          />
+        ) : null}
+      </td>
+
+      <td className="px-5 py-4 font-medium text-white">
   <div className="max-w-[220px] break-words leading-6">
-    {task.task_name}
+    <div className="flex items-center gap-2">
+      <span>{task.task_name}</span>
+      {task._id && selectedTaskIds.includes(task._id) && (
+        <span className="rounded-full border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#b7c8ff]">
+          Selected
+        </span>
+      )}
+    </div>
   </div>
 </td>
-                      <td className="px-5 py-4 text-white/65">{task.project_name}</td>
-                      <td className="px-5 py-4 text-white/65">{task.assignee_email}</td>
+
+      <td className="px-5 py-4 text-white/65">{task.project_name}</td>
+      <td className="px-5 py-4 text-white/65">{task.assignee_email}</td>
                       <td className="px-5 py-4">
                         <span
                           className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] ${getStatusBadge(
