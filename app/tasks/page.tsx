@@ -203,6 +203,27 @@ const targetLoadImpact = useMemo(() => {
   if (projectedTargetTaskCount <= 7) return "Watch";
   return "Risk";
 }, [target, projectedTargetTaskCount]);
+const sourceCurrentTaskCount = useMemo(() => {
+  if (!assignee) return 0;
+
+  return tasks.filter(
+    (task) => String(task.assignee_email || "").trim() === assignee
+  ).length;
+}, [tasks, assignee]);
+
+const projectedSourceTaskCount = Math.max(
+  0,
+  sourceCurrentTaskCount - selectedTaskIds.length
+);
+
+const sourceReliefLevel = useMemo(() => {
+  const shift = selectedTaskIds.length;
+
+  if (shift >= 3) return "High";
+  if (shift === 2) return "Moderate";
+  if (shift === 1) return "Low";
+  return "None";
+}, [selectedTaskIds.length]);
   const stats = useMemo(() => {
     const overdue = tasks.filter(isOverdue).length;
     const completed = tasks.filter((task) => isCompleted(task.status, task.progress)).length;
@@ -391,7 +412,7 @@ const toggleSelectAllVisible = () => {
       <p className="mt-2 text-xs text-white/50">
   Pilot preselects the best redistribution candidates. You can adjust them below.
 </p>
-<div className="mt-4 grid gap-3 md:grid-cols-3">
+<div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
   <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3">
     <p className="text-[10px] uppercase tracking-[0.14em] text-white/35">
       Selected Tasks
@@ -427,6 +448,17 @@ const toggleSelectAllVisible = () => {
   {targetCurrentTaskCount} → {projectedTargetTaskCount} tasks
 </p>
   </div>
+  <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3">
+  <p className="text-[10px] uppercase tracking-[0.14em] text-white/35">
+    Source Relief
+  </p>
+  <p className="mt-2 text-lg font-semibold text-white">
+    {sourceReliefLevel}
+  </p>
+  <p className="mt-1 text-xs text-white/45">
+    {sourceCurrentTaskCount} → {projectedSourceTaskCount} tasks
+  </p>
+</div>
 </div>
 
     </div>
