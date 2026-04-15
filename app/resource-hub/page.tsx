@@ -527,9 +527,11 @@ const recommendationIsCalm = !sourceMember || !targetMember;
   <div className="mt-6 flex flex-wrap gap-3">
  {urgentMemberEmail ? (
   <Link
-    href={`/tasks?assignee=${encodeURIComponent(
-      urgentMemberEmail
-    )}&target=${encodeURIComponent(targetMemberEmail || "")}&mode=redistribute`}
+   href={`/tasks?assignee=${encodeURIComponent(
+  urgentMemberEmail
+)}&target=${encodeURIComponent(
+  targetMemberEmail || ""
+)}&mode=redistribute&count=${suggestedTaskShift}`}
     className="rounded-2xl bg-[#ff7d7d] px-5 py-3 text-sm font-semibold text-[#180b0b] transition hover:brightness-110"
   >
     Redistribute Tasks
@@ -835,18 +837,18 @@ return (
 )}
       <div className="mt-4 flex flex-wrap gap-3">
 <div className="mt-4 flex flex-wrap gap-3">
-  {sourceMemberEmail && targetMemberEmail && (
-    <Link
-      href={`/tasks?assignee=${encodeURIComponent(
-        sourceMemberEmail
-      )}&target=${encodeURIComponent(
-        targetMemberEmail
-      )}&mode=redistribute`}
-      className="inline-flex items-center gap-2 rounded-xl bg-[#ffb86a] px-4 py-2 text-sm font-semibold text-[#1a0f00] transition hover:brightness-110"
-    >
-      Redistribute from {sourceMemberName} → {targetMemberName}
-    </Link>
-  )}
+{sourceMemberEmail && targetMemberEmail && (
+  <Link
+    href={`/tasks?assignee=${encodeURIComponent(
+      sourceMemberEmail
+    )}&target=${encodeURIComponent(
+      targetMemberEmail
+    )}&mode=redistribute&count=${suggestedTaskShift}`}
+    className="inline-flex items-center gap-2 rounded-xl bg-[#ffb86a] px-4 py-2 text-sm font-semibold text-[#1a0f00] transition hover:brightness-110"
+  >
+    Redistribute from {sourceMemberName} → {targetMemberName}
+  </Link>
+)}
 
   {sourceMemberEmail && (
     <Link

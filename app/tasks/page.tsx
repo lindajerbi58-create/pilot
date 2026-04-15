@@ -68,7 +68,7 @@ function getPriorityBadge(priority?: string) {
 
   return "border border-white/10 bg-white/[0.04] text-white/70";
 }
-function getRecommendedTasks(tasks: TaskItem[]) {
+function getRecommendedTasks(tasks: TaskItem[], count: number) {
   return [...tasks]
     .filter((task) => !isCompleted(task.status, task.progress))
     .sort((a, b) => {
@@ -81,7 +81,7 @@ function getRecommendedTasks(tasks: TaskItem[]) {
         String(b.priority || "").localeCompare(String(a.priority || ""))
       );
     })
-    .slice(0, 2)
+    .slice(0, count)
     .map((task) => task._id)
     .filter((id): id is string => Boolean(id));
 }
@@ -91,6 +91,8 @@ export default function TasksPage() {
  const filter = searchParams.get("filter");
 const project = searchParams.get("project");
 const assignee = searchParams.get("assignee");
+const countParam = searchParams.get("count");
+const recommendedCount = Math.max(1, Number(countParam || 0));
 const target = searchParams.get("target");
 const mode = searchParams.get("mode");
 
@@ -150,9 +152,10 @@ const filteredTasks = useMemo(() => {
 useEffect(() => {
   if (!isRedistributeMode) return;
 
-  const recommended = getRecommendedTasks(filteredTasks);
+  const safeCount = Number.isFinite(recommendedCount) ? recommendedCount : 1;
+  const recommended = getRecommendedTasks(filteredTasks, safeCount);
   setSelectedTaskIds(recommended);
-}, [isRedistributeMode, filteredTasks]);
+}, [isRedistributeMode, filteredTasks, recommendedCount]);
 const visibleTaskIds = useMemo(() => {
   return filteredTasks
     .map((task) => task._id)
@@ -319,13 +322,16 @@ const toggleSelectAllVisible = () => {
       </div>
 
       <div className="flex flex-col gap-1 text-sm md:text-right">
-        <span className="text-white/65">
-          From: <span className="font-medium text-white">{assignee || "-"}</span>
-        </span>
-        <span className="text-white/65">
-          To: <span className="font-medium text-white">{target || "-"}</span>
-        </span>
-      </div>
+  <span className="text-white/65">
+    From: <span className="font-medium text-white">{assignee || "-"}</span>
+  </span>
+  <span className="text-white/65">
+    To: <span className="font-medium text-white">{target || "-"}</span>
+  </span>
+  <p className="mt-2 text-xs text-white/50">
+    Pilot recommends shifting {recommendedCount} task{recommendedCount > 1 ? "s" : ""} based on current workload pressure.
+  </p>
+</div>
     </div>
 
     <div className="mt-4">
