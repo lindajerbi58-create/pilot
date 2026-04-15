@@ -585,20 +585,7 @@ if (loading) {
   <h2 className="mt-2 text-xl font-semibold text-white">{viewTitle}</h2>
   <p className="mt-2 text-sm text-white/65">{viewDescription}</p>
 </div>
-       {(project || assignee || filter === "overdue") && (
-  <div className="mb-6 rounded-[22px] border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-4 py-3 text-sm font-medium text-[#dbe4ff]">
-    {project && filter === "overdue"
-      ? `Showing overdue tasks for project: ${project}`
-      : project
-      ? `Showing all tasks for project: ${project}`
-      : assignee && filter === "overdue"
-      ? `Showing overdue tasks for assignee: ${assignee}`
-      : assignee
-      ? `Showing all tasks for assignee: ${assignee}`
-     
-      : ""}
-  </div>
-)}
+      
 
         <div className="rounded-[28px] border border-white/8 bg-white/[0.03] shadow-2xl shadow-black/20">
           <div className="border-b border-white/8 px-5 py-4">
@@ -611,7 +598,7 @@ if (loading) {
             </div>
           ) : (
            <div className="overflow-x-auto">
- <table className="min-w-[980px] w-full table-fixed">
+<table className="min-w-[1400px] w-full table-auto">
                <thead className="border-b border-white/8 bg-white/[0.015]">
   <tr className="text-left text-[11px] uppercase tracking-[0.14em] text-white/30">
    {isRedistributeMode && (
@@ -630,11 +617,11 @@ if (loading) {
     <th className="w-[240px] px-4 py-3">Task</th>
     {!project && <th className="px-5 py-4">Project</th>}
     <th className="px-5 py-4">Assignee</th>
-    <th className="px-5 py-4">Status</th>
-    <th className="px-5 py-4">Priority</th>
+    <th className="px-4 py-3 w-[160px]">Status</th>
+<th className="px-5 py-3 w-[140px]">Priority</th>
     <th className="px-4 py-3">Progress</th>
-<th className="px-4 py-3">Due Date</th>
-<th className="px-4 py-3">Days Left</th>
+<th className="px-4 py-3 w-[150px]">Due Date</th>
+<th className="px-6 py-3 w-[140px]">Days Left</th>
   </tr>
 </thead>
 
@@ -720,27 +707,26 @@ if (loading) {
   <td className="px-5 py-4 text-white/65">{task.project_name}</td>
 )}
           <td className="px-5 py-4 text-white/65">{task.assignee_email}</td>
+<td className="px-4 py-3 pr-6">
+  <span
+    className={`inline-flex whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] ${getStatusBadge(
+      task.status,
+      task.progress
+    )}`}
+  >
+    {task.status}
+  </span>
+</td>
 
-          <td className="px-5 py-4">
-            <span
-              className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] ${getStatusBadge(
-                task.status,
-                task.progress
-              )}`}
-            >
-              {task.status}
-            </span>
-          </td>
-
-          <td className="px-5 py-4">
-            <span
-              className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] ${getPriorityBadge(
-                task.priority
-              )}`}
-            >
-              {task.priority}
-            </span>
-          </td>
+          <td className="px-5 py-3">
+  <span
+    className={`inline-flex whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] ${getPriorityBadge(
+      task.priority
+    )}`}
+  >
+    {task.priority}
+  </span>
+</td>
 
           <td className="px-5 py-4">
             <div className="flex items-center gap-3">
@@ -754,8 +740,8 @@ if (loading) {
             </div>
           </td>
 
-          <td className="px-5 py-4">
-            <div className="flex items-center gap-2 text-white/65">
+          <td className="px-4 py-3 pr-8">
+  <div className="flex items-center gap-2 text-white/65">
               <CalendarDays size={14} />
               <span>{task.due_date || "-"}</span>
               {isOverdue(task) && (
@@ -765,7 +751,7 @@ if (loading) {
               )}
             </div>
           </td>
-          <td className="px-4 py-3">
+          <td className="px-6 py-3">
   {(() => {
     const daysLeft = getDaysLeft(task);
 
