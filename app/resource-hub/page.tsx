@@ -835,20 +835,26 @@ return (
     </div>
   </div>
 )}
-      <div className="mt-4 flex flex-wrap gap-3">
-<div className="mt-4 flex flex-wrap gap-3">
-{sourceMemberEmail && targetMemberEmail && (
-  <Link
-    href={`/tasks?assignee=${encodeURIComponent(
-      sourceMemberEmail
-    )}&target=${encodeURIComponent(
-      targetMemberEmail
-    )}&mode=redistribute&count=${suggestedTaskShift}`}
-    className="inline-flex items-center gap-2 rounded-xl bg-[#ffb86a] px-4 py-2 text-sm font-semibold text-[#1a0f00] transition hover:brightness-110"
-  >
-    Redistribute from {sourceMemberName} → {targetMemberName}
-  </Link>
-)}
+    <div className="mt-4 flex flex-wrap gap-3">
+  {recommendationIsCalm ? (
+    <Link
+      href="/tasks"
+      className="inline-flex items-center gap-2 rounded-xl bg-[#8ea8ff] px-4 py-2 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
+    >
+      View All Tasks →
+    </Link>
+  ) : (
+    <Link
+      href={`/tasks?assignee=${encodeURIComponent(
+        sourceMemberEmail
+      )}&target=${encodeURIComponent(
+        targetMemberEmail
+      )}&mode=redistribute&count=${suggestedTaskShift}`}
+      className="inline-flex items-center gap-2 rounded-xl bg-[#ffb86a] px-4 py-2 text-sm font-semibold text-[#1a0f00] transition hover:brightness-110"
+    >
+      Redistribute from {sourceMemberName} → {targetMemberName}
+    </Link>
+  )}
 
   {sourceMemberEmail && (
     <Link
@@ -858,16 +864,6 @@ return (
       View {sourceMemberName}&apos;s Tasks →
     </Link>
   )}
-
-  {targetMemberEmail && (
-    <Link
-      href={`/tasks?assignee=${encodeURIComponent(targetMemberEmail)}`}
-      className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm font-medium text-white/80 transition hover:bg-white/[0.05] hover:text-white"
-    >
-      View {targetMemberName}&apos;s Tasks →
-    </Link>
-  )}
-</div>
 
   {targetMemberEmail && (
     <Link
