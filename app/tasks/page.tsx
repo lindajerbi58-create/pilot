@@ -36,7 +36,18 @@ function isOverdue(task: TaskItem) {
 
   return due.getTime() < now.getTime();
 }
+function getDaysLeft(task: TaskItem) {
+  if (!task.due_date) return null;
 
+  const due = new Date(task.due_date);
+  const now = new Date();
+
+  due.setHours(0, 0, 0, 0);
+  now.setHours(0, 0, 0, 0);
+
+  const diffMs = due.getTime() - now.getTime();
+  return Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+}
 function getStatusBadge(status?: string, progress?: number) {
   if (isCompleted(status, progress)) {
     return "border border-emerald-500/20 bg-emerald-500/10 text-emerald-300";
@@ -600,11 +611,11 @@ if (loading) {
             </div>
           ) : (
            <div className="overflow-x-auto">
-  <table className="min-w-[1100px] w-full table-fixed">
-               <thead className="border-b border-white/8 bg-white/[0.02]">
-  <tr className="text-left text-xs uppercase tracking-[0.16em] text-white/35">
-    {isRedistributeMode && (
-  <th className="px-5 py-4">
+ <table className="min-w-[980px] w-full table-fixed">
+               <thead className="border-b border-white/8 bg-white/[0.015]">
+  <tr className="text-left text-[11px] uppercase tracking-[0.14em] text-white/30">
+   {isRedistributeMode && (
+  <th className="px-4 py-3">
     <input
       type="checkbox"
       checked={
@@ -616,13 +627,14 @@ if (loading) {
     />
   </th>
 )}
-    <th className="w-[260px] px-5 py-4">Task</th>
+    <th className="w-[240px] px-4 py-3">Task</th>
     {!project && <th className="px-5 py-4">Project</th>}
     <th className="px-5 py-4">Assignee</th>
     <th className="px-5 py-4">Status</th>
     <th className="px-5 py-4">Priority</th>
-    <th className="px-5 py-4">Progress</th>
-    <th className="px-5 py-4">Due Date</th>
+    <th className="px-4 py-3">Progress</th>
+<th className="px-4 py-3">Due Date</th>
+<th className="px-4 py-3">Days Left</th>
   </tr>
 </thead>
 
@@ -638,14 +650,14 @@ if (loading) {
         {showProjectDivider && (
           <tr>
             <td
-             colSpan={
+            colSpan={
   isRedistributeMode
     ? project
-      ? 7
-      : 8
+      ? 8
+      : 9
     : project
-    ? 6
-    : 7
+    ? 7
+    : 8
 }
               className="border-b border-white/8 bg-white/[0.02] px-5 py-3"
             >
@@ -753,6 +765,45 @@ if (loading) {
               )}
             </div>
           </td>
+          <td className="px-4 py-3">
+  {(() => {
+    const daysLeft = getDaysLeft(task);
+
+    if (daysLeft === null) {
+      return <span className="text-white/35">—</span>;
+    }
+
+    if (daysLeft < 0) {
+      return (
+        <span className="rounded-full border border-red-500/20 bg-red-500/10 px-2.5 py-1 text-[11px] font-semibold text-red-300">
+          {Math.abs(daysLeft)}d late
+        </span>
+      );
+    }
+
+    if (daysLeft === 0) {
+      return (
+        <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-1 text-[11px] font-semibold text-amber-300">
+          Today
+        </span>
+      );
+    }
+
+    if (daysLeft <= 3) {
+      return (
+        <span className="rounded-full border border-orange-500/20 bg-orange-500/10 px-2.5 py-1 text-[11px] font-semibold text-orange-300">
+          {daysLeft}d left
+        </span>
+      );
+    }
+
+    return (
+      <span className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-semibold text-white/65">
+        {daysLeft}d left
+      </span>
+    );
+  })()}
+</td>
         </tr>
             </React.Fragment>
     );
