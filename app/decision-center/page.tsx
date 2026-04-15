@@ -578,13 +578,24 @@ const secondaryDecisionHref = secondaryRiskProject
 </section>
 
         <nav className="mt-8 flex justify-center md:hidden">
-          <div className="flex items-center gap-2 rounded-full border border-white/8 bg-[#070910]/95 px-3 py-2">
-            <SidebarItem label="Projects" />
-            <SidebarItem label="Tasks" active />
-            <SidebarItem label="Activity" />
-            <SidebarItem label="Settings" />
-          </div>
-        </nav>
+  <div className="flex flex-wrap items-center justify-center gap-2 rounded-[24px] border border-white/8 bg-[#070910]/95 px-3 py-3">
+    <Link href="/dashboard">
+      <SidebarItem label="Dashboard" />
+    </Link>
+
+    <Link href="/ai-insights">
+      <SidebarItem label="AI Insights" />
+    </Link>
+
+    <Link href="/decision-center">
+      <SidebarItem label="Decision Center" active />
+    </Link>
+
+    <Link href="/resource-hub">
+      <SidebarItem label="Resources" />
+    </Link>
+  </div>
+</nav>
       </div>
     </main>
   );
