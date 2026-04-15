@@ -436,7 +436,7 @@ export default function AIInsightsPage() {
                       href="/tasks?filter=overdue"
                       className="rounded-2xl bg-[#8aa4ff] px-5 py-3 text-sm font-semibold text-[#111629] transition hover:brightness-110"
                     >
-                      View Detailed Report
+                      Review Overdue Tasks
                     </Link>
 
                     <Link
@@ -566,22 +566,47 @@ export default function AIInsightsPage() {
                     Dynamic Analysis
                   </span>
                 </div>
+<div className="mb-5 rounded-2xl border border-white/6 bg-white/[0.03] p-4">
+  <p className="text-xs uppercase tracking-[0.18em] text-white/35">
+    Primary Driver
+  </p>
+  <p className="mt-3 text-lg font-semibold text-white">
+    {sortedPilotFlags[0].value > 0
+      ? sortedPilotFlags[0].title
+      : "System currently stable"}
+  </p>
+  <p className="mt-2 text-sm leading-6 text-white/55">
+    {sortedPilotFlags[0].value > 0
+      ? sortedPilotFlags[0].description
+      : "Pilot is not detecting a major alert driver right now. Current execution, project risk, and workload signals remain under control."}
+  </p>
 
-                <div className="mb-5 rounded-2xl border border-white/6 bg-white/[0.03] p-4">
-                  <p className="text-xs uppercase tracking-[0.18em] text-white/35">
-                    Primary Driver
-                  </p>
-                  <p className="mt-3 text-lg font-semibold text-white">
-                    {sortedPilotFlags[0].value > 0
-                      ? sortedPilotFlags[0].title
-                      : "System currently stable"}
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-white/55">
-                    {sortedPilotFlags[0].value > 0
-                      ? sortedPilotFlags[0].description
-                      : "Pilot is not detecting a major alert driver right now. Current execution, project risk, and workload signals remain under control."}
-                  </p>
-                </div>
+  <div className="mt-4 flex flex-wrap gap-3">
+    <Link
+      href={
+        sortedPilotFlags[0].key === "overdue"
+          ? "/tasks?filter=overdue"
+          : sortedPilotFlags[0].key === "risk"
+          ? "/decision-center"
+          : "/resource-hub"
+      }
+      className="rounded-xl bg-[#8aa4ff] px-4 py-2 text-sm font-semibold text-[#111629] transition hover:brightness-110"
+    >
+      {sortedPilotFlags[0].key === "overdue"
+        ? "Open Overdue Tasks"
+        : sortedPilotFlags[0].key === "risk"
+        ? "Open Decision Center"
+        : "Open Resource Hub"}
+    </Link>
+
+    <Link
+      href="/dashboard"
+      className="rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-white/70 transition hover:bg-white/[0.04] hover:text-white"
+    >
+      Back to Dashboard
+    </Link>
+  </div>
+</div>
 
                 <div className="grid gap-4 md:grid-cols-3">
                   {sortedPilotFlags.map((flag) => {
