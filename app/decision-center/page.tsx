@@ -398,7 +398,17 @@ const decisionStats = [
               <div>
                <p className="text-[10px] uppercase tracking-[0.2em] text-white/35">
   Live Priority Recommendation
-</p><h2 className="mt-3 text-3xl font-semibold tracking-tight text-white">
+</p>
+<span className={`mt-2 inline-block rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${
+  topRiskProject?.level === "High"
+    ? "bg-[#ff6b6b]/15 text-[#ff8e8e]"
+    : topRiskProject?.level === "Medium"
+    ? "bg-[#ffb86b]/15 text-[#ffc98f]"
+    : "bg-[#8ea8ff]/15 text-[#9eb7ff]"
+}`}>
+  {topRiskProject ? `${topRiskProject.level} Priority` : "Stable"}
+</span>
+<h2 className="mt-3 text-3xl font-semibold tracking-tight text-white">
   {primaryDecisionTitle}
 </h2>
               </div>
