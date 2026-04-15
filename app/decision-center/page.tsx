@@ -415,12 +415,12 @@ const secondaryDecisionHref = secondaryRiskProject
     Open Risk Tasks
   </Link>
 
-  <Link
-    href="/projects"
-    className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white"
-  >
-    Open Projects
-  </Link>
+ <Link
+  href="/dashboard"
+  className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/75 transition hover:bg-white/[0.05] hover:text-white"
+>
+  Open Dashboard
+</Link>
 
   <Link
     href="/resource-hub"
