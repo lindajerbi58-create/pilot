@@ -503,7 +503,11 @@ const decisionStats = [
           <div className="rounded-[32px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/25">
             <div className="mb-5 flex items-center justify-between">
               <span className="rounded-full border border-[#ff8bd8]/20 bg-[#ff8bd8]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#ff9ce0]">
-                Network Update
+               {secondaryRiskProject
+  ? "Secondary Risk"
+  : topOverloadedMember
+  ? "Workload Signal"
+  : "Monitoring"}
               </span>
             </div>
 
