@@ -235,6 +235,38 @@ const secondaryDecisionHref = secondaryRiskProject
   : topOverloadedMember
   ? `/tasks?assignee=${encodeURIComponent(topOverloadedMember.assignee)}`
   : "/tasks";
+  const getActionImpact = (action: any) => {
+  const title = String(action.title || "").toLowerCase();
+
+  if (title.includes("overdue")) {
+    return [
+      `Overdue tasks ↓ ${dashboardData.kpis.overdueTasks} → 0`,
+      "Execution speed ↑",
+      "Project risk ↓",
+    ];
+  }
+
+  if (title.includes("rebalance") || title.includes("workload")) {
+    return [
+      "Workload balanced",
+      "Team efficiency ↑",
+      "Burnout risk ↓",
+    ];
+  }
+
+  if (title.includes("review")) {
+    return [
+      "Risk visibility ↑",
+      "Decision clarity ↑",
+      "Project stability ↑",
+    ];
+  }
+
+  return [
+    "Execution clarity ↑",
+    "Operational control ↑",
+  ];
+};
   const recommendedActions = [
   ...(topRiskProject
     ? [
@@ -278,6 +310,7 @@ const secondaryDecisionHref = secondaryRiskProject
     href: "/ai-insights",
   }))),
 ].slice(0, 4);
+
 const decisionStats = [
   {
     label: "High Risk Projects",
