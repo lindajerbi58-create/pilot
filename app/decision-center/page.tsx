@@ -357,7 +357,38 @@ const getExecutedAiAction = (title: string) => {
       String(title || "").trim().toLowerCase()
   );
 };
+const applyAllDecisions = async () => {
+  try {
+    const storedCompanyId = localStorage.getItem("pilot_company_id");
 
+    for (let i = 0; i < recommendedActions.length; i++) {
+      const action = recommendedActions[i];
+
+      const alreadyExecuted = getExecutedAiAction(action.title);
+      if (alreadyExecuted) continue;
+
+      await fetch("/api/ai-actions/execute", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-company-id": storedCompanyId || "",
+        },
+        body: JSON.stringify({
+          title: action.title,
+          description: action.description,
+          projectName: action.projectName,
+        }),
+      });
+    }
+
+    alert("All decisions have been applied.");
+
+    window.location.reload();
+  } catch (error) {
+    console.error("Apply all decisions error:", error);
+    alert("Failed to apply all decisions.");
+  }
+};
 const executeDecisionAction = async (action: any, index: number) => {
   try {
     setExecutingIndex(index);
