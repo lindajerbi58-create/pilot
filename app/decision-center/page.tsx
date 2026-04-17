@@ -442,6 +442,9 @@ const executeDecisionAction = async (action: any, index: number) => {
     setExecutingIndex(null);
   }
 };
+const pendingRecommendedActions = recommendedActions.filter(
+  (action: any) => !getExecutedAiAction(action.title)
+);
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1450px] px-4 py-5 sm:px-6 lg:px-8">
@@ -697,12 +700,15 @@ const executeDecisionAction = async (action: any, index: number) => {
       </h2>
     </div>
     <div className="mt-4 flex justify-end">
-  <button
-    onClick={applyAllDecisions}
-    className="rounded-2xl bg-[#8ea8ff] px-5 py-2.5 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
-  >
-    Apply all decisions
-  </button>
+<button
+  onClick={applyAllDecisions}
+  disabled={pendingRecommendedActions.length === 0}
+  className="rounded-2xl bg-[#8ea8ff] px-5 py-2.5 text-sm font-semibold text-[#0b1020] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+>
+  {pendingRecommendedActions.length === 0
+    ? "All decisions applied"
+    : "Apply all decisions"}
+</button>
 </div>
 
     <div className="rounded-2xl border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-4 py-2 text-sm font-medium text-[#9eb7ff]">
