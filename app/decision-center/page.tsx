@@ -696,6 +696,14 @@ const executeDecisionAction = async (action: any, index: number) => {
         What Pilot suggests next
       </h2>
     </div>
+    <div className="mt-4 flex justify-end">
+  <button
+    onClick={applyAllDecisions}
+    className="rounded-2xl bg-[#8ea8ff] px-5 py-2.5 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
+  >
+    Apply all decisions
+  </button>
+</div>
 
     <div className="rounded-2xl border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-4 py-2 text-sm font-medium text-[#9eb7ff]">
       {recommendedActions.length} active
