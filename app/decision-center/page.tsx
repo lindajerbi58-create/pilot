@@ -1,15 +1,7 @@
 "use client";
-
 import {
   AlertTriangle,
   Brain,
-  Briefcase,
-  FolderKanban,
-  Plus,
-  Search,
-  Settings,
-  Shield,
-  Users,
   Zap,
 } from "lucide-react";
 import TopNavbar from "@/src/components/TopNavbar";
