@@ -383,7 +383,7 @@ const applyAllDecisions = async () => {
 
     alert("All decisions have been applied.");
 
-    window.location.reload();
+  router.push("/tasks");
   } catch (error) {
     console.error("Apply all decisions error:", error);
     alert("Failed to apply all decisions.");
