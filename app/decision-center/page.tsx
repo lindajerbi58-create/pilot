@@ -685,6 +685,17 @@ const executeDecisionAction = async (action: any, index: number) => {
             <p className="mt-2 text-sm leading-6 text-white/60">
               {action.description}
             </p>
+            <div className="mt-3 rounded-xl border border-white/6 bg-white/[0.02] p-3">
+  <p className="text-[10px] uppercase tracking-[0.18em] text-white/35">
+    Impact if applied
+  </p>
+
+  <ul className="mt-2 space-y-1 text-xs text-white/65">
+    {getActionImpact(action).map((item: string, i: number) => (
+      <li key={i}>• {item}</li>
+    ))}
+  </ul>
+</div>
           </div>
 
           <span
