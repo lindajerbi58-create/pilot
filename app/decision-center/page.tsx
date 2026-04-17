@@ -165,7 +165,11 @@ const primaryDecisionReasoning = topRiskProject
 
 const primaryDecisionConfidence = topRiskProject
   ? Math.min(98, Math.max(65, 60 + (100 - (topRiskProject.progressValue || 0)) / 2))
-  : 72;
+  : topOverloadedMember
+  ? Math.min(94, 70 + topOverloadedMember.overdueCount * 5)
+  : (dashboardData?.kpis?.overdueTasks || 0) > 0
+  ? Math.min(92, 68 + dashboardData.kpis.overdueTasks * 4)
+  : 0;
 
 const projectedImpactLabel = topRiskProject
   ? `${topRiskProject.level} Priority`
