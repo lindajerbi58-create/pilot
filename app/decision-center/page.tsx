@@ -146,10 +146,18 @@ const pendingDecisions =
     (member: any) => member.loadLevel === "Critical" || member.loadLevel === "High"
   ).length;
   const topRiskProject = dashboardData?.riskyProjects?.[0] || null;
-
+const topOverloadedMember =
+  (dashboardData?.resourceWorkload || []).find(
+    (member: any) =>
+      member.loadLevel === "Critical" || member.loadLevel === "High"
+  ) || null;
 const primaryDecisionTitle = topRiskProject
   ? `Review ${topRiskProject.title}`
-  : "Review Project Risk";
+  : topOverloadedMember
+  ? `Rebalance ${String(topOverloadedMember.assignee || "team member").split("@")[0]} workload`
+  : (dashboardData?.kpis?.overdueTasks || 0) > 0
+  ? "Review overdue tasks"
+  : "No urgent decision required";
 
 const primaryDecisionReasoning = topRiskProject
   ? `${topRiskProject.title} is currently marked ${topRiskProject.level} risk. ${topRiskProject.reason}. Current progress is ${topRiskProject.progress}.`
@@ -206,10 +214,7 @@ const miniDecisions = [
   }),
 ];
 const secondaryRiskProject = dashboardData?.riskyProjects?.[1] || null;
-const topOverloadedMember =
-  (dashboardData?.resourceWorkload || []).find(
-    (member: any) => member.loadLevel === "Critical" || member.loadLevel === "High"
-  ) || null;
+
 
 const secondaryDecisionTitle = secondaryRiskProject
   ? `Review ${secondaryRiskProject.title}`
@@ -337,6 +342,7 @@ const decisionStats = [
   <p className="text-[10px] uppercase tracking-[0.2em] text-white/35">
     Pending Decisions
   </p>
+  
 </div>
           </div>
         </section>
