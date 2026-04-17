@@ -92,7 +92,7 @@ useEffect(() => {
 }, [router]);
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-
+const [executingIndex, setExecutingIndex] = useState<number | null>(null);
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -311,6 +311,73 @@ const decisionStats = [
     href: "/ai-insights",
   },
 ];
+const executedAiActionTitles = new Set(
+  (dashboardData?.executedAiActions || []).map((action: any) =>
+    String(action.title || "").trim().toLowerCase()
+  )
+);
+
+const getExecutedAiAction = (title: string) => {
+  return (dashboardData?.executedAiActions || []).find(
+    (action: any) =>
+      String(action.title || "").trim().toLowerCase() ===
+      String(title || "").trim().toLowerCase()
+  );
+};
+
+const executeDecisionAction = async (action: any, index: number) => {
+  try {
+    setExecutingIndex(index);
+
+    const storedCompanyId = localStorage.getItem("pilot_company_id");
+
+    const res = await fetch("/api/ai-actions/execute", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-company-id": storedCompanyId || "",
+      },
+      body: JSON.stringify({
+        title: action.title,
+        description: action.description,
+        projectName: action.projectName,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+      alert(data.error || "Failed to execute decision");
+      return;
+    }
+
+    if (data.alreadyExecuted) {
+      alert("This decision has already been executed.");
+      router.push(`/tasks/${data.task.taskId}`);
+      return;
+    }
+
+    setDashboardData((prev: any) => ({
+      ...prev,
+      executedAiActions: [
+        ...(prev?.executedAiActions || []),
+        {
+          title: data.task.task_name,
+          projectName: data.task.project_name,
+          taskId: data.task.taskId,
+        },
+      ],
+    }));
+
+    alert("Decision executed. A corrective task has been created.");
+    router.push(`/tasks/${data.task.taskId}`);
+  } catch (error) {
+    console.error("Execute decision error:", error);
+    alert("Failed to execute decision.");
+  } finally {
+    setExecutingIndex(null);
+  }
+};
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1450px] px-4 py-5 sm:px-6 lg:px-8">
