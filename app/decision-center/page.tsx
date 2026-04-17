@@ -669,14 +669,40 @@ const executeDecisionAction = async (action: any, index: number) => {
           </span>
         </div>
 
-        <div className="mt-5">
-          <Link
-            href={action.href}
-            className="inline-flex rounded-2xl bg-white px-4 py-2.5 text-sm font-semibold text-[#0b1020] transition hover:opacity-90"
-          >
-            Open action
-          </Link>
-        </div>
+<div className="mt-5 flex flex-wrap gap-3">
+  {(() => {
+    const executedAction = getExecutedAiAction(action.title);
+    const isExecuted = Boolean(executedAction?.taskId);
+
+    return (
+      <>
+        <button
+          type="button"
+          disabled={isExecuted || executingIndex === index}
+          onClick={() => executeDecisionAction(action, index)}
+          className={`inline-flex rounded-2xl px-4 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed ${
+            isExecuted
+              ? "border border-emerald-500/25 bg-emerald-500/10 text-emerald-300"
+              : "bg-[#8ea8ff] text-[#0b1020] hover:brightness-110 disabled:opacity-60"
+          }`}
+        >
+          {isExecuted
+            ? "Already executed"
+            : executingIndex === index
+            ? "Executing..."
+            : "Execute"}
+        </button>
+
+        <Link
+          href={executedAction?.taskId ? `/tasks/${executedAction.taskId}` : action.href}
+          className="inline-flex rounded-2xl border border-white/10 px-4 py-2.5 text-sm font-semibold text-white/70 transition hover:bg-white/[0.04] hover:text-white"
+        >
+          Details
+        </Link>
+      </>
+    );
+  })()}
+</div>
       </div>
     ))}
   </div>
