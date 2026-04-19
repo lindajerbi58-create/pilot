@@ -738,7 +738,7 @@ Risk Level: {systemRiskLevel}
   delta="average"
   deltaLabel="completion"
   iconColor="#8ea8ff"
-  href="/dashboard"
+  href="/ai-insights"
 />
 
         </section>
