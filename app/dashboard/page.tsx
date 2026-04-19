@@ -588,46 +588,65 @@ const systemRiskText =
   french="Cette section vous donne une vue rapide de la situation générale de vos projets. Elle vous aide à comprendre le niveau de risque actuel et ce qui demande une attention en priorité."
 />
 <div className="mt-4 rounded-2xl border border-[#8ea8ff]/15 bg-[#8ea8ff]/10 p-4">
- <p className="text-sm text-white/70">
-  {kpis.overdueTasks > 0
-    ? `${kpis.overdueTasks} tasks are overdue. Immediate action is required to avoid project delays.`
-    : "All tasks are on track. No immediate action required."}
-</p>
+  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8ea8ff]">
+    What should you do now?
+  </p>
 
-<p className="mt-2 text-sm font-semibold text-white">
-  {primaryIssue === "overdue"
-    ? "Some tasks are late. Check them now."
-    : primaryIssue === "risk"
-    ? "Some projects have problems. Review them now."
-    : primaryIssue === "workload"
-    ? "Some team members have too much work."
-    : "Everything looks stable for now."}
-</p>
-<SectionHelpToggle
-  english="This section tells you the most important action to take right now. It helps you focus on the next step when tasks, projects, or workload need attention."
-  french="Cette section vous indique l’action la plus importante à faire maintenant. Elle vous aide à vous concentrer sur la prochaine étape lorsque des tâches, des projets ou la charge de travail demandent une attention."
-/>
-
-  <div className="mt-3">
-    <Link
-  href={
-    primaryIssue === "overdue"
-      ? "/tasks?filter=overdue"
+  <p className="mt-3 text-sm text-white/70">
+    {primaryIssue === "overdue"
+      ? `${kpis.overdueTasks} overdue task${kpis.overdueTasks > 1 ? "s are" : " is"} blocking execution.`
       : primaryIssue === "risk"
-      ? "/decision-center"
+      ? `${totalRiskCount} risky project${totalRiskCount > 1 ? "s need" : " needs"} review.`
       : primaryIssue === "workload"
-      ? "/resource-hub"
-      : "/dashboard"
-  }
-      className="inline-flex items-center gap-2 text-xs font-medium text-[#9eb7ff] hover:text-white"
+      ? "Some team members have too much work and may slow execution."
+      : "Everything looks stable for now."}
+  </p>
+
+  <p className="mt-2 text-sm font-semibold text-white">
+    {primaryIssue === "overdue"
+      ? "Review late tasks and decide what must be fixed first."
+      : primaryIssue === "risk"
+      ? "Open the Decision Center to review recommended actions."
+      : primaryIssue === "workload"
+      ? "Go to Resource Hub and rebalance the workload."
+      : "No urgent action is required right now."}
+  </p>
+
+  <SectionHelpToggle
+    english="This section tells you the most important action to take right now. It helps you focus on the next step when tasks, projects, or workload need attention."
+    french="Cette section vous indique l’action la plus importante à faire maintenant. Elle vous aide à vous concentrer sur la prochaine étape lorsque des tâches, des projets ou la charge de travail demandent une attention."
+  />
+
+  <div className="mt-4 flex flex-wrap gap-3">
+    <Link
+      href={
+        primaryIssue === "overdue"
+          ? "/tasks?filter=overdue"
+          : primaryIssue === "risk"
+          ? "/decision-center"
+          : primaryIssue === "workload"
+          ? "/resource-hub"
+          : "/tasks"
+      }
+      className="inline-flex items-center gap-2 rounded-xl bg-[#8ea8ff] px-4 py-2 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
     >
-     {systemRiskLevel === "Critical"
-  ? "Open details"
-  : systemRiskLevel === "High"
-  ? "View problems"
-  : "Stay here"}
+      {primaryIssue === "overdue"
+        ? "Review late tasks"
+        : primaryIssue === "risk"
+        ? "Open decisions"
+        : primaryIssue === "workload"
+        ? "Balance workload"
+        : "View tasks"}
 
       <ArrowRight size={14} />
+    </Link>
+
+    <Link
+      href="/ai-insights"
+      className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm font-semibold text-white/70 transition hover:bg-white/[0.06] hover:text-white"
+    >
+      View AI explanation
+      <Brain size={14} />
     </Link>
   </div>
 </div>
