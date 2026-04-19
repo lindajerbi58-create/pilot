@@ -82,21 +82,19 @@ function getPriorityBadge(priority?: string) {
   return "border border-white/10 bg-white/[0.04] text-white/70";
 }
 function getProjectColor(projectName?: string) {
-  const name = String(projectName || "").toLowerCase();
+  const colors = [
+    "border-cyan-500/25 bg-cyan-500/10 text-cyan-300",
+    "border-emerald-500/25 bg-emerald-500/10 text-emerald-300",
+    "border-orange-500/25 bg-orange-500/10 text-orange-300",
+    "border-violet-500/25 bg-violet-500/10 text-violet-300",
+    "border-pink-500/25 bg-pink-500/10 text-pink-300",
+    "border-sky-500/25 bg-sky-500/10 text-sky-300",
+  ];
 
-  if (name.includes("linda")) {
-    return "border-cyan-500/25 bg-cyan-500/10 text-cyan-300";
-  }
+  const name = String(projectName || "Untitled Project");
+  const hash = name.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0);
 
-  if (name.includes("corrective")) {
-    return "border-emerald-500/25 bg-emerald-500/10 text-emerald-300";
-  }
-
-  if (name.includes("construction")) {
-    return "border-orange-500/25 bg-orange-500/10 text-orange-300";
-  }
-
-  return "border-[#8ea8ff]/20 bg-[#8ea8ff]/10 text-[#9eb7ff]";
+  return colors[hash % colors.length];
 }
 
 function getRecommendedTasks(tasks: TaskItem[], count: number) {
