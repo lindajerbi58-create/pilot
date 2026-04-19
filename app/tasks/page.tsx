@@ -157,29 +157,26 @@ const isRedistributeMode = mode === "redistribute";
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const getDisplayProjectName = (task: TaskItem) => {
+const getDisplayProjectName = (task: TaskItem) => {
   const projectName = String(task.project_name || "").trim();
 
-  if (
-    task.taskId?.startsWith("AI-ACTION") &&
-    projectName.toLowerCase() === "ai corrective action"
-  ) {
-    const title = String(task.task_name || "").toLowerCase();
-
-    const matchedProject = tasks.find((candidate: TaskItem) => {
-      const candidateProject = String(candidate.project_name || "").trim();
-
-      return (
-        candidateProject &&
-        candidateProject.toLowerCase() !== "ai corrective action" &&
-        title.includes(candidateProject.toLowerCase())
-      );
-    });
-
-    return matchedProject?.project_name || projectName || "Untitled Project";
+  if (!task.taskId?.startsWith("AI-ACTION")) {
+    return projectName || "Untitled Project";
   }
 
-  return projectName || "Untitled Project";
+  const title = String(task.task_name || "").toLowerCase();
+
+  const matchedProject = tasks.find((candidate: TaskItem) => {
+    const candidateProject = String(candidate.project_name || "").trim();
+
+    return (
+      candidateProject &&
+      !candidate.taskId?.startsWith("AI-ACTION") &&
+      title.includes(candidateProject.toLowerCase())
+    );
+  });
+
+  return matchedProject?.project_name || projectName || "Untitled Project";
 };
 const [redistributing, setRedistributing] = useState(false);
 const [selectedTaskIds, setSelectedTaskIds] = useState<string[]>([]);
