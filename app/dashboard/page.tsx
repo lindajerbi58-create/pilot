@@ -274,6 +274,7 @@ function WorkloadCard({
 
   return content;
 }
+
 function SuggestionMiniCard({
   title,
   description,
@@ -282,7 +283,27 @@ function SuggestionMiniCard({
   title: string;
   description: string;
   href?: string;
-}) {
+}) 
+{
+  const lowerTitle = title.toLowerCase();
+
+let actionText = "View action";
+
+if (lowerTitle.includes("overdue") || lowerTitle.includes("late")) {
+  actionText = "View late tasks";
+} else if (
+  lowerTitle.includes("workload") ||
+  lowerTitle.includes("team") ||
+  lowerTitle.includes("balance")
+) {
+  actionText = "Balance workload";
+} else if (
+  lowerTitle.includes("review") ||
+  lowerTitle.includes("risk") ||
+  lowerTitle.includes("decision")
+) {
+  actionText = "Review project";
+}
   const content = (
     <div
       className={`rounded-[20px] border border-white/8 bg-white/[0.03] p-4 transition ${
@@ -293,7 +314,7 @@ function SuggestionMiniCard({
       <p className="mt-2 text-xs leading-6 text-white/45">{description}</p>
 
       <div className="mt-3 inline-flex items-center gap-2 text-xs font-medium text-[#9eb7ff]">
-  View action
+  {actionText}
   <ArrowRight size={14} />
 </div>
     </div>
