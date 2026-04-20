@@ -765,6 +765,10 @@ Risk Level: {systemRiskLevel}
     <div>
      <h2 className="text-lg font-semibold text-white">Team Status</h2>
 <p className="mt-1 text-sm text-white/40">See who has too much work</p>
+<SectionHelpToggle
+  english="This section shows the current workload of your team. It helps you see who has too much work and who may need support."
+  french="Cette section montre la charge de travail actuelle de votre équipe. Elle vous aide à voir qui a trop de travail et qui peut avoir besoin d’aide."
+/>
     </div>
   </div>
 
