@@ -293,9 +293,9 @@ function SuggestionMiniCard({
       <p className="mt-2 text-xs leading-6 text-white/45">{description}</p>
 
       <div className="mt-3 inline-flex items-center gap-2 text-xs font-medium text-[#9eb7ff]">
-        Open
-        <ArrowRight size={14} />
-      </div>
+  View action
+  <ArrowRight size={14} />
+</div>
     </div>
   );
 
