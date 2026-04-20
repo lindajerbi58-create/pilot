@@ -77,29 +77,33 @@ function SectionHelpToggle({
 
   return (
     <div className="mt-3">
-      <button
-        type="button"
-        onClick={() => setOpen((prev) => !prev)}
-        className="text-[11px] font-medium text-[#8ea8ff] transition hover:text-white"
-      >
-        What this section does
-      </button>
+   <button
+  type="button"
+  onClick={() => setOpen((prev) => !prev)}
+  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] font-medium text-[#8ea8ff] transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
+>
+  <span>{open ? "Hide info" : "What this section does"}</span>
+</button>
 
       {open && (
-        <div className="mt-2 rounded-2xl border border-white/10 bg-white/[0.03] p-3">
-          <div className="space-y-3 text-sm leading-6">
-            <div>
-              <p className="font-medium text-white">EN</p>
-              <p className="text-white/65">{english}</p>
-            </div>
+  <div className="mt-2 rounded-2xl border border-white/10 bg-white/[0.04] p-3">
+    <div className="space-y-3 text-sm leading-6">
+      <div className="rounded-xl bg-white/[0.03] p-3">
+        <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#8ea8ff]">
+          EN
+        </p>
+        <p className="text-white/70">{english}</p>
+      </div>
 
-            <div>
-              <p className="font-medium text-white">FR</p>
-              <p className="text-white/65">{french}</p>
-            </div>
-          </div>
-        </div>
-      )}
+      <div className="rounded-xl bg-white/[0.03] p-3">
+        <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#8ea8ff]">
+          FR
+        </p>
+        <p className="text-white/70">{french}</p>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 }
