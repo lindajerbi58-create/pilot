@@ -175,6 +175,14 @@ function RiskProjectCard({
   bar: string;
   href?: string;
 }) {
+  const cleanReason =
+  reason?.toLowerCase().includes("execution slowing")
+    ? "Project progress is slowing down"
+    : reason?.toLowerCase().includes("needs monitoring")
+    ? "This project needs attention"
+    : reason?.toLowerCase().includes("overdue")
+    ? reason
+    : reason || "This project needs attention";
   const content = (
     <div
       className={`rounded-[24px] border border-white/8 bg-white/[0.03] p-4 shadow-lg shadow-black/20 transition ${
@@ -184,7 +192,7 @@ function RiskProjectCard({
       <div className="mb-4 flex items-start justify-between gap-4">
         <div>
           <h3 className="text-sm font-semibold text-white">{title}</h3>
-          <p className="mt-1 text-xs text-white/45">{reason}</p>
+         <p className="mt-2 text-sm text-white/60">{cleanReason}</p>
         </div>
 
         <span
