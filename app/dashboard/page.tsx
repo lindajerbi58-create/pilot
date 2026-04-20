@@ -545,8 +545,12 @@ Risk Level: {systemRiskLevel}
             </Link>
           </div>
         </section>
-
+ <SectionHelpToggle
+  english="This section shows the most important numbers in your workspace. It helps you quickly measure progress, delays, and the amount of work being tracked."
+  french="Cette section affiche les chiffres les plus importants de votre espace de travail. Elle vous aide à mesurer rapidement l’avancement, les retards et la quantité de travail suivie."
+/>
         <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+   
      <KPIBox
   icon={FolderKanban}
   label="Active Projects"
@@ -586,6 +590,7 @@ Risk Level: {systemRiskLevel}
   iconColor="#8ea8ff"
   href="/dashboard"
 />
+
         </section>
 
         <section className="mt-6 grid gap-6 xl:grid-cols-[1.45fr_0.75fr]">
