@@ -356,9 +356,12 @@ const systemRiskText =
 
           <div className="mt-3 flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
             <div>
-              <h1 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-                Executive Command
-              </h1>
+              <h1 className="mt-2 text-4xl font-semibold tracking-tight text-white">
+  Project Overview
+</h1>
+<p className="mt-2 max-w-2xl text-sm text-white/45">
+  See what’s happening in your projects and what needs attention.
+</p>
 
               <div
   className={`mt-3 flex items-center gap-2 text-sm ${

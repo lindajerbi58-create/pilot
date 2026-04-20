@@ -95,7 +95,17 @@ const [importStatus, setImportStatus] = useState("Schema check pending");
 const [isImporting, setIsImporting] = useState(false);
 const [successMessage, setSuccessMessage] = useState("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+const handleResetImport = () => {
+  setSelectedFile(null);
+  setParsedRows([]);
+  setValidationMessage("Waiting for file");
+  setImportStatus("Schema check pending");
+  setSuccessMessage("");
 
+  if (fileInputRef.current) {
+    fileInputRef.current.value = "";
+  }
+};
   const handleBrowseClick = () => {
     fileInputRef.current?.click();
   };
@@ -211,6 +221,32 @@ const handleImportTasks = async () => {
     setIsImporting(false);
   }
 };
+const handleClearAllData = async () => {
+  try {
+    const response = await fetch("/api/import/tasks/clear", {
+      method: "DELETE",
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || "Clear failed");
+    }
+
+    setSelectedFile(null);
+    setParsedRows([]);
+    setValidationMessage("Waiting for file");
+    setImportStatus("Schema check pending");
+    setSuccessMessage(result.message || "All imported data cleared");
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  } catch (error) {
+    console.error(error);
+    setSuccessMessage("Failed to clear imported data");
+  }
+};
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1480px] px-4 py-5 sm:px-6 lg:px-8">
@@ -256,15 +292,19 @@ const handleImportTasks = async () => {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <button className="rounded-2xl bg-[#8ea8ff] px-5 py-3 text-sm font-semibold text-[#0b1020] transition hover:brightness-110">
-                Start New Import
-              </button>
+  <button
+    type="button"
+    onClick={handleResetImport}
+    className="rounded-2xl bg-[#8ea8ff] px-5 py-3 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
+  >
+    Reset Import
+  </button>
 
-              <button className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-semibold text-white/75 transition hover:bg-white/[0.05] hover:text-white">
-                <Download size={16} />
-                Download CSV Template
-              </button>
-            </div>
+  <button className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-semibold text-white/75 transition hover:bg-white/[0.05] hover:text-white">
+    <Download size={16} />
+    Download CSV Template
+  </button>
+</div>
           </div>
         </section>
 
