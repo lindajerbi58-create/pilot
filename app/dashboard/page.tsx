@@ -726,6 +726,10 @@ Risk Level: {systemRiskLevel}
 <p className="mt-1 text-sm text-white/40">
   What you can do to improve your projects
 </p>
+<SectionHelpToggle
+  english="This section gives you simple recommendations to improve your projects. It helps you decide what to do next based on the current situation."
+  french="Cette section vous donne des recommandations simples pour améliorer vos projets. Elle vous aide à décider quoi faire ensuite selon la situation actuelle."
+/>
                 </div>
               </div>
 
