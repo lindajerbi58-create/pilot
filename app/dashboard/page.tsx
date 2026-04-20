@@ -637,6 +637,10 @@ Risk Level: {systemRiskLevel}
               <div>
                 <h2 className="text-lg font-semibold text-white">Recent Activity</h2>
                 <p className="mt-1 text-sm text-white/40">Live operational timeline</p>
+                <SectionHelpToggle
+  english="This section displays the latest changes in your projects. It helps you follow recent activity without opening every project manually."
+  french="Cette section affiche les changements les plus récents dans vos projets. Elle vous aide à suivre l’activité récente sans ouvrir chaque projet manuellement."
+/>
               </div>
 
               <Link href="/activity" className="text-xs font-medium text-[#9eb7ff] hover:text-white">
