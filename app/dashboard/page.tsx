@@ -683,6 +683,10 @@ Risk Level: {systemRiskLevel}
 <p className="mt-1 text-sm text-white/40">
   These projects need attention
 </p>
+<SectionHelpToggle
+  english="This section highlights the projects that need attention. It helps you quickly identify delays, weak progress, or important issues."
+  french="Cette section met en évidence les projets qui demandent de l’attention. Elle vous aide à identifier rapidement les retards, le faible avancement ou les problèmes importants."
+/>
               </div>
 
               <Link
