@@ -376,16 +376,15 @@ const systemRiskText =
   WHAT SHOULD YOU DO NOW?
 </p>
 
-  <p className="mt-2 text-sm font-semibold text-white">
-    {primaryIssue === "overdue"
-  ? "Immediate action required on overdue tasks"
-  : primaryIssue === "risk"
-  ? "High-risk projects need decision review"
-  : primaryIssue === "workload"
-  ? "Team workload needs balancing"
-  : "Execution is stable"}
-  
-  </p>
+<p className="mt-2 text-sm font-semibold text-white">
+  {primaryIssue === "overdue"
+    ? "Some tasks are late. Check them now."
+    : primaryIssue === "risk"
+    ? "Some projects have problems. Review them now."
+    : primaryIssue === "workload"
+    ? "Some team members have too much work."
+    : "Everything looks stable for now."}
+</p>
 
   <div className="mt-3">
     <Link
@@ -400,11 +399,11 @@ const systemRiskText =
   }
       className="inline-flex items-center gap-2 text-xs font-medium text-[#9eb7ff] hover:text-white"
     >
-      {systemRiskLevel === "Critical"
-        ? "Open Decision Center"
-        : systemRiskLevel === "High"
-        ? "View AI Insights"
-        : "Stay on Dashboard"}
+     {systemRiskLevel === "Critical"
+  ? "Open details"
+  : systemRiskLevel === "High"
+  ? "View problems"
+  : "Stay here"}
 
       <ArrowRight size={14} />
     </Link>
