@@ -439,7 +439,7 @@ const systemRiskText =
     }`}
   >
     <AlertTriangle size={14} />
-    System Risk Level: {systemRiskLevel}
+Risk Level: {systemRiskLevel}
   </div>
 </div>
           </div>
