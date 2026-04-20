@@ -601,6 +601,10 @@ Risk Level: {systemRiskLevel}
 <p className="mt-1 text-sm text-white/40">
   See how your projects are moving over time
 </p>
+<SectionHelpToggle
+  english="This section shows how your projects are progressing over time. It helps you see whether work is moving forward normally or slowing down."
+  french="Cette section montre comment vos projets avancent au fil du temps. Elle vous aide à voir si le travail progresse normalement ou s’il ralentit."
+/>
               </div>
 
               <div className="text-xs text-white/40">
