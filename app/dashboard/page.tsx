@@ -36,6 +36,36 @@ function TopNavLink({
     </Link>
   );
 }
+function SectionHelp({
+  english,
+  french,
+}: {
+  english: string;
+  french: string;
+}) {
+  return (
+    <div className="mt-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+      <button
+        type="button"
+        className="text-sm font-medium text-[#8ea8ff] transition hover:text-white"
+      >
+        What does this section do?
+      </button>
+
+      <div className="mt-3 space-y-3 text-sm leading-6">
+        <div>
+          <p className="font-medium text-white">EN</p>
+          <p className="text-white/65">{english}</p>
+        </div>
+
+        <div>
+          <p className="font-medium text-white">FR</p>
+          <p className="text-white/65">{french}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
 function KPIBox({
   icon: Icon,
   label,
@@ -371,6 +401,10 @@ const systemRiskText =
   <AlertTriangle size={15} />
   <span>{systemRiskText}</span>
 </div>
+<SectionHelp
+  english="This section gives you a quick view of your overall project situation. It helps you understand the current level of risk and what needs attention first."
+  french="Cette section vous donne une vue rapide de la situation générale de vos projets. Elle vous aide à comprendre le niveau de risque actuel et ce qui demande une attention en priorité."
+/>
 <div className="mt-4 rounded-2xl border border-[#8ea8ff]/15 bg-[#8ea8ff]/10 p-4">
   <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8ea8ff]">
   WHAT SHOULD YOU DO NOW?
