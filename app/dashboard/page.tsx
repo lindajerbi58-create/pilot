@@ -738,18 +738,31 @@ Risk Level: {systemRiskLevel}
               </div>
 
               <div className="space-y-4">
-  {aiSuggestions.map((suggestion: any, index: number) => {
+ {aiSuggestions.map((suggestion: any, index: number) => {
+  const suggestionTitle = suggestion.title.toLowerCase();
   let href = "/ai-insights";
 
-  if (suggestion.title.toLowerCase().includes("overdue")) {
+  if (suggestionTitle.includes("overdue") || suggestionTitle.includes("late")) {
     href = "/tasks?filter=overdue";
-  } else if (suggestion.title.toLowerCase().includes("review")) {
+  } else if (
+    suggestionTitle.includes("workload") ||
+    suggestionTitle.includes("balance") ||
+    suggestionTitle.includes("team")
+  ) {
+    href = "/resource-hub";
+  } else if (
+    suggestionTitle.includes("decision") ||
+    suggestionTitle.includes("review") ||
+    suggestionTitle.includes("risk")
+  ) {
     const matchedProject = riskyProjects.find((project: any) =>
-      suggestion.title.toLowerCase().includes(project.title.toLowerCase())
+      suggestionTitle.includes(project.title.toLowerCase())
     );
 
     if (matchedProject) {
       href = `/tasks?project=${encodeURIComponent(matchedProject.title)}&filter=overdue`;
+    } else {
+      href = "/decision-center";
     }
   }
 
