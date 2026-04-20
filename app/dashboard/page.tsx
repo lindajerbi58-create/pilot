@@ -313,14 +313,10 @@ const systemRiskLevel =
 
 const systemRiskText =
   systemRiskLevel === "Critical"
-    ? `AI detected ${criticalRiskCount} critical risk ${
-        criticalRiskCount > 1 ? "projects" : "project"
-      } requiring immediate action`
+    ? `${criticalRiskCount} project${criticalRiskCount > 1 ? "s have" : " has"} serious issues and need attention now`
     : systemRiskLevel === "High"
-    ? `AI detected ${totalRiskCount} high-risk active ${
-        totalRiskCount > 1 ? "portfolios" : "portfolio"
-      }`
-    : "AI reports stable execution across active portfolios";
+    ? `${totalRiskCount} project${totalRiskCount > 1 ? "s need" : " needs"} attention`
+    : "Your projects are stable for now";
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1480px] px-4 py-5 sm:px-6 lg:px-8">
@@ -351,7 +347,7 @@ const systemRiskText =
 
         <section className="mb-8">
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8ea8ff]">
-            Operational Control
+           Project Dashboard
           </p>
 
           <div className="mt-3 flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
@@ -376,9 +372,9 @@ const systemRiskText =
   <span>{systemRiskText}</span>
 </div>
 <div className="mt-4 rounded-2xl border border-[#8ea8ff]/15 bg-[#8ea8ff]/10 p-4">
-  <p className="text-xs uppercase tracking-[0.18em] text-[#9eb7ff]">
-    AI Next Action
-  </p>
+  <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8ea8ff]">
+  WHAT SHOULD YOU DO NOW?
+</p>
 
   <p className="mt-2 text-sm font-semibold text-white">
     {primaryIssue === "overdue"
