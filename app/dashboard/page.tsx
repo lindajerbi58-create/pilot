@@ -472,21 +472,21 @@ Risk Level: {systemRiskLevel}
         </section>
 
         <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-       <KPIBox
+     <KPIBox
   icon={FolderKanban}
   label="Active Projects"
   value={String(kpis.activeProjects)}
-  delta="+ real"
-  deltaLabel="live"
+  delta="current"
+  deltaLabel="running"
   iconColor="#8ea8ff"
   href="/projects"
 />
 
 <KPIBox
   icon={AlertTriangle}
-  label="Overdue Tasks"
+  label="Late Tasks"
   value={String(kpis.overdueTasks)}
-  delta="live"
+  delta="need"
   deltaLabel="attention"
   iconColor="#ff6b6b"
   href="/tasks?filter=overdue"
@@ -494,9 +494,9 @@ Risk Level: {systemRiskLevel}
 
 <KPIBox
   icon={Briefcase}
-  label="Total Tasks"
+  label="All Tasks"
   value={String(kpis.totalTasks)}
-  delta="live"
+  delta="total"
   deltaLabel="tracked"
   iconColor="#d78bff"
   href="/tasks"
@@ -504,13 +504,13 @@ Risk Level: {systemRiskLevel}
 
 <KPIBox
   icon={Users}
-  label="Avg Progress"
+  label="Overall Progress"
   value={`${kpis.avgProgress}%`}
-  delta="live"
-  deltaLabel="execution"
+  delta="average"
+  deltaLabel="completion"
   iconColor="#8ea8ff"
   href="/dashboard"
- />
+/>
         </section>
 
         <section className="mt-6 grid gap-6 xl:grid-cols-[1.45fr_0.75fr]">
