@@ -221,10 +221,10 @@ function RiskProjectCard({
         </div>
       </div>
 
-      <div className="inline-flex items-center gap-2 text-xs font-medium text-[#9eb7ff] transition hover:text-white">
-        View Details
-        <ArrowRight size={14} />
-      </div>
+      <div className="mt-4 inline-flex items-center gap-2 text-xs font-medium text-[#9eb7ff]">
+  Review problem
+  <ArrowRight size={14} />
+</div>
     </div>
   );
 
