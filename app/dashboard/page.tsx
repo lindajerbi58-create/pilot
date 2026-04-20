@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-
+import { useMemo } from "react";
 import {
   AlertTriangle,
   ArrowRight,
@@ -63,6 +63,43 @@ function SectionHelp({
           <p className="text-white/65">{french}</p>
         </div>
       </div>
+    </div>
+  );
+}
+function SectionHelpToggle({
+  english,
+  french,
+}: {
+  english: string;
+  french: string;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="mt-3">
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        className="text-[11px] font-medium text-[#8ea8ff] transition hover:text-white"
+      >
+        What this section does
+      </button>
+
+      {open && (
+        <div className="mt-2 rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+          <div className="space-y-3 text-sm leading-6">
+            <div>
+              <p className="font-medium text-white">EN</p>
+              <p className="text-white/65">{english}</p>
+            </div>
+
+            <div>
+              <p className="font-medium text-white">FR</p>
+              <p className="text-white/65">{french}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -401,7 +438,7 @@ const systemRiskText =
   <AlertTriangle size={15} />
   <span>{systemRiskText}</span>
 </div>
-<SectionHelp
+<SectionHelpToggle
   english="This section gives you a quick view of your overall project situation. It helps you understand the current level of risk and what needs attention first."
   french="Cette section vous donne une vue rapide de la situation générale de vos projets. Elle vous aide à comprendre le niveau de risque actuel et ce qui demande une attention en priorité."
 />
