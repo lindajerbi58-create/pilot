@@ -456,6 +456,10 @@ const systemRiskText =
     ? "Some team members have too much work."
     : "Everything looks stable for now."}
 </p>
+<SectionHelpToggle
+  english="This section tells you the most important action to take right now. It helps you focus on the next step when tasks, projects, or workload need attention."
+  french="Cette section vous indique l’action la plus importante à faire maintenant. Elle vous aide à vous concentrer sur la prochaine étape lorsque des tâches, des projets ou la charge de travail demandent une attention."
+/>
 
   <div className="mt-3">
     <Link
