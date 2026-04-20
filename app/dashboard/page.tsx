@@ -572,11 +572,10 @@ Risk Level: {systemRiskLevel}
 </div>
 
             <div className="mt-6 rounded-[22px] border border-[#8ea8ff]/15 bg-[#8ea8ff]/10 p-4">
-              <p className="text-sm font-semibold text-white">Pilot AI Pro</p>
-              <p className="mt-1 text-xs leading-6 text-white/55">
-                AI is actively monitoring project velocity, workload balance, and
-                issue escalation.
-              </p>
+              <p className="text-sm font-semibold text-white">Project Assistant</p>
+<p className="mt-1 text-xs leading-6 text-white/55">
+  The system checks project speed, workload, and possible issues.
+</p>
               <Link
                 href="/ai-insights"
                 className="mt-3 inline-flex items-center gap-2 text-xs font-medium text-[#9eb7ff] hover:text-white"
