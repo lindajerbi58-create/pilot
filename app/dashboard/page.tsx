@@ -360,8 +360,36 @@ function ActivityItem({
 import { useEffect, useState } from "react";
 
 export default function DashboardPage() {
+  const [isResetting, setIsResetting] = useState(false);
   const [dashboardData, setDashboardData] = useState<any>(null);
+async function handleResetWorkspace() {
+  const confirmed = window.confirm(
+    "This will permanently delete all imported tasks from the database. Do you want to continue?"
+  );
 
+  if (!confirmed) return;
+
+  try {
+    setIsResetting(true);
+
+    const response = await fetch("/api/reset", {
+      method: "DELETE",
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.error || "Failed to reset workspace");
+    }
+
+    window.location.reload();
+  } catch (error) {
+    console.error("Reset workspace error:", error);
+    alert("Failed to reset workspace.");
+  } finally {
+    setIsResetting(false);
+  }
+}
   useEffect(() => {
     const fetchData = async () => {
       try {
