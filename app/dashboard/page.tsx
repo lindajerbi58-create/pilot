@@ -676,9 +676,7 @@ Risk Level: {systemRiskLevel}
 />
               </div>
 
-              <Link href="/activity" className="text-xs font-medium text-[#9eb7ff] hover:text-white">
-                View All
-              </Link>
+             
             </div>
 
            <div className="space-y-5">
