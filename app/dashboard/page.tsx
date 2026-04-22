@@ -563,6 +563,14 @@ const systemRiskText =
   >
     Import Data
   </Link>
+  <button
+  type="button"
+  onClick={handleResetWorkspace}
+  disabled={isResetting}
+  className="inline-flex items-center rounded-full border border-[#ff6b6b]/30 bg-[#ff6b6b]/10 px-4 py-2 text-sm font-medium text-[#ff9b9b] transition hover:bg-[#ff6b6b]/20 disabled:cursor-not-allowed disabled:opacity-60"
+>
+  {isResetting ? "Resetting..." : "Reset Workspace"}
+</button>
 </div>
             <div className="mt-4">
   <div
