@@ -98,6 +98,18 @@ function getProjectColor(projectName?: string) {
 
   return "border-[#8ea8ff]/20 bg-[#8ea8ff]/10 text-[#9eb7ff]";
 }
+function getDisplayProjectName(task: TaskItem) {
+  const projectName = String(task.project_name || "").trim();
+
+  if (
+    task.taskId?.startsWith("AI-ACTION") &&
+    projectName.toLowerCase() === "ai corrective action"
+  ) {
+    return "Linda Project";
+  }
+
+  return projectName || "Untitled Project";
+}
 function getRecommendedTasks(tasks: TaskItem[], count: number) {
   return [...tasks]
     .filter((task) => !isCompleted(task.status, task.progress))
