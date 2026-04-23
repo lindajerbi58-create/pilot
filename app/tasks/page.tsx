@@ -714,7 +714,7 @@ if (loading) {
                 <span
   className={`text-sm font-semibold ${getProjectColor(task.project_name)}`}
 >
-  {task.project_name || "Untitled Project"}
+  {getDisplayProjectName(task)}
 </span>
               </div>
             </td>
