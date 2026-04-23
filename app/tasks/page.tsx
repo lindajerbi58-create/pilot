@@ -707,14 +707,12 @@ if (loading) {
             >
               <div className="flex items-center gap-3">
                 <span
-  className={`rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${getProjectColor(
-    task.project_name
-  )}`}
+  className={`rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${getProjectColor(currentProjectName)}`}
 >
   Project
 </span>
                 <span
-  className={`text-sm font-semibold ${getProjectColor(task.project_name)}`}
+  className={`text-sm font-semibold ${getProjectColor(currentProjectName)}`}
 >
   {getDisplayProjectName(task)}
 </span>
