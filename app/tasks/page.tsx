@@ -206,11 +206,11 @@ const res = await fetch("/api/tasks", {
 const filteredTasks = useMemo(() => {
   let result = tasks;
 
-  if (project) {
-    result = result.filter(
-      (task) => String(task.project_name || "").trim() === project
-    );
-  }
+if (project) {
+  result = result.filter(
+    (task) => getDisplayProjectName(task) === project
+  );
+}
 
   if (assignee) {
     result = result.filter(
