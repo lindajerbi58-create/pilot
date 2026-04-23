@@ -98,18 +98,7 @@ function getProjectColor(projectName?: string) {
 
   return "border-[#8ea8ff]/20 bg-[#8ea8ff]/10 text-[#9eb7ff]";
 }
-function getDisplayProjectName(task: TaskItem) {
-  const projectName = String(task.project_name || "").trim();
 
-  if (
-    task.taskId?.startsWith("AI-ACTION") &&
-    projectName.toLowerCase() === "ai corrective action"
-  ) {
-    return "Linda Project";
-  }
-
-  return projectName || "Untitled Project";
-}
 function getRecommendedTasks(tasks: TaskItem[], count: number) {
   return [...tasks]
     .filter((task) => !isCompleted(task.status, task.progress))
@@ -170,6 +159,30 @@ const isRedistributeMode = mode === "redistribute";
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const getDisplayProjectName = (task: TaskItem) => {
+  const projectName = String(task.project_name || "").trim();
+
+  if (
+    task.taskId?.startsWith("AI-ACTION") &&
+    projectName.toLowerCase() === "ai corrective action"
+  ) {
+    const title = String(task.task_name || "").toLowerCase();
+
+    const matchedProject = tasks.find((candidate: TaskItem) => {
+      const candidateProject = String(candidate.project_name || "").trim();
+
+      return (
+        candidateProject &&
+        candidateProject.toLowerCase() !== "ai corrective action" &&
+        title.includes(candidateProject.toLowerCase())
+      );
+    });
+
+    return matchedProject?.project_name || projectName || "Untitled Project";
+  }
+
+  return projectName || "Untitled Project";
+};
 const [redistributing, setRedistributing] = useState(false);
 const [selectedTaskIds, setSelectedTaskIds] = useState<string[]>([]);
   useEffect(() => {
