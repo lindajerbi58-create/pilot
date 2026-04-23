@@ -681,11 +681,13 @@ if (loading) {
 </thead>
 
 <tbody>
-  {filteredTasks.map((task, index) => {
-    const previousProject =
-      index > 0 ? filteredTasks[index - 1].project_name : null;
-    const showProjectDivider =
-      index === 0 || previousProject !== task.project_name;
+{filteredTasks.map((task, index) => {
+  const currentProjectName = getDisplayProjectName(task);
+  const previousProjectName =
+    index > 0 ? getDisplayProjectName(filteredTasks[index - 1]) : null;
+
+  const showProjectDivider =
+    index === 0 || previousProjectName !== currentProjectName;
 
    return (
   <React.Fragment key={task._id || `${task.task_name}-${index}`}>
