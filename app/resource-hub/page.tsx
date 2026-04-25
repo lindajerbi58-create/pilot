@@ -142,7 +142,9 @@ useEffect(() => {
 }, []);
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-const [loadFilter, setLoadFilter] = useState("All");
+const [loadFilter, setLoadFilter] = useState(
+  urlFilter === "overloaded" ? "Overloaded" : "All"
+);
 const [sortMode, setSortMode] = useState("overloaded");
 
 const [searchQuery, setSearchQuery] = useState("");
