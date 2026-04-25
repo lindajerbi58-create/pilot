@@ -333,7 +333,7 @@ const decisionStats = [
         member.loadLevel === "Critical" || member.loadLevel === "High"
     ).length,
     tone: "info",
-    href: "/resource-hub",
+   href: "/resource-hub?filter=overloaded",
   },
   {
     label: "AI Recommendations",
