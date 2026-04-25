@@ -226,7 +226,7 @@ const resetResourceHubView = () => {
   setSearchQuery("");
 };
 const getActiveFilterLabel = () => {
-  if (loadFilter === "Critical") return "Overloaded";
+  if (loadFilter === "Overloaded") return "Overloaded";
   if (loadFilter === "High") return "At Risk";
   if (loadFilter === "Balanced") return "Stable";
   return "All";
