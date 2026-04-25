@@ -130,6 +130,8 @@ function TeamCard({
 
 export default function ResourceHubPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const urlFilter = searchParams.get("filter");
 
 useEffect(() => {
   const companyId = localStorage.getItem("pilot_company_id");
