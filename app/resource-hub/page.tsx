@@ -640,9 +640,9 @@ const recommendationText =
   </div>
 </section>
 <section className="mb-6 flex flex-wrap gap-3">
- {[
+{[
   { value: "All", label: "All" },
-  { value: "Critical", label: "Overloaded" },
+  { value: "Overloaded", label: "Overloaded" },
   { value: "High", label: "At Risk" },
   { value: "Balanced", label: "Stable" },
 ].map((option) => {
