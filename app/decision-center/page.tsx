@@ -658,7 +658,7 @@ const pendingRecommendedActions = recommendedActions.filter(
             </div>
 <div className="mt-8 flex flex-wrap gap-3">
   <Link
-    href={secondaryDecisionHref}
+    href="/ai-insights"
     className="rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-[#0b1020] transition hover:opacity-90"
   >
     Open Recommendation
