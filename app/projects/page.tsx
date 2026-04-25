@@ -1,5 +1,5 @@
 "use client";
-
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -73,6 +73,8 @@ export default function ProjectsPage() {
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+const searchParams = useSearchParams();
+const riskFilter = searchParams.get("risk");
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -165,7 +167,10 @@ const res = await fetch("/api/tasks", {
       overdueProjects: projects.filter((p) => p.overdueCount > 0).length,
     };
   }, [projects]);
-
+const visibleProjects =
+  riskFilter === "high"
+    ? projects.filter((project) => project.riskLevel === "High")
+    : projects;
   if (loading) {
     return (
       <main className="min-h-screen bg-[#05060b] text-white">
@@ -266,7 +271,7 @@ const res = await fetch("/api/tasks", {
                 </thead>
 
                 <tbody>
-                  {projects.map((project, index) => (
+                  {visibleProjects.map((project, index) => (
                     <tr
                       key={`${project.name}-${index}`}
                       className="border-b border-white/6 text-sm text-white/80 transition hover:bg-white/[0.02]"
