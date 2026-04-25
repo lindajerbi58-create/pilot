@@ -11,7 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import { useMemo } from "react";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import TopNavbar from "@/src/components/TopNavbar";
 function NavPill({
   label,
