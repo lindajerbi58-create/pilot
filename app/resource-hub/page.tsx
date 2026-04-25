@@ -263,6 +263,11 @@ const teamMembers = [...(dashboardData?.resourceWorkload || [])].sort((a: any, b
 const filteredTeamMembers =
   loadFilter === "All"
     ? teamMembers
+    : loadFilter === "Overloaded"
+    ? teamMembers.filter(
+        (member: any) =>
+          member.loadLevel === "Critical" || member.loadLevel === "High"
+      )
     : teamMembers.filter((member: any) => member.loadLevel === loadFilter);
 const searchedTeamMembers = filteredTeamMembers.filter((member: any) => {
   const assignee = (member.assignee || "").toLowerCase();
