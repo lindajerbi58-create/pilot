@@ -385,9 +385,14 @@ async function handleResetWorkspace() {
   try {
     setIsResetting(true);
 
-    const response = await fetch("/api/reset", {
-      method: "DELETE",
-    });
+ const companyId = localStorage.getItem("pilot_company_id");
+
+const response = await fetch("/api/reset", {
+  method: "DELETE",
+  headers: {
+    "x-company-id": companyId || "",
+  },
+});
 
     const result = await response.json();
 
