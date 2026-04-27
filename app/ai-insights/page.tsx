@@ -509,9 +509,15 @@ export default function AIInsightsPage() {
               <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
                 <div className="mb-6 flex items-center justify-between">
                   <div>
-                    <h3 className="text-xl font-semibold text-white">
-                      Why Pilot is flagging this
-                    </h3>
+                    <p className="text-sm text-white/70">
+  The current execution issues are driven by overdue critical tasks,
+  uneven workload distribution, and low progress on key projects.
+</p>
+<ul className="mt-4 space-y-2 text-sm text-white/60">
+  <li>• Overdue tasks are blocking delivery timelines</li>
+  <li>• Some team members are overloaded while others are underutilized</li>
+  <li>• High-risk projects show low execution progress</li>
+</ul>
                     <p className="text-sm text-white/40">
                       Main drivers behind the current health score and AI alerts
                     </p>
