@@ -14,6 +14,7 @@ import Link from "next/link";
 import TopNavbar from "@/src/components/TopNavbar";
 import { useEffect, useState } from "react";
 
+import { useRouter } from "next/navigation";
 function RiskRing({ score }: { score: number }) {
   const radius = 72;
   const stroke = 10;
@@ -197,6 +198,15 @@ function WorkloadBar({
 }
 
 export default function AIInsightsPage() {
+  const router = useRouter();
+
+useEffect(() => {
+  const companyId = localStorage.getItem("pilot_company_id");
+
+  if (!companyId) {
+    router.push("/login");
+  }
+}, [router]);
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 

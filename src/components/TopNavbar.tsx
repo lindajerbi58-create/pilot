@@ -16,6 +16,11 @@ const navItems = [
 export default function TopNavbar() {
   const pathname = usePathname();
 
+  const handleLogout = () => {
+    localStorage.removeItem("pilot_company_id");
+    window.location.href = "/login";
+  };
+
   return (
     <header className="mb-8 flex items-center justify-between rounded-[28px] border border-white/8 bg-[#070910]/90 px-5 py-4 shadow-2xl shadow-black/30 backdrop-blur">
       <div className="flex items-center gap-4">
@@ -41,6 +46,13 @@ export default function TopNavbar() {
           })}
         </nav>
       </div>
+
+      <button
+        onClick={handleLogout}
+        className="rounded-full border border-white/10 px-4 py-2 text-sm font-medium text-white/60 transition hover:bg-white/[0.05] hover:text-white"
+      >
+        Logout
+      </button>
     </header>
   );
 }
