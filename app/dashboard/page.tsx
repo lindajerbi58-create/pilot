@@ -520,6 +520,20 @@ const systemRiskText =
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1480px] px-4 py-5 sm:px-6 lg:px-8">
        <TopNavbar />
+       {kpis.overdueTasks > 0 && (
+  <div className="mb-6 rounded-2xl border border-red-500/20 bg-red-500/10 p-5">
+    <p className="text-sm font-semibold text-red-300">
+      ⚠ {kpis.overdueTasks} overdue tasks affecting execution.
+    </p>
+
+    <Link
+      href="/tasks?filter=overdue"
+      className="mt-2 inline-block text-sm font-semibold text-red-200 underline"
+    >
+      Review overdue tasks →
+    </Link>
+  </div>
+)}
 
         <section className="mb-8">
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8ea8ff]">
