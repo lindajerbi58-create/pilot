@@ -4,7 +4,7 @@ import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AlertTriangle, ArrowLeft, Briefcase, CalendarDays, FolderKanban } from "lucide-react";
-
+import TopNavbar from "@/src/components/TopNavbar";
 type TaskItem = {
   _id?: string;
   task_name: string;
@@ -421,6 +421,7 @@ if (loading) {
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-7xl px-4 py-8">
+        <TopNavbar />
         <div className="mb-6 flex items-center justify-between gap-4">
           <div>
             <Link
