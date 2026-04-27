@@ -432,29 +432,65 @@ if (!hasWorkspaceData) {
       <div className="mx-auto max-w-[1480px] px-4 py-5 sm:px-6 lg:px-8">
         <TopNavbar />
 
-        <section className="flex min-h-[70vh] items-center justify-center">
-          <div className="max-w-xl rounded-[32px] border border-white/8 bg-white/[0.03] p-8 text-center shadow-2xl shadow-black/30">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8ea8ff]">
-              Workspace empty
-            </p>
+      <section className="flex min-h-[72vh] items-center justify-center">
+  <div className="w-full max-w-3xl rounded-[36px] border border-white/10 bg-gradient-to-br from-white/[0.08] to-white/[0.025] p-10 text-center shadow-2xl shadow-black/40">
+    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl border border-[#8ea8ff]/30 bg-[#8ea8ff]/15 text-3xl">
+      ✦
+    </div>
 
-            <h1 className="mt-4 text-3xl font-semibold text-white">
-              No workspace data yet
-            </h1>
+    <p className="mt-6 text-xs font-semibold uppercase tracking-[0.28em] text-[#8ea8ff]">
+      Workspace ready
+    </p>
 
-            <p className="mt-3 text-sm leading-7 text-white/45">
-              Import a CSV file to activate Pilot intelligence, generate project KPIs,
-              detect risks, and unlock AI recommendations.
-            </p>
+    <h1 className="mt-4 text-4xl font-semibold tracking-tight text-white">
+      Start by importing your project data
+    </h1>
 
-            <Link
-              href="/import"
-              className="mt-6 inline-flex rounded-2xl bg-[#8ea8ff] px-5 py-3 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
-            >
-              Import Data
-            </Link>
-          </div>
-        </section>
+    <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/55">
+      Pilot will turn your CSV file into project KPIs, overdue task detection,
+      workload insights, risk analysis, and recommended actions.
+    </p>
+
+    <div className="mt-8 flex items-center justify-center gap-3">
+      <Link
+        href="/import"
+        className="rounded-2xl bg-[#8ea8ff] px-6 py-3 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
+      >
+        Import Data
+      </Link>
+
+      <Link
+        href="/tasks"
+        className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-3 text-sm font-semibold text-white/70 transition hover:bg-white/[0.06] hover:text-white"
+      >
+        View Tasks
+      </Link>
+    </div>
+
+    <div className="mt-10 grid gap-3 sm:grid-cols-3">
+      <div className="rounded-2xl border border-white/8 bg-black/20 p-4 text-left">
+        <p className="text-xs font-semibold text-white">1. Import</p>
+        <p className="mt-2 text-xs leading-5 text-white/45">
+          Upload your CSV workspace file.
+        </p>
+      </div>
+
+      <div className="rounded-2xl border border-white/8 bg-black/20 p-4 text-left">
+        <p className="text-xs font-semibold text-white">2. Analyze</p>
+        <p className="mt-2 text-xs leading-5 text-white/45">
+          Pilot detects risks and delays.
+        </p>
+      </div>
+
+      <div className="rounded-2xl border border-white/8 bg-black/20 p-4 text-left">
+        <p className="text-xs font-semibold text-white">3. Decide</p>
+        <p className="mt-2 text-xs leading-5 text-white/45">
+          Review recommended actions.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
       </div>
     </main>
   );
