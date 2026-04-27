@@ -79,11 +79,11 @@ export default function ProjectsPage() {
       try {
         setLoading(true);
         setError("");
-
+ const storedCompanyId = localStorage.getItem("pilot_company_id");
 const res = await fetch("/api/tasks", {
   cache: "no-store",
   headers: {
-    "x-company-id": "demo-company",
+    "x-company-id": storedCompanyId || ""
   },
 });
         const data = await res.json();

@@ -211,15 +211,20 @@ useEffect(() => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const res = await fetch("/api/dashboard", {
-  cache: "no-store",
-  headers: {
-    "x-company-id": "demo-company",
-  },
-});;
-        const data = await res.json();
+ const fetchDashboardData = async () => {
+  try {
+    const storedCompanyId = localStorage.getItem("pilot_company_id");
+
+    const res = await fetch("/api/dashboard", {
+      cache: "no-store",
+      headers: {
+        "x-company-id": storedCompanyId || "",
+      },
+    });
+
+    const data = await res.json();
+
+  
 
         if (data.success) {
           setDashboardData(data);
