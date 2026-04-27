@@ -334,7 +334,7 @@ export default function AIInsightsPage() {
   const sortedPilotFlags = [...pilotFlags].sort((a, b) => b.value - a.value);
 
   const activeReasons = sortedPilotFlags.filter((flag) => flag.value > 0);
-
+const primaryDriver = activeReasons[0];
 const insightSummary =
   activeReasons.length > 0
     ? activeReasons.map((flag) => flag.description)
@@ -405,12 +405,9 @@ const insightSummary =
                   </p>
 
                   <div className="mt-6 flex flex-wrap gap-3">
-                    <Link
-                      href="/tasks?filter=overdue"
-                      className="rounded-2xl bg-[#8aa4ff] px-5 py-3 text-sm font-semibold text-[#111629] transition hover:brightness-110"
-                    >
-                      Review Overdue Tasks
-                    </Link>
+                  <button>
+  Fix: {primaryDriver?.title || "Main Issue"}
+</button>
 
                     <Link
                       href="/decision-center"
