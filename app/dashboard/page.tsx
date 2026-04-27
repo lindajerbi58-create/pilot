@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 import {
   AlertTriangle,
@@ -360,6 +361,7 @@ function ActivityItem({
 import { useEffect, useState } from "react";
 
 export default function DashboardPage() {
+  const pathname = usePathname();
   const [isResetting, setIsResetting] = useState(false);
   const [dashboardData, setDashboardData] = useState<any>(null);
 async function handleResetWorkspace() {
@@ -453,24 +455,14 @@ const systemRiskText =
             <div className="text-sm font-semibold text-white">Pilot</div>
 
             <nav className="hidden items-center gap-2 md:flex">
-              <TopNavLink href="/dashboard" label="Dashboard" active />
-              <TopNavLink href="/projects" label="Projects" />
-              <TopNavLink href="/tasks" label="Tasks" />
+             <TopNavLink href="/dashboard" label="Dashboard" active={pathname === "/dashboard"} />
+<TopNavLink href="/projects" label="Projects" active={pathname === "/projects"} />
+<TopNavLink href="/tasks" label="Tasks" active={pathname === "/tasks"} />
              
             </nav>
           </div>
 
-          <div className="flex items-center gap-3">
-            <button className="flex h-9 w-9 items-center justify-center rounded-2xl border border-white/8 bg-white/[0.03] text-white/60 transition hover:bg-white/[0.05] hover:text-white">
-              <Search size={16} />
-            </button>
-
-            <button className="flex h-9 w-9 items-center justify-center rounded-2xl border border-white/8 bg-white/[0.03] text-white/60 transition hover:bg-white/[0.05] hover:text-white">
-              <Bell size={16} />
-            </button>
-
-            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#8ea8ff] to-[#6d84ff]" />
-          </div>
+  
         </header>
 
         <section className="mb-8">
@@ -550,12 +542,7 @@ const systemRiskText =
             <div className="flex flex-wrap gap-3">
   
 
-  <Link
-    href="/import"
-    className="rounded-2xl bg-[#8ea8ff] px-5 py-3 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
-  >
-    + New Project
-  </Link>
+ 
 
   <Link
     href="/import"
