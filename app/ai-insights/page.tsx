@@ -752,12 +752,7 @@ const insightSummary =
 
               <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
                 <div className="mb-6 flex items-center justify-between">
-                  <div>
-                    <h3 className="text-xl font-semibold text-white">Recent Activity</h3>
-                    <p className="text-sm text-white/40">
-                      Latest signals captured across execution
-                    </p>
-                  </div>
+                
 
                   <span className="rounded-full border border-[#8ab4ff]/20 bg-[#8ab4ff]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9db8ff]">
                     Live Feed
