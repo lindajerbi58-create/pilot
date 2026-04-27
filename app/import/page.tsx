@@ -3,6 +3,8 @@
 import { useRef, useState } from "react";
 import TopNavbar from "@/src/components/TopNavbar";
 import Link from "next/link";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Bell,
   Brain,
@@ -88,6 +90,15 @@ function TemplateChip({ label }: { label: string }) {
 }
 
 export default function ImportPage() {
+  const router = useRouter();
+
+useEffect(() => {
+  const companyId = localStorage.getItem("pilot_company_id");
+
+  if (!companyId) {
+    router.push("/login");
+  }
+}, [router]);
       const [selectedFile, setSelectedFile] = useState<File | null>(null);
       const [parsedRows, setParsedRows] = useState<any[]>([]);
 const [validationMessage, setValidationMessage] = useState("Waiting for file");
