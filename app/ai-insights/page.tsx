@@ -331,7 +331,14 @@ export default function AIInsightsPage() {
   const recentActivity = (dashboardData?.recentActivity || []).slice(0, 5);
   const sortedPilotFlags = [...pilotFlags].sort((a, b) => b.value - a.value);
 
-  
+  const activeReasons = sortedPilotFlags.filter((flag) => flag.value > 0);
+
+const insightSummary =
+  activeReasons.length > 0
+    ? activeReasons.map((flag) => flag.description)
+    : [
+        "Pilot is not detecting a major execution risk right now. The portfolio looks stable based on the current task, project, and workload signals.",
+      ];
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto flex min-h-screen max-w-[1500px]">
@@ -517,6 +524,16 @@ export default function AIInsightsPage() {
   Pilot explains the health score by comparing overdue work, risky projects,
   execution progress, and team capacity.
 </p>
+<div className="mt-4 space-y-3">
+  {insightSummary.map((reason, index) => (
+    <div
+      key={index}
+      className="rounded-2xl border border-white/6 bg-white/[0.03] px-4 py-3 text-sm leading-6 text-white/60"
+    >
+      {reason}
+    </div>
+  ))}
+</div>
                     <p className="text-sm text-white/40">
                       Main drivers behind the current health score and AI alerts
                     </p>
