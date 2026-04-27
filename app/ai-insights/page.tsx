@@ -330,18 +330,19 @@ export default function AIInsightsPage() {
     },
   ];
 
-  const recentActivity = (dashboardData?.recentActivity || []).slice(0, 5);
+
   const sortedPilotFlags = [...pilotFlags].sort((a, b) => b.value - a.value);
 
   const activeReasons = sortedPilotFlags.filter((flag) => flag.value > 0);
   
-const primaryDriver = activeReasons[0];
-const insightSummary =
-  activeReasons.length > 0
-    ? activeReasons.map((flag) => flag.description)
-    : [
-        "Pilot is not detecting a major execution risk right now. The portfolio looks stable based on the current task, project, and workload signals.",
-      ];
+const primaryDriver = activeReasons[0] || sortedPilotFlags[0];
+
+const shortDriverText = (key: string, value: number) => {
+  if (key === "overdue") return `${value} overdue tasks detected`;
+  if (key === "workload") return `${value} overloaded team members detected`;
+  if (key === "risk") return `${value} high-risk projects detected`;
+  return "No major driver detected";
+};
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto flex min-h-screen max-w-[1500px]">
@@ -406,9 +407,18 @@ const insightSummary =
                   </p>
 
                   <div className="mt-6 flex flex-wrap gap-3">
-                  <button>
+                 <Link
+  href={
+    primaryDriver?.key === "overdue"
+      ? "/tasks?filter=overdue"
+      : primaryDriver?.key === "workload"
+      ? "/resource-hub"
+      : "/decision-center"
+  }
+  className="rounded-2xl bg-[#8aa4ff] px-5 py-3 text-sm font-semibold text-[#111629] transition hover:brightness-110"
+>
   Fix: {primaryDriver?.title || "Main Issue"}
-</button>
+</Link>
 
                     <Link
                       href="/decision-center"
@@ -546,11 +556,11 @@ const insightSummary =
       ? sortedPilotFlags[0].title
       : "System currently stable"}
   </p>
-  <p className="mt-2 text-sm leading-6 text-white/55">
-    {sortedPilotFlags[0].value > 0
-      ? sortedPilotFlags[0].description
-      : "Pilot is not detecting a major alert driver right now. Current execution, project risk, and workload signals remain under control."}
-  </p>
+ <p className="mt-2 text-sm leading-6 text-white/55">
+  {sortedPilotFlags[0].value > 0
+    ? shortDriverText(sortedPilotFlags[0].key, sortedPilotFlags[0].value)
+    : "No major alert driver detected right now."}
+</p>
 
   <div className="mt-4 flex flex-wrap gap-3">
     <Link
@@ -610,8 +620,8 @@ const insightSummary =
                         </p>
 
                         <p className="mt-3 text-sm leading-6 text-white/55">
-                          {flag.description}
-                        </p>
+  {shortDriverText(flag.key, flag.value)}
+</p>
                       </div>
                     );
                   })}
