@@ -334,40 +334,7 @@ export default function AIInsightsPage() {
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto flex min-h-screen max-w-[1500px]">
         <aside className="hidden w-[220px] border-r border-white/6 bg-[#070910] px-4 py-6 lg:flex lg:flex-col lg:justify-between">
-          <div>
-            <div className="mb-10 flex items-center gap-3 px-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#8ab4ff] to-[#667cff] text-[#0b1020] shadow-lg shadow-[#6f8cff]/20">
-                <Brain size={20} />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-white">Pilot</p>
-                <p className="text-xs text-white/40">AI Project Control</p>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Link href="/dashboard">
-                <NavItem icon={FolderKanban} label="Projects" />
-              </Link>
-
-              <Link href="/ai-insights">
-                <NavItem icon={Brain} label="Insights" active />
-              </Link>
-
-              <Link href="/decision-center">
-                <NavItem icon={Zap} label="Decision" />
-              </Link>
-
-              <Link href="/resource-hub">
-                <NavItem icon={Users} label="Resources" />
-              </Link>
-
-              <Link href="/settings">
-                <NavItem icon={Settings} label="Settings" />
-              </Link>
-            </div>
-          </div>
-
+         
           <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
             <p className="text-xs uppercase tracking-[0.2em] text-white/35">AI status</p>
             <p className="mt-2 text-sm font-semibold text-white">Live analysis enabled</p>

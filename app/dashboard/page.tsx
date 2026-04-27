@@ -425,7 +425,40 @@ const {
   resourceWorkload,
   executionTrend,
 } = dashboardData;
+const hasWorkspaceData = (kpis?.totalTasks || 0) > 0;
+if (!hasWorkspaceData) {
+  return (
+    <main className="min-h-screen bg-[#05060b] text-white">
+      <div className="mx-auto max-w-[1480px] px-4 py-5 sm:px-6 lg:px-8">
+        <TopNavbar />
 
+        <section className="flex min-h-[70vh] items-center justify-center">
+          <div className="max-w-xl rounded-[32px] border border-white/8 bg-white/[0.03] p-8 text-center shadow-2xl shadow-black/30">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8ea8ff]">
+              Workspace empty
+            </p>
+
+            <h1 className="mt-4 text-3xl font-semibold text-white">
+              No workspace data yet
+            </h1>
+
+            <p className="mt-3 text-sm leading-7 text-white/45">
+              Import a CSV file to activate Pilot intelligence, generate project KPIs,
+              detect risks, and unlock AI recommendations.
+            </p>
+
+            <Link
+              href="/import"
+              className="mt-6 inline-flex rounded-2xl bg-[#8ea8ff] px-5 py-3 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
+            >
+              Import Data
+            </Link>
+          </div>
+        </section>
+      </div>
+    </main>
+  );
+}
 const criticalRiskCount = riskyProjects.filter(
   (project: any) => project.level === "Critical"
 ).length;

@@ -424,13 +424,7 @@ if (loading) {
         <TopNavbar />
         <div className="mb-6 flex items-center justify-between gap-4">
           <div>
-            <Link
-              href="/dashboard"
-              className="mb-4 inline-flex items-center gap-2 text-sm text-white/60 transition hover:text-white"
-            >
-              <ArrowLeft size={16} />
-              Back to Dashboard
-            </Link>
+
 
             <h1 className="text-4xl font-semibold tracking-tight">Tasks</h1>
             <p className="mt-2 text-sm text-white/45">
