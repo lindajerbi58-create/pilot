@@ -430,9 +430,9 @@ if (!hasWorkspaceData) {
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto min-h-screen w-full max-w-[1480px] px-6 py-6">
-        <TopNavbar />
+      
 
-        <section className="flex min-h-[calc(100vh-120px)] items-center justify-center">
+        <section className="flex min-h-screen items-center justify-center px-6">
           <div className="w-full rounded-[40px] border border-white/10 bg-gradient-to-br from-white/[0.08] via-white/[0.035] to-[#8ea8ff]/10 p-10 text-center shadow-2xl shadow-black/40 lg:p-16">
             <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[28px] border border-[#8ea8ff]/30 bg-[#8ea8ff]/15 text-4xl">
               ✦
