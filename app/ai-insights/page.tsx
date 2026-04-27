@@ -11,6 +11,7 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
+import TopNavbar from "@/src/components/TopNavbar";
 import { useEffect, useState } from "react";
 
 function RiskRing({ score }: { score: number }) {
@@ -377,20 +378,7 @@ export default function AIInsightsPage() {
         </aside>
 
         <section className="flex-1 px-4 py-5 sm:px-6 lg:px-8">
-          <header className="mb-8 flex items-center justify-between">
-            <div className="flex items-center gap-3 lg:hidden">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#8ab4ff] to-[#667cff] text-[#0b1020]">
-                <Brain size={20} />
-              </div>
-              <span className="text-lg font-semibold">Pilot</span>
-            </div>
-
-            <div className="ml-auto flex items-center gap-2 rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-2 text-sm text-white/50">
-              <Search size={16} />
-              <span className="hidden sm:inline">Search insights</span>
-            </div>
-          </header>
-
+          <TopNavbar />
           <div className="mb-8">
             <p className="text-sm font-medium uppercase tracking-[0.18em] text-[#8aa4ff]">
               AI Insights
