@@ -411,7 +411,13 @@ const response = await fetch("/api/reset", {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("/api/dashboard");
+        const companyId = localStorage.getItem("pilot_company_id");
+
+        const res = await fetch("/api/dashboard", {
+          headers: {
+            "x-company-id": companyId || "",
+          },
+        });
         const data = await res.json();
 
         if (data.success) {

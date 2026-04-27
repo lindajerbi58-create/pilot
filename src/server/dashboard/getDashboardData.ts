@@ -128,10 +128,10 @@ function getRiskScore(
 
   return Math.min(100, Math.round(taskWeight + overdueWeight + progressPenalty));
 }
-export async function getDashboardData(): Promise<DashboardResponse> {
+export async function getDashboardData(companyId: string): Promise<DashboardResponse> {
   await connectToDatabase();
 
-  const tasks = await Task.find({}).lean();
+ const tasks = await Task.find({ companyId }).lean();
 
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((task) =>

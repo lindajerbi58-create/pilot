@@ -10,6 +10,11 @@ const TaskSchema = new Schema(
     start_date: { type: String, required: true },
     due_date: { type: String, required: true },
     progress: { type: Number, required: true },
+    companyId: {
+  type: String,
+  required: true,
+  index: true,
+},
   },
   { timestamps: true }
 );
