@@ -12,6 +12,7 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import TopNavbar from "@/src/components/TopNavbar";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 function SidebarItem({
@@ -294,47 +295,7 @@ const decisionStats = [
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1450px] px-4 py-5 sm:px-6 lg:px-8">
-        <header className="mb-8 flex items-center justify-between rounded-[28px] border border-white/8 bg-[#070910]/90 px-5 py-4 shadow-2xl shadow-black/30 backdrop-blur">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#8ea8ff] to-[#6d84ff] text-[#0b1020]">
-              <Brain size={20} />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-white">Pilot</p>
-              <p className="text-xs text-white/40">Decision Intelligence</p>
-            </div>
-          </div>
-<nav className="hidden items-center gap-2 md:flex">
-  <Link href="/dashboard">
-    <SidebarItem label="Projects" />
-  </Link>
-
-  <Link href="/ai-insights">
-    <SidebarItem label="AI Insights" />
-  </Link>
-
-  <Link href="/decision-center">
-    <SidebarItem label="Decision Center" active />
-  </Link>
-
-  <Link href="/resource-hub">
-    <SidebarItem label="Resources" />
-  </Link>
-
-  <Link href="/settings">
-    <SidebarItem label="Settings" />
-  </Link>
-</nav>
-          <div className="flex items-center gap-3">
-            <div className="hidden items-center gap-2 rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-2 text-sm text-white/45 sm:flex">
-              <Search size={16} />
-              <span>Search decisions</span>
-            </div>
-
-            <div className="h-9 w-9 rounded-full bg-gradient-to-br from-[#8ea8ff] to-[#6d84ff]" />
-          </div>
-        </header>
-
+    <TopNavbar />
         <section className="mb-8">
           <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#8ea8ff]/15 bg-[#8ea8ff]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9eb7ff]">
             <Zap size={12} />
