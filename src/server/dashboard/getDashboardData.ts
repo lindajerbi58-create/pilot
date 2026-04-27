@@ -131,7 +131,7 @@ function getRiskScore(
 export async function getDashboardData(companyId: string): Promise<DashboardResponse> {
   await connectToDatabase();
 
- const tasks = await Task.find({ companyId }).lean();
+const tasks = await Task.find({}).lean();
 
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((task) =>
