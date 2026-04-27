@@ -694,12 +694,12 @@ const insightSummary =
               <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
                 <div className="mb-6 flex items-center justify-between">
                   <div>
-                    <h3 className="text-xl font-semibold text-white">
-                      Workload Distribution
-                    </h3>
-                    <p className="text-sm text-white/40">
-                      Weekly team performance overview
-                    </p>
+                   <h3 className="text-xl font-semibold text-white">
+  Capacity Impact
+</h3>
+<p className="text-sm text-white/40">
+  Explains whether team load is contributing to project risk
+</p>
                   </div>
 
                   <div className="flex gap-1">
