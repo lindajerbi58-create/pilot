@@ -566,8 +566,10 @@ const systemRiskText =
   french="Cette section vous donne une vue rapide de la situation générale de vos projets. Elle vous aide à comprendre le niveau de risque actuel et ce qui demande une attention en priorité."
 />
 <div className="mt-4 rounded-2xl border border-[#8ea8ff]/15 bg-[#8ea8ff]/10 p-4">
-  <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8ea8ff]">
-  WHAT SHOULD YOU DO NOW?
+ <p className="text-sm text-white/70">
+  {kpis.overdueTasks > 0
+    ? `${kpis.overdueTasks} tasks are overdue. Immediate action is required to avoid project delays.`
+    : "All tasks are on track. No immediate action required."}
 </p>
 
 <p className="mt-2 text-sm font-semibold text-white">
