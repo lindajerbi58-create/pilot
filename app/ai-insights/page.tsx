@@ -5,9 +5,9 @@ import {
   Brain,
   Briefcase,
   FolderKanban,
-  Search,
+
   Settings,
-  Zap,
+
   Users,
 } from "lucide-react";
 import Link from "next/link";
@@ -69,6 +69,7 @@ function NavItem({
   label: string;
   active?: boolean;
 }) {
+  
   return (
     <div
       className={`flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium transition ${
@@ -330,6 +331,7 @@ export default function AIInsightsPage() {
   const recentActivity = (dashboardData?.recentActivity || []).slice(0, 5);
   const sortedPilotFlags = [...pilotFlags].sort((a, b) => b.value - a.value);
 
+  
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto flex min-h-screen max-w-[1500px]">
@@ -509,15 +511,12 @@ export default function AIInsightsPage() {
               <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
                 <div className="mb-6 flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-white/70">
-  The current execution issues are driven by overdue critical tasks,
-  uneven workload distribution, and low progress on key projects.
+ <h3 className="text-xl font-semibold text-white">Why is this happening?</h3>
+
+<p className="mt-2 text-sm leading-6 text-white/55">
+  Pilot explains the health score by comparing overdue work, risky projects,
+  execution progress, and team capacity.
 </p>
-<ul className="mt-4 space-y-2 text-sm text-white/60">
-  <li>• Overdue tasks are blocking delivery timelines</li>
-  <li>• Some team members are overloaded while others are underutilized</li>
-  <li>• High-risk projects show low execution progress</li>
-</ul>
                     <p className="text-sm text-white/40">
                       Main drivers behind the current health score and AI alerts
                     </p>
