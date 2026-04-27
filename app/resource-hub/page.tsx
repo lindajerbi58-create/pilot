@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useMemo } from "react";
+
+import { useRouter } from "next/navigation";
 import TopNavbar from "@/src/components/TopNavbar";
 function NavPill({
   label,
@@ -127,6 +129,15 @@ function TeamCard({
 }
 
 export default function ResourceHubPage() {
+  const router = useRouter();
+
+useEffect(() => {
+  const companyId = localStorage.getItem("pilot_company_id");
+
+  if (!companyId) {
+    router.push("/login");
+  }
+}, [router]);
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 const [loadFilter, setLoadFilter] = useState("All");
