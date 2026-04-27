@@ -104,7 +104,12 @@ useEffect(() => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const res = await fetch("/api/dashboard", { cache: "no-store" });
+        const res = await fetch("/api/dashboard", {
+          cache: "no-store",
+          headers: {
+            "x-company-id": "demo-company",
+          },
+        });
         const data = await res.json();
 
         if (data.success) {

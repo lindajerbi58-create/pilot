@@ -80,7 +80,12 @@ export default function ProjectsPage() {
         setLoading(true);
         setError("");
 
-        const res = await fetch("/api/tasks", { cache: "no-store" });
+const res = await fetch("/api/tasks", {
+  cache: "no-store",
+  headers: {
+    "x-company-id": "demo-company",
+  },
+});
         const data = await res.json();
 
         if (!res.ok) {
