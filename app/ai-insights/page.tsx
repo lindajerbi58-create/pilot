@@ -750,52 +750,32 @@ const insightSummary =
                 </div>
               </div>
 
-              <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
-                <div className="mb-6 flex items-center justify-between">
-                
+             <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
+  <div className="flex items-center justify-between">
+    <h3 className="text-xl font-semibold text-white">
+      Evidence Behind The Risk
+    </h3>
+    <span className="text-xs text-white/40">Live</span>
+  </div>
 
-                  <span className="rounded-full border border-[#8ab4ff]/20 bg-[#8ab4ff]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9db8ff]">
-                    Live Feed
-                  </span>
-                </div>
+  <p className="mt-2 text-sm text-white/50">
+    These signals explain why Pilot is flagging risk.
+  </p>
 
-                <div className="space-y-4">
-                  {recentActivity.length > 0 ? (
-                    recentActivity.map((item: any, index: number) => (
-                      <div
-                        key={index}
-                        className="rounded-2xl border border-white/6 bg-white/[0.03] p-4"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <p className="text-sm font-semibold text-white">
-                              {item.title || "Activity detected"}
-                            </p>
-                            <p className="mt-1 text-sm leading-6 text-white/55">
-                              {item.description ||
-                                "A new execution signal was captured by Pilot."}
-                            </p>
-                          </div>
-
-                          <span className="rounded-full border border-white/10 px-2 py-1 text-[10px] uppercase tracking-[0.16em] text-white/40">
-                            {item.time || "Live"}
-                          </span>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="rounded-2xl border border-white/6 bg-white/[0.03] p-4">
-                      <p className="text-sm font-medium text-white">
-                        No recent activity yet
-                      </p>
-                      <p className="mt-2 text-sm leading-6 text-white/55">
-                        Pilot will surface the latest execution signals here as soon as
-                        new activity is detected.
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
+  <div className="mt-4 space-y-3">
+    {activeReasons.map((reason, index) => (
+      <div
+        key={index}
+        className="rounded-2xl border border-white/6 bg-white/[0.02] px-4 py-3 text-sm text-white/60"
+      >
+       <div>
+  <p className="font-semibold text-white">{reason.title}</p>
+  <p className="mt-1 text-white/50">{reason.description}</p>
+</div>
+      </div>
+    ))}
+  </div>
+</div>
             </div>
           </div>
         </section>
