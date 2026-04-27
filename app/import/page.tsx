@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-
+import TopNavbar from "@/src/components/TopNavbar";
 import Link from "next/link";
 import {
   Bell,
@@ -250,30 +250,7 @@ const handleClearAllData = async () => {
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1480px] px-4 py-5 sm:px-6 lg:px-8">
-        <header className="mb-8 flex items-center justify-between rounded-[28px] border border-white/8 bg-[#070910]/90 px-5 py-4 shadow-2xl shadow-black/30 backdrop-blur">
-          <div className="flex items-center gap-4">
-            <div className="text-sm font-semibold text-white">Pilot</div>
-
-            <nav className="hidden items-center gap-2 md:flex">
-              <TopNavLink href="/dashboard" label="Dashboard" />
-              <TopNavLink href="/import" label="Data Import" active />
-              <TopNavLink href="/ai-insights" label="Intelligence" />
-            </nav>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button className="flex h-9 w-9 items-center justify-center rounded-2xl border border-white/8 bg-white/[0.03] text-white/60 transition hover:bg-white/[0.05] hover:text-white">
-              <Search size={16} />
-            </button>
-
-            <button className="flex h-9 w-9 items-center justify-center rounded-2xl border border-white/8 bg-white/[0.03] text-white/60 transition hover:bg-white/[0.05] hover:text-white">
-              <Bell size={16} />
-            </button>
-
-            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#8ea8ff] to-[#6d84ff]" />
-          </div>
-        </header>
-
+       <TopNavbar />
         <section className="mb-8">
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8ea8ff]">
             Data Onboarding
