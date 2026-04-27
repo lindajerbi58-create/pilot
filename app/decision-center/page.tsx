@@ -15,6 +15,8 @@ import {
 import TopNavbar from "@/src/components/TopNavbar";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+
+import { useRouter } from "next/navigation";
 function SidebarItem({
   label,
   active = false,
@@ -87,6 +89,15 @@ function MiniDecisionCard({
 }
 
 export default function DecisionCenterPage() {
+  const router = useRouter();
+
+useEffect(() => {
+  const companyId = localStorage.getItem("pilot_company_id");
+
+  if (!companyId) {
+    router.push("/login");
+  }
+}, [router]);
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
