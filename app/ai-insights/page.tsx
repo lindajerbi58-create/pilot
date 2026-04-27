@@ -292,6 +292,7 @@ export default function AIInsightsPage() {
   const pilotFlags = [
     {
       key: "overdue",
+      impact: "number",
       title: "Schedule pressure",
       subtitle: "Delivery slowdown detected",
       description:
@@ -301,6 +302,7 @@ export default function AIInsightsPage() {
       value: overdueTasks,
       icon: AlertTriangle,
       color: "#ff6b6b",
+      
     },
     {
       key: "risk",
@@ -362,6 +364,13 @@ const insightSummary =
             <h1 className="mt-3 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
               Real-time project intelligence
             </h1>
+            <p className="mt-3 max-w-3xl text-sm text-white/60">
+  Your project is at risk mainly due to{" "}
+  <span className="font-semibold text-white">
+    {activeReasons[0]?.title?.toLowerCase() || "stable execution conditions"}
+  </span>
+  .
+</p>
             <p className="mt-3 max-w-2xl text-base leading-7 text-white/50">
               Monitor project health, understand risk factors, and surface the best next
               actions with a premium AI-driven control layer.
@@ -771,6 +780,14 @@ const insightSummary =
        <div>
   <p className="font-semibold text-white">{reason.title}</p>
   <p className="mt-1 text-white/50">{reason.description}</p>
+  <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+  <div
+    className="h-full rounded-full bg-[#8ea8ff]"
+    style={{
+      width: `${Math.min(100, Math.max(8, reason.value * 10))}%`,
+    }}
+  />
+</div>
 </div>
       </div>
     ))}
