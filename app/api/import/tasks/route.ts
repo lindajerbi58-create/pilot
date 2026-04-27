@@ -25,11 +25,15 @@ const companyId = req.headers.get("x-company-id");
       );
     }
 
-    const normalizedTasks = tasks.map((task: any) => ({
-      ...task,
-      companyId,
-      progress: Number(task.progress || 0),
-    }));
+const normalizedTasks = tasks.map((task: any, index: number) => ({
+  ...task,
+  taskId:
+    task.taskId ||
+    task.task_id ||
+    `TASK-${Date.now()}-${index + 1}`,
+  companyId,
+  progress: Number(task.progress || 0),
+}));
 
     await Task.insertMany(normalizedTasks);
 
