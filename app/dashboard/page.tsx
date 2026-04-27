@@ -14,7 +14,7 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
-
+import TopNavbar from "@/src/components/TopNavbar";
 function TopNavLink({
   label,
   href,
@@ -450,20 +450,7 @@ const systemRiskText =
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1480px] px-4 py-5 sm:px-6 lg:px-8">
-        <header className="mb-8 flex items-center justify-between rounded-[28px] border border-white/8 bg-[#070910]/90 px-5 py-4 shadow-2xl shadow-black/30 backdrop-blur">
-          <div className="flex items-center gap-4">
-            <div className="text-sm font-semibold text-white">Pilot</div>
-
-            <nav className="hidden items-center gap-2 md:flex">
-             <TopNavLink href="/dashboard" label="Dashboard" active={pathname === "/dashboard"} />
-<TopNavLink href="/projects" label="Projects" active={pathname === "/projects"} />
-<TopNavLink href="/tasks" label="Tasks" active={pathname === "/tasks"} />
-             
-            </nav>
-          </div>
-
-  
-        </header>
+       <TopNavbar />
 
         <section className="mb-8">
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8ea8ff]">
