@@ -210,13 +210,16 @@ const handleImportTasks = async () => {
   setSuccessMessage("");
 
   try {
-    const response = await fetch("/api/import/tasks", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ tasks: parsedRows }),
-    });
+  const companyId = localStorage.getItem("pilot_company_id");
+
+const response = await fetch("/api/import/tasks", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "x-company-id": companyId || "",
+  },
+  body: JSON.stringify({ tasks: parsedRows }),
+});
 
     const result = await response.json();
 
@@ -234,9 +237,14 @@ const handleImportTasks = async () => {
 };
 const handleClearAllData = async () => {
   try {
-    const response = await fetch("/api/import/tasks/clear", {
-      method: "DELETE",
-    });
+   const companyId = localStorage.getItem("pilot_company_id");
+
+const response = await fetch("/api/import/tasks/clear", {
+  method: "DELETE",
+  headers: {
+    "x-company-id": companyId || "",
+  },
+});
 
     const result = await response.json();
 
