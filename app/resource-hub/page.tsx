@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useMemo } from "react";
+import TopNavbar from "@/src/components/TopNavbar";
 function NavPill({
   label,
   active = false,
@@ -408,44 +409,7 @@ const recommendationText =
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-[1450px] px-4 py-5 sm:px-6 lg:px-8">
-        <header className="mb-8 flex flex-col gap-4 rounded-[28px] border border-white/8 bg-[#070910]/90 px-5 py-4 shadow-2xl shadow-black/30 backdrop-blur lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-center gap-3">
-            <div className="text-sm font-semibold text-white">Pilot</div>
-          </div>
-
-         <nav className="hidden items-center gap-2 md:flex">
-  <NavPill label="Dashboard" href="/dashboard" />
-  <NavPill label="AI Insights" href="/ai-insights" />
-  <NavPill label="Decision Center" href="/decision-center" />
-  <NavPill label="Resource Hub" href="/resource-hub" active />
-  <NavPill label="Settings" href="/settings" />
-</nav>
-
-<div className="flex w-full flex-wrap items-center justify-between gap-3 lg:w-auto lg:justify-end">
-  <div className="hidden text-right sm:block">
-    <p className="text-[10px] uppercase tracking-[0.18em] text-white/30">
-      Last updated
-    </p>
-    <p className="mt-1 text-sm font-medium text-white/70">{lastUpdatedLabel}</p>
-  </div>
-
-  <button
-    type="button"
-    onClick={handleRefresh}
-    disabled={refreshing}
-    className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-sm font-medium text-white/70 transition hover:bg-white/[0.06] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
-  >
-    {refreshing ? "Refreshing..." : "Refresh"}
-  </button>
-
-  <button className="text-white/60 transition hover:text-white">
-    <Search size={16} />
-  </button>
-
-  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#8ea8ff] to-[#6d84ff]" />
-</div>
-        </header>
-
+       <TopNavbar />
         <section className="mb-8">
           <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#8ea8ff]/15 bg-[#8ea8ff]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9eb7ff]">
             <Brain size={12} />
