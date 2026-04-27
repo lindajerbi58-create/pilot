@@ -9,7 +9,7 @@ import {
   CalendarDays,
   FolderKanban,
 } from "lucide-react";
-
+import TopNavbar from "@/src/components/TopNavbar";
 type TaskItem = {
   _id?: string;
   task_name: string;
@@ -188,15 +188,11 @@ export default function ProjectsPage() {
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-7xl px-4 py-8">
+        <TopNavbar />
         <div className="mb-6 flex items-center justify-between gap-4">
+          
           <div>
-            <Link
-              href="/dashboard"
-              className="mb-4 inline-flex items-center gap-2 text-sm text-white/60 transition hover:text-white"
-            >
-              <ArrowLeft size={16} />
-              Back to Dashboard
-            </Link>
+         
 
             <h1 className="text-4xl font-semibold tracking-tight">Projects</h1>
             <p className="mt-2 text-sm text-white/45">
