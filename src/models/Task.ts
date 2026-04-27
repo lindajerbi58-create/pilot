@@ -15,6 +15,11 @@ const TaskSchema = new Schema(
   required: true,
   index: true,
 },
+taskId: {
+  type: String,
+  required: true,
+  index: true,
+},
   },
   { timestamps: true }
 );
