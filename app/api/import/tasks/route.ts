@@ -6,6 +6,15 @@ export async function POST(req: NextRequest) {
   try {
     await connectToDatabase();
 
+    const companyId = req.headers.get("x-company-id");
+
+    if (!companyId) {
+      return NextResponse.json(
+        { success: false, error: "Missing company id" },
+        { status: 400 }
+      );
+    }
+
     const body = await req.json();
     const { tasks } = body;
 
@@ -16,9 +25,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const normalizedTasks = tasks.map((task) => ({
+    const normalizedTasks = tasks.map((task: any) => ({
       ...task,
-      progress: Number(task.progress),
+      companyId,
+      progress: Number(task.progress || 0),
     }));
 
     await Task.insertMany(normalizedTasks);
@@ -28,7 +38,8 @@ export async function POST(req: NextRequest) {
       message: `${normalizedTasks.length} tasks imported successfully`,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Task import failed:", error);
+
     return NextResponse.json(
       { success: false, message: "Task import failed" },
       { status: 500 }
