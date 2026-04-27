@@ -334,6 +334,7 @@ export default function AIInsightsPage() {
   const sortedPilotFlags = [...pilotFlags].sort((a, b) => b.value - a.value);
 
   const activeReasons = sortedPilotFlags.filter((flag) => flag.value > 0);
+  
 const primaryDriver = activeReasons[0];
 const insightSummary =
   activeReasons.length > 0
@@ -527,22 +528,9 @@ const insightSummary =
  <h3 className="text-xl font-semibold text-white">Why is this happening?</h3>
 
 <p className="mt-2 text-sm leading-6 text-white/55">
-  Pilot explains the health score by comparing overdue work, risky projects,
-  execution progress, and team capacity.
+  Pilot identified the main execution drivers behind the current risk score.
 </p>
-<div className="mt-4 space-y-3">
-  {insightSummary.map((reason, index) => (
-    <div
-      key={index}
-      className="rounded-2xl border border-white/6 bg-white/[0.03] px-4 py-3 text-sm leading-6 text-white/60"
-    >
-      {reason}
-    </div>
-  ))}
-</div>
-                    <p className="text-sm text-white/40">
-                      Main drivers behind the current health score and AI alerts
-                    </p>
+                   
                   </div>
 
                   <span className="rounded-full border border-[#ffcf66]/20 bg-[#ffcf66]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#ffcf66]">
