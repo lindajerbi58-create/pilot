@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMemo } from "react";
+
+import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
   ArrowRight,
@@ -363,7 +364,17 @@ import { useEffect, useState } from "react";
 export default function DashboardPage() {
   const pathname = usePathname();
   const [isResetting, setIsResetting] = useState(false);
+
   const [dashboardData, setDashboardData] = useState<any>(null);
+    const router = useRouter();
+
+  useEffect(() => {
+    const companyId = localStorage.getItem("pilot_company_id");
+
+    if (!companyId) {
+      router.push("/login");
+    }
+  }, [router]);
 async function handleResetWorkspace() {
   const confirmed = window.confirm(
     "This will permanently delete all imported tasks from the database. Do you want to continue?"
