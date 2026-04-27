@@ -829,60 +829,7 @@ Risk Level: {systemRiskLevel}
           </div>
 
           <div className="grid gap-6">
-            <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
-              <div className="mb-5 flex items-center justify-between">
-                <div>
-                 <h2 className="text-lg font-semibold text-white">Suggested Actions</h2>
-<p className="mt-1 text-sm text-white/40">
-  What you can do to improve your projects
-</p>
-<SectionHelpToggle
-  english="This section gives you simple recommendations to improve your projects. It helps you decide what to do next based on the current situation."
-  french="Cette section vous donne des recommandations simples pour améliorer vos projets. Elle vous aide à décider quoi faire ensuite selon la situation actuelle."
-/>
-                </div>
-              </div>
-
-              <div className="space-y-4">
- {aiSuggestions.map((suggestion: any, index: number) => {
-  const suggestionTitle = suggestion.title.toLowerCase();
-  let href = "/ai-insights";
-
-  if (suggestionTitle.includes("overdue") || suggestionTitle.includes("late")) {
-    href = "/tasks?filter=overdue";
-  } else if (
-    suggestionTitle.includes("workload") ||
-    suggestionTitle.includes("balance") ||
-    suggestionTitle.includes("team")
-  ) {
-    href = "/resource-hub";
-  } else if (
-    suggestionTitle.includes("decision") ||
-    suggestionTitle.includes("review") ||
-    suggestionTitle.includes("risk")
-  ) {
-    const matchedProject = riskyProjects.find((project: any) =>
-      suggestionTitle.includes(project.title.toLowerCase())
-    );
-
-    if (matchedProject) {
-      href = `/tasks?project=${encodeURIComponent(matchedProject.title)}&filter=overdue`;
-    } else {
-      href = "/decision-center";
-    }
-  }
-
-  return (
-    <SuggestionMiniCard
-      key={index}
-      title={suggestion.title}
-      description={suggestion.description}
-      href={href}
-    />
-  );
-})}
-</div>
-            </div>
+          
 <div className="rounded-[30px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/20">
   <div className="mb-5 flex items-center justify-between">
     <div>
