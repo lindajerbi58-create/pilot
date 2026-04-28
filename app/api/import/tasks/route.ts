@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
   try {
     await connectToDatabase();
 
- const companyId = req.headers.get("x-company-id") || "demo-company";
+const companyId = req.headers.get("x-company-id");
 
     if (!companyId) {
       return NextResponse.json(
