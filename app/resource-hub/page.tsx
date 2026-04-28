@@ -147,13 +147,15 @@ const [searchQuery, setSearchQuery] = useState("");
 const [lastUpdated, setLastUpdated] = useState("");
 const [refreshing, setRefreshing] = useState(false);
 const fetchDashboardData = async () => {
-  try {
-    const res = await fetch("/api/dashboard", {
-  cache: "no-store",
-  headers: {
-    "x-company-id": "demo-company",
-  },
-});;
+ try {
+  const storedCompanyId = localStorage.getItem("pilot_company_id");
+
+  const res = await fetch("/api/dashboard", {
+    cache: "no-store",
+    headers: {
+      "x-company-id": storedCompanyId || "",
+    },
+  });
     const data = await res.json();
 
     if (data.success) {
