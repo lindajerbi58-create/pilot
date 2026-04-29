@@ -3,27 +3,35 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-const COMPANY_CODES: Record<string, string> = {
-  "CONSTRUCT-2026": "company-construction",
-  "CONSULT-2026": "company-consulting",
-};
+
 
 export default function LoginPage() {
   const router = useRouter();
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
 
-  const handleAccess = () => {
-    const companyId = COMPANY_CODES[code.trim().toUpperCase()];
+  const handleAccess = async () => {
+  const res = await fetch("/api/company/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ code }),
+  });
 
-    if (!companyId) {
-      setError("Invalid access code");
-      return;
-    }
+  const data = await res.json();
 
-    localStorage.setItem("pilot_company_id", companyId);
-    router.push("/dashboard");
-  };
+  if (!data.success) {
+    setError("Invalid access code");
+    return;
+  }
+
+  localStorage.setItem("pilot_company_id", data.companyId);
+  localStorage.setItem("pilot_company_name", data.companyName);
+  localStorage.setItem("pilot_company_code", data.code);
+
+  router.push("/dashboard");
+};
 
   return (
     <main className="min-h-screen bg-[#080b14] px-6 py-10 text-white">
