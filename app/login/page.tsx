@@ -47,8 +47,8 @@ export default function LoginPage() {
       <div className="absolute left-[-10%] top-[-20%] h-[420px] w-[420px] rounded-full bg-[#8ea8ff]/20 blur-[120px]" />
       <div className="absolute bottom-[-20%] right-[-10%] h-[420px] w-[420px] rounded-full bg-[#f05d7b]/10 blur-[120px]" />
 
-      <div className="relative mx-auto grid min-h-[85vh] max-w-6xl items-center gap-10 lg:grid-cols-2">
-        <section>
+     <div className="relative mx-auto flex min-h-[85vh] max-w-xl flex-col items-center justify-center">
+       <section className="mb-8 text-center">
           <div className="inline-flex rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-medium uppercase tracking-[0.25em] text-[#8ea8ff]">
             Pilot AI Workspace
           </div>
@@ -75,7 +75,7 @@ export default function LoginPage() {
           </div>
         </section>
 
-        <section className="rounded-[34px] border border-white/10 bg-white/[0.06] p-8 shadow-2xl shadow-black/40 backdrop-blur-xl">
+       <section className="w-full rounded-[34px] border border-white/10 bg-white/[0.06] p-8 shadow-2xl shadow-black/40 backdrop-blur-xl">
           <p className="text-sm uppercase tracking-[0.3em] text-[#8ea8ff]">
             Secure access
           </p>
