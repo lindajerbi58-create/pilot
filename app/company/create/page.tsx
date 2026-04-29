@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+import Link from "next/link";
 export default function CreateCompanyPage() {
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
@@ -64,6 +64,12 @@ export default function CreateCompanyPage() {
           >
             Create Code
           </button>
+          <Link
+  href="/login"
+  className="mt-4 block text-center text-sm font-medium text-[#8ea8ff] hover:underline"
+>
+  Go to login
+</Link>
         </div>
       </div>
     </main>
