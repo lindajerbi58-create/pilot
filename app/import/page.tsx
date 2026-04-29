@@ -98,7 +98,7 @@ useEffect(() => {
   if (!companyId) {
     router.push("/login");
   }
-}, [router]);
+}, []);
       const [selectedFile, setSelectedFile] = useState<File | null>(null);
       const [parsedRows, setParsedRows] = useState<any[]>([]);
 const [validationMessage, setValidationMessage] = useState("Waiting for file");
@@ -290,7 +290,7 @@ const response = await fetch("/api/import/tasks/clear", {
             <div className="flex flex-wrap gap-3">
   <button
     type="button"
-    onClick={handleResetImport}
+    onClick={handleClearAllData}
     className="rounded-2xl bg-[#8ea8ff] px-5 py-3 text-sm font-semibold text-[#0b1020] transition hover:brightness-110"
   >
     Reset Import
