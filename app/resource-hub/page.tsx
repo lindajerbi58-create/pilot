@@ -147,15 +147,21 @@ const [searchQuery, setSearchQuery] = useState("");
 const [lastUpdated, setLastUpdated] = useState("");
 const [refreshing, setRefreshing] = useState(false);
 const fetchDashboardData = async () => {
- try {
-  const storedCompanyId = localStorage.getItem("pilot_company_id");
+  try {
+    const storedCompanyId = localStorage.getItem("pilot_company_id");
 
-  const res = await fetch("/api/dashboard", {
-    cache: "no-store",
-    headers: {
-      "x-company-id": storedCompanyId || "",
-    },
-  });
+    if (!storedCompanyId) {
+      router.push("/login");
+      return;
+    }
+
+    const res = await fetch("/api/dashboard", {
+      cache: "no-store",
+      headers: {
+        "x-company-id": storedCompanyId,
+      },
+    });
+
     const data = await res.json();
 
     if (data.success) {
@@ -173,7 +179,6 @@ const fetchDashboardData = async () => {
     setLoading(false);
   }
 };
-
 const handleRefresh = async () => {
   setRefreshing(true);
   await fetchDashboardData();
@@ -181,14 +186,19 @@ const handleRefresh = async () => {
 };
 
 useEffect(() => {
+  const storedCompanyId = localStorage.getItem("pilot_company_id");
+
+  if (!storedCompanyId) {
+    router.push("/login");
+    return;
+  }
+
   fetchDashboardData();
 
-  const interval = setInterval(() => {
-    fetchDashboardData();
-  }, 60000);
+  const interval = setInterval(fetchDashboardData, 60000);
 
   return () => clearInterval(interval);
-}, []);
+}, [router]);
 
   if (loading) {
     return (
