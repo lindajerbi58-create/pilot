@@ -198,7 +198,7 @@ useEffect(() => {
   const interval = setInterval(fetchDashboardData, 60000);
 
   return () => clearInterval(interval);
-}, [router]);
+}, []);
 
   if (loading) {
     return (
