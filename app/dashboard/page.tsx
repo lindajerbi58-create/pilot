@@ -412,12 +412,12 @@ const response = await fetch("/api/reset", {
     const fetchData = async () => {
       try {
         const companyId = localStorage.getItem("pilot_company_id");
-
-        const res = await fetch("/api/dashboard", {
-          headers: {
-            "x-company-id": companyId || "",
-          },
-        });
+const res = await fetch("/api/dashboard", {
+  cache: "no-store",
+  headers: {
+    "x-company-id": companyId || "",
+  },
+});
         const data = await res.json();
 
         if (data.success) {
