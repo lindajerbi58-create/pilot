@@ -137,10 +137,10 @@ const tasks = await Task.find({ companyId });
   const completedTasks = tasks.filter((task) =>
     isCompleted(task.status, task.progress)
   ).length;
-
-  const inProgressTasks = tasks.filter((task) =>
-    isInProgress(task.status, task.progress)
-  ).length;
+const inProgressTasks = tasks.filter((task) => {
+  const status = String(task.status || "").toLowerCase().trim();
+  return status === "in progress";
+}).length;
 
   const overdueTasks = tasks.filter((task) =>
     isOverdue(task.due_date, task.status, task.progress)
