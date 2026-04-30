@@ -711,7 +711,7 @@ if (loading) {
   <span>{task.task_name}</span>
 )}
 
-{task.source === "AI_SUGGESTION" && (
+{task.taskId?.startsWith("AI-ACTION") && (
   <span className="rounded-full border border-[#8aa4ff]/30 bg-[#8aa4ff]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#b7c6ff]">
     AI Action
   </span>
