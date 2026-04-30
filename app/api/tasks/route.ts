@@ -1,8 +1,12 @@
-export async function GET(request: Request) {
+import { NextRequest, NextResponse } from "next/server";
+import { connectToDatabase } from "@/src/lib/mongodb";
+import Task from "@/src/models/Task";
+
+export async function GET(req: NextRequest) {
   try {
     await connectToDatabase();
 
-    const companyId = request.headers.get("x-company-id");
+    const companyId = req.headers.get("x-company-id");
 
     if (!companyId) {
       return NextResponse.json(
@@ -11,11 +15,18 @@ export async function GET(request: Request) {
       );
     }
 
-    const tasks = await Task.find({ companyId })
-      .sort({ createdAt: -1 })
-      .lean();
+    const tasks = await Task.find({ companyId });
 
     return NextResponse.json({
       success: true,
       tasks,
     });
+  } catch (error) {
+    console.error("Tasks API error:", error);
+
+    return NextResponse.json(
+      { success: false, error: "Failed to load tasks" },
+      { status: 500 }
+    );
+  }
+}
