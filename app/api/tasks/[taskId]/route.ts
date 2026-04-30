@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/src/lib/mongodb";
 import Task from "@/src/models/Task";
-
+import mongoose from "mongoose";
 export async function GET(
   req: NextRequest,
   context: { params: Promise<{ taskId: string }> }
@@ -76,7 +76,10 @@ export async function PATCH(
     const updatedTask = await Task.findOneAndUpdate(
       {
         companyId,
-        $or: [{ taskId }, { _id: taskId }],
+       $or: [
+  { taskId },
+  ...(mongoose.Types.ObjectId.isValid(taskId) ? [{ _id: taskId }] : []),
+],
       },
       {
         $set: {
