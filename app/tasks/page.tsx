@@ -700,22 +700,28 @@ if (loading) {
 <td className="px-5 py-4 font-medium text-white">
   <div className="max-w-[220px] break-words leading-6">
     <div className="flex flex-wrap items-center gap-2">
-      {task.taskId ? (
-        <Link
-          href={`/tasks/${task.taskId}`}
-          className="text-white transition hover:text-[#8ea8ff] hover:underline"
-        >
-          {task.task_name}
-        </Link>
-      ) : (
-        <span>{task.task_name}</span>
-      )}
+    {task.taskId ? (
+  <Link
+    href={`/tasks/${task.taskId}`}
+    className="text-white transition hover:text-[#8ea8ff] hover:underline"
+  >
+    {task.task_name}
+  </Link>
+) : (
+  <span>{task.task_name}</span>
+)}
 
-      {task._id && selectedTaskIds.includes(task._id) && (
-        <span className="rounded-full border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#b7c8ff]">
-          Selected
-        </span>
-      )}
+{task.source === "AI_SUGGESTION" && (
+  <span className="rounded-full border border-[#8aa4ff]/30 bg-[#8aa4ff]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#b7c6ff]">
+    AI Action
+  </span>
+)}
+
+{task._id && selectedTaskIds.includes(task._id) && (
+  <span className="rounded-full border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#b7c8ff]">
+    Selected
+  </span>
+)}
     </div>
 
     {task.taskId && (
