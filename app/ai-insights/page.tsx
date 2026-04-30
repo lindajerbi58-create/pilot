@@ -400,7 +400,7 @@ const executeAiSuggestion = async (
 
     alert("AI action executed successfully. A corrective task has been created.");
 
-    router.push("/tasks");
+    router.push(`/tasks?highlight=${data.task.taskId}&created=ai-action`);
   } catch (error) {
     console.error("Failed to execute AI suggestion:", error);
     alert("Failed to execute AI suggestion");
