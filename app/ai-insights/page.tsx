@@ -124,19 +124,22 @@ function SuggestionCard({
   title,
   description,
   tag,
-  primaryHref,
   secondaryHref,
+  onExecute,
+  isExecuting,
 }: {
   title: string;
   description: string;
   tag: string;
-  primaryHref?: string;
   secondaryHref?: string;
+  onExecute: () => void;
+  isExecuting?: boolean;
 }) {
   return (
     <div className="rounded-2xl border border-white/6 bg-white/[0.04] p-4">
       <div className="mb-3 flex items-start justify-between gap-3">
         <h3 className="text-sm font-semibold text-white">{title}</h3>
+
         <span className="rounded-full border border-[#8ab4ff]/25 bg-[#8ab4ff]/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#9fb9ff]">
           {tag}
         </span>
@@ -145,12 +148,14 @@ function SuggestionCard({
       <p className="text-sm leading-6 text-white/55">{description}</p>
 
       <div className="mt-4 flex gap-3">
-        <Link
-          href={primaryHref || "/tasks"}
-          className="rounded-xl bg-[#8aa4ff] px-4 py-2 text-sm font-semibold text-[#111629] transition hover:brightness-110"
+        <button
+          type="button"
+          onClick={onExecute}
+          disabled={isExecuting}
+          className="rounded-xl bg-[#8aa4ff] px-4 py-2 text-sm font-semibold text-[#111629] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Execute Change
-        </Link>
+          {isExecuting ? "Executing..." : "Execute Change"}
+        </button>
 
         <Link
           href={secondaryHref || "/ai-insights"}
@@ -209,7 +214,7 @@ useEffect(() => {
 }, [router]);
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-
+const [executingIndex, setExecutingIndex] = useState<number | null>(null);
   useEffect(() => {
  const fetchDashboardData = async () => {
   try {
