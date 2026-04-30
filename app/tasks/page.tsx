@@ -676,10 +676,14 @@ if (loading) {
           </tr>
         )}
 
-        <tr
-          key={task._id || `${task.task_name}-${index}`}
-          className="border-b border-white/6 text-sm text-white/80 transition hover:bg-white/[0.02]"
-        >
+       <tr
+  key={task._id || task.taskId}
+  className={`border-t border-white/6 transition ${
+    highlightedTaskId === task.taskId
+      ? "bg-[#8aa4ff]/10 ring-1 ring-inset ring-[#8aa4ff]/35"
+      : ""
+  }`}
+>
           {isRedistributeMode && (
             <td className="px-5 py-4">
               {task._id ? (
