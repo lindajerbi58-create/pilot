@@ -368,6 +368,46 @@ const shortDriverText = (key: string, value: number) => {
   if (key === "risk") return `${value} high-risk projects detected`;
   return "No major driver detected";
 };
+const executeAiSuggestion = async (
+  suggestion: any,
+  index: number,
+  projectName?: string
+) => {
+  try {
+    setExecutingIndex(index);
+
+    const storedCompanyId = localStorage.getItem("pilot_company_id");
+
+    const res = await fetch("/api/ai-actions/execute", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-company-id": storedCompanyId || "",
+      },
+      body: JSON.stringify({
+        title: suggestion.title,
+        description: suggestion.description,
+        projectName,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+      alert(data.error || "Failed to execute AI suggestion");
+      return;
+    }
+
+    alert("AI action executed successfully. A corrective task has been created.");
+
+    router.push("/tasks");
+  } catch (error) {
+    console.error("Failed to execute AI suggestion:", error);
+    alert("Failed to execute AI suggestion");
+  } finally {
+    setExecutingIndex(null);
+  }
+};
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto flex min-h-screen max-w-[1500px]">
