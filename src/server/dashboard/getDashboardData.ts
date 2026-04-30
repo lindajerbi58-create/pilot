@@ -53,6 +53,11 @@ export type DashboardResponse = {
   aiSuggestions: AISuggestion[];
   resourceWorkload: ResourceWorkloadItem[];
   executionTrend: ExecutionTrendItem[];
+  executedAiActions: {
+  title: string;
+  projectName: string;
+  taskId: string;
+}[];
   primaryIssue: "overdue" | "risk" | "workload" | "stable";
 };
 
@@ -132,7 +137,13 @@ export async function getDashboardData(companyId: string): Promise<DashboardResp
   await connectToDatabase();
 
 const tasks = await Task.find({ companyId });
-
+const executedAiActions = tasks
+  .filter((task: any) => String(task.taskId || "").startsWith("AI-ACTION"))
+  .map((task: any) => ({
+    title: task.task_name,
+    projectName: task.project_name,
+    taskId: task.taskId,
+  }));
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((task) =>
     isCompleted(task.status, task.progress)
@@ -395,5 +406,6 @@ const executionTrend = dayLabels.map((day) => {
   resourceWorkload,
   executionTrend,
   primaryIssue,
+  executedAiActions,
 };
 }
