@@ -718,40 +718,38 @@ const executeAiSuggestion = async (
                 <div className="space-y-4">
                   {(dashboardData?.aiSuggestions || []).map(
                     (suggestion: any, index: number) => {
-                      let primaryHref = "/tasks";
-                      let secondaryHref = "/ai-insights";
+                    let secondaryHref = "/ai-insights";
 
-                      if (suggestion.title.toLowerCase().includes("overdue")) {
-                        primaryHref = "/tasks?filter=overdue";
-                        secondaryHref = "/tasks?filter=overdue";
-                      } else if (suggestion.title.toLowerCase().includes("review")) {
-                        const matchedProject = (dashboardData?.riskyProjects || []).find(
-                          (project: any) =>
-                            suggestion.title
-                              .toLowerCase()
-                              .includes(project.title.toLowerCase())
-                        );
+const matchedProject = (dashboardData?.riskyProjects || []).find(
+  (project: any) =>
+    suggestion.title
+      .toLowerCase()
+      .includes(project.title.toLowerCase())
+);
 
-                        if (matchedProject) {
-                          primaryHref = `/tasks?project=${encodeURIComponent(
-                            matchedProject.title
-                          )}&filter=overdue`;
-                          secondaryHref = `/projects`;
-                        }
-                      } else if (suggestion.title.toLowerCase().includes("focus")) {
-                        primaryHref = "/tasks";
-                        secondaryHref = "/dashboard";
-                      }
-
+if (suggestion.title.toLowerCase().includes("overdue")) {
+  secondaryHref = "/tasks?filter=overdue";
+} else if (suggestion.title.toLowerCase().includes("review")) {
+  secondaryHref = matchedProject ? "/projects" : "/decision-center";
+} else if (suggestion.title.toLowerCase().includes("focus")) {
+  secondaryHref = "/dashboard";
+}
                       return (
-                        <SuggestionCard
-                          key={index}
-                          title={suggestion.title}
-                          description={suggestion.description}
-                          tag={index === 0 ? "High Impact" : index === 1 ? "Efficiency" : "AI"}
-                          primaryHref={primaryHref}
-                          secondaryHref={secondaryHref}
-                        />
+                       <SuggestionCard
+  key={index}
+  title={suggestion.title}
+  description={suggestion.description}
+  tag={index === 0 ? "High Impact" : index === 1 ? "Efficiency" : "AI"}
+  secondaryHref={secondaryHref}
+  isExecuting={executingIndex === index}
+  onExecute={() =>
+    executeAiSuggestion(
+      suggestion,
+      index,
+      matchedProject?.title
+    )
+  }
+/>
                       );
                     }
                   )}
