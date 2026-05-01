@@ -368,6 +368,17 @@ const shortDriverText = (key: string, value: number) => {
   if (key === "risk") return `${value} high-risk projects detected`;
   return "No major driver detected";
 };
+const executedAiActionTitles = new Set(
+  (dashboardData?.executedAiActions || []).map((action: any) =>
+    String(action.title || "").trim().toLowerCase()
+  )
+);
+
+const isSuggestionExecuted = (suggestion: any) => {
+  return executedAiActionTitles.has(
+    String(suggestion.title || "").trim().toLowerCase()
+  );
+};
 const executeAiSuggestion = async (
   suggestion: any,
   index: number,
