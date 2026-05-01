@@ -324,7 +324,7 @@ const decisionStats = [
     label: "Overdue Tasks",
     value: dashboardData?.kpis?.overdueTasks || 0,
     tone: "warning",
-    href: "/tasks?filter=overdue",
+  href: "/tasks?filter=overdue&view=compact",
   },
   {
     label: "Overloaded Members",
