@@ -81,6 +81,23 @@ function getPriorityBadge(priority?: string) {
 
   return "border border-white/10 bg-white/[0.04] text-white/70";
 }
+function getProjectColor(projectName?: string) {
+  const name = String(projectName || "").toLowerCase();
+
+  if (name.includes("linda")) {
+    return "border-cyan-500/25 bg-cyan-500/10 text-cyan-300";
+  }
+
+  if (name.includes("corrective")) {
+    return "border-emerald-500/25 bg-emerald-500/10 text-emerald-300";
+  }
+
+  if (name.includes("construction")) {
+    return "border-orange-500/25 bg-orange-500/10 text-orange-300";
+  }
+
+  return "border-[#8ea8ff]/20 bg-[#8ea8ff]/10 text-[#9eb7ff]";
+}
 function getRecommendedTasks(tasks: TaskItem[], count: number) {
   return [...tasks]
     .filter((task) => !isCompleted(task.status, task.progress))
@@ -675,12 +692,18 @@ if (loading) {
               className="border-b border-white/8 bg-white/[0.02] px-5 py-3"
             >
               <div className="flex items-center gap-3">
-                <span className="rounded-full border border-[#8ea8ff]/20 bg-[#8ea8ff]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9eb7ff]">
-                  Project
-                </span>
-                <span className="text-sm font-semibold text-white">
-                  {task.project_name || "Untitled Project"}
-                </span>
+                <span
+  className={`rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${getProjectColor(
+    task.project_name
+  )}`}
+>
+  Project
+</span>
+                <span
+  className={`text-sm font-semibold ${getProjectColor(task.project_name)}`}
+>
+  {task.project_name || "Untitled Project"}
+</span>
               </div>
             </td>
           </tr>
