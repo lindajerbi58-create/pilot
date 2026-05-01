@@ -22,6 +22,21 @@ export async function POST(request: Request) {
       description,
       projectName,
     } = body;
+    const existingAiAction = await Task.findOne({
+  companyId,
+  task_name: title,
+  project_name: projectName || "AI Corrective Action",
+  taskId: { $regex: "^AI-ACTION" },
+});
+
+if (existingAiAction) {
+  return NextResponse.json({
+    success: true,
+    alreadyExecuted: true,
+    message: "AI action already executed",
+    task: existingAiAction,
+  });
+}
 
     if (!title || !description) {
       return NextResponse.json(
