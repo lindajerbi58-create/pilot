@@ -756,22 +756,27 @@ if (suggestion.title.toLowerCase().includes("overdue")) {
   secondaryHref = "/dashboard";
 }
                       return (
-                       <SuggestionCard
+<SuggestionCard
   key={index}
   title={suggestion.title}
   description={suggestion.description}
   tag={index === 0 ? "High Impact" : index === 1 ? "Efficiency" : "AI"}
   secondaryHref={secondaryHref}
   isExecuting={executingIndex === index}
-  onExecute={() =>
+  isExecuted={isSuggestionExecuted(suggestion)}
+  onExecute={() => {
+    if (isSuggestionExecuted(suggestion)) {
+      alert("This AI action has already been executed.");
+      return;
+    }
+
     executeAiSuggestion(
       suggestion,
       index,
       matchedProject?.title
-    )
-  }
-/>
-                      );
+    );
+  }}
+/>                  );
                     }
                   )}
                 </div>
