@@ -762,6 +762,11 @@ if (suggestion.title.toLowerCase().includes("overdue")) {
 } else if (suggestion.title.toLowerCase().includes("focus")) {
   secondaryHref = "/dashboard";
 }
+const executedAction = getExecutedAiAction(suggestion);
+
+if (executedAction?.taskId) {
+  secondaryHref = `/tasks/${executedAction.taskId}`;
+}
                       return (
 <SuggestionCard
   key={index}
