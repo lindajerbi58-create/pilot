@@ -389,6 +389,13 @@ const isSuggestionExecuted = (suggestion: any) => {
     String(suggestion.title || "").trim().toLowerCase()
   );
 };
+const getExecutedAiAction = (suggestion: any) => {
+  return (dashboardData?.executedAiActions || []).find(
+    (action: any) =>
+      String(action.title || "").trim().toLowerCase() ===
+      String(suggestion.title || "").trim().toLowerCase()
+  );
+};
 const executeAiSuggestion = async (
   suggestion: any,
   index: number,
