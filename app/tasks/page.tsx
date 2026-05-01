@@ -142,6 +142,8 @@ function getTaskRecommendationReasons(task: TaskItem) {
 export default function TasksPage() {
 const searchParams = useSearchParams();
 
+const view = searchParams.get("view");
+
 const highlightedTaskId = searchParams.get("highlight");
 const createdFromAi = searchParams.get("created") === "ai-action";
   const router = useRouter();
@@ -475,6 +477,49 @@ if (loading) {
       </main>
     );
   }
+  const isCompactOverdueView =
+  view === "compact" && filter === "overdue";
+  if (isCompactOverdueView) {
+  const overdueTasks = tasks.filter(
+    (task: any) =>
+      task.status !== "done" &&
+      new Date(task.due_date) < new Date()
+  );
+
+  return (
+    <main className="min-h-screen bg-[#05060b] text-white">
+      <div className="mx-auto max-w-[1100px] px-4 py-5">
+        <TopNavbar />
+
+        <section className="mt-10 rounded-[32px] border border-white/8 bg-white/[0.03] p-6">
+          <h1 className="text-4xl font-semibold">
+            Overdue Tasks
+          </h1>
+
+          <div className="mt-6 space-y-3">
+            {overdueTasks.map((task: any, i: number) => (
+              <div
+                key={i}
+                className="rounded-xl border border-white/10 p-4"
+              >
+                <p className="font-semibold">{task.task_name}</p>
+                <p className="text-sm text-white/40">
+                  {task.project_name}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {overdueTasks.length === 0 && (
+            <p className="mt-6 text-white/50">
+              No overdue tasks
+            </p>
+          )}
+        </section>
+      </div>
+    </main>
+  );
+}
 
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
