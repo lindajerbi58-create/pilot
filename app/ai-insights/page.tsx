@@ -755,14 +755,18 @@ const matchedProject = (dashboardData?.riskyProjects || []).find(
       .includes(project.title.toLowerCase())
 );
 
-if (suggestion.title.toLowerCase().includes("overdue")) {
+const executedAction = getExecutedAiAction(suggestion);
+
+if (executedAction?.taskId) {
+  secondaryHref = `/tasks/${executedAction.taskId}`;
+} else if (suggestion.title.toLowerCase().includes("overdue")) {
   secondaryHref = "/tasks?filter=overdue";
 } else if (suggestion.title.toLowerCase().includes("review")) {
   secondaryHref = matchedProject ? "/projects" : "/decision-center";
 } else if (suggestion.title.toLowerCase().includes("focus")) {
   secondaryHref = "/dashboard";
 }
-const executedAction = getExecutedAiAction(suggestion);
+
 
 if (executedAction?.taskId) {
   secondaryHref = `/tasks/${executedAction.taskId}`;
