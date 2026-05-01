@@ -339,7 +339,7 @@ const decisionStats = [
     label: "AI Recommendations",
     value: (dashboardData?.aiSuggestions || []).length,
     tone: "primary",
-    href: "/ai-insights",
+  href: "/ai-insights?view=recommendations",
   },
 ];
 const executedAiActionTitles = new Set(
