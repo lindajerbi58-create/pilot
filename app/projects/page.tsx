@@ -172,6 +172,7 @@ const visibleProjects =
     ? projects.filter((project) => project.riskLevel === "High")
     : projects;
   if (loading) {
+
     return (
       <main className="min-h-screen bg-[#05060b] text-white">
         <div className="mx-auto max-w-7xl px-4 py-10">
@@ -194,7 +195,60 @@ const visibleProjects =
       </main>
     );
   }
+const isHighRiskUrlView = riskFilter === "high";
 
+if (isHighRiskUrlView) {
+  return (
+    <main className="min-h-screen bg-[#05060b] text-white">
+      <div className="mx-auto max-w-[1100px] px-4 py-5 sm:px-6 lg:px-8">
+        <TopNavbar />
+
+        <section className="mt-10 rounded-[32px] border border-white/8 bg-white/[0.03] p-6 shadow-2xl shadow-black/25">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8ea8ff]">
+            Filtered Project View
+          </p>
+
+          <h1 className="mt-3 text-4xl font-semibold tracking-tight text-white">
+            High Risk Projects
+          </h1>
+
+          <p className="mt-3 text-sm text-white/45">
+            Projects currently marked as high risk.
+          </p>
+
+          <div className="mt-6 space-y-3">
+            {visibleProjects.map((project: any, index: number) => (
+              <Link
+                key={index}
+                href={`/tasks?project=${encodeURIComponent(project.name)}`}
+                className="flex items-center justify-between rounded-2xl border border-white/8 bg-[#0b0e17]/80 px-5 py-4 transition hover:bg-white/[0.06]"
+              >
+                <div>
+                  <p className="text-base font-semibold text-white">
+                    {project.name}
+                  </p>
+                  <p className="mt-1 text-sm text-white/45">
+                    {project.tasks} tasks • {project.avgProgress}% avg progress
+                  </p>
+                </div>
+
+                <span className="rounded-full border border-[#ff6b6b]/20 bg-[#ff6b6b]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#ff9a9a]">
+                  {project.riskLevel}
+                </span>
+              </Link>
+            ))}
+          </div>
+
+          {visibleProjects.length === 0 && (
+            <div className="mt-6 rounded-2xl border border-white/8 bg-white/[0.03] p-6 text-center text-sm text-white/50">
+              No high risk projects detected.
+            </div>
+          )}
+        </section>
+      </div>
+    </main>
+  );
+}
   return (
     <main className="min-h-screen bg-[#05060b] text-white">
       <div className="mx-auto max-w-7xl px-4 py-8">
