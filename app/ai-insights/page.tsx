@@ -127,6 +127,7 @@ function SuggestionCard({
   secondaryHref,
   onExecute,
   isExecuting,
+  isExecuted,
 }: {
   title: string;
   description: string;
@@ -134,6 +135,7 @@ function SuggestionCard({
   secondaryHref?: string;
   onExecute: () => void;
   isExecuting?: boolean;
+  isExecuted?: boolean;
 }) {
   return (
     <div className="rounded-2xl border border-white/6 bg-white/[0.04] p-4">
@@ -141,7 +143,7 @@ function SuggestionCard({
         <h3 className="text-sm font-semibold text-white">{title}</h3>
 
         <span className="rounded-full border border-[#8ab4ff]/25 bg-[#8ab4ff]/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#9fb9ff]">
-          {tag}
+          {isExecuted ? "Executed" : tag}
         </span>
       </div>
 
@@ -151,10 +153,18 @@ function SuggestionCard({
         <button
           type="button"
           onClick={onExecute}
-          disabled={isExecuting}
-          className="rounded-xl bg-[#8aa4ff] px-4 py-2 text-sm font-semibold text-[#111629] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={isExecuting || isExecuted}
+          className={`rounded-xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed ${
+            isExecuted
+              ? "border border-emerald-500/25 bg-emerald-500/10 text-emerald-300"
+              : "bg-[#8aa4ff] text-[#111629] hover:brightness-110 disabled:opacity-60"
+          }`}
         >
-          {isExecuting ? "Executing..." : "Execute Change"}
+          {isExecuted
+            ? "Already executed"
+            : isExecuting
+              ? "Executing..."
+              : "Execute Change"}
         </button>
 
         <Link
