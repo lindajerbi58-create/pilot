@@ -350,9 +350,19 @@ const handleRedistribute = async () => {
     if (!res.ok || !data.success) {
       throw new Error(data?.error || "Failed to redistribute tasks");
     }
-
 alert(`Successfully reassigned ${data.updatedCount || selectedTaskIds.length} task(s) to ${target}`);
-router.refresh();
+
+setTasks((prev) =>
+  prev.map((task) =>
+    task._id && selectedTaskIds.includes(task._id)
+      ? { ...task, assignee_email: target }
+      : task
+  )
+);
+
+setSelectedTaskIds([]);
+
+router.push(`/tasks?assignee=${encodeURIComponent(target)}`);
   } catch (err: any) {
     console.error(err);
     alert(err.message || "Failed to redistribute tasks");
